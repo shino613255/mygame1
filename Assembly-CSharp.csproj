@@ -62,34 +62,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Town\TownManager.cs" />
-    <Compile Include="Assets\Script\Battle\EnemyPart.cs" />
     <Compile Include="Assets\Script\SceneTransitionManager.cs" />
+    <Compile Include="Assets\Script\Skill\SkillCooldowns.cs" />
     <Compile Include="Assets\Script\Battle\EnemyData.cs" />
-    <Compile Include="Assets\Script\Battle\BodyPart.cs" />
+    <Compile Include="Assets\Script\Skill\SkillType.cs" />
+    <Compile Include="Assets\Script\Battle\EnemyUIManager.cs" />
     <Compile Include="Assets\Script\Title\TitleManager.cs" />
-    <Compile Include="Assets\Script\Battle\SkillData.cs" />
     <Compile Include="Assets\Script\Battle\UnitBase.cs" />
-    <Compile Include="Assets\Script\Battle\EnemyPartData.cs" />
-    <Compile Include="Assets\Script\Battle\SkillCooldowns.cs" />
     <Compile Include="Assets\Script\Quest\QuestManager.cs" />
     <Compile Include="Assets\Script\Battle\DropTable.cs" />
-    <Compile Include="Assets\Script\Quest\PlayerUImanager.cs" />
     <Compile Include="Assets\Script\FadeIOManager.cs" />
-    <Compile Include="Assets\Script\Battle\SkillType.cs" />
-    <Compile Include="Assets\Script\Battle\SkillExecutor.cs" />
     <Compile Include="Assets\Script\Battle\BattleManager.cs" />
     <Compile Include="Assets\Script\Battle\PlayerData.cs" />
     <Compile Include="Assets\Script\Quest\StageUIManager.cs" />
-    <Compile Include="Assets\Script\Battle\DamageRule.cs" />
+    <Compile Include="Assets\Script\Skill\TargetType.cs" />
     <Compile Include="Assets\Script\DialogTextManager.cs" />
-    <Compile Include="Assets\Script\Battle\EnemyPartsController.cs" />
+    <Compile Include="Assets\Script\Battle\PlayerUImanager.cs" />
+    <Compile Include="Assets\Script\Skill\DamageRule.cs" />
+    <Compile Include="Assets\Script\Skill\StatusEffectData.cs" />
+    <Compile Include="Assets\Script\Skill\SkillExecutor.cs" />
+    <Compile Include="Assets\Script\Skill\StatusEffectType.cs" />
     <Compile Include="Assets\Script\SoundManager.cs" />
     <Compile Include="Assets\Script\Battle\EnemyManager.cs" />
-    <Compile Include="Assets\Script\Quest\EnemyUIManager.cs" />
-    <Compile Include="Assets\Script\Battle\StatusEffectData.cs" />
-    <Compile Include="Assets\Script\Battle\TargetType.cs" />
-    <Compile Include="Assets\Script\Battle\ElementType.cs" />
-    <Compile Include="Assets\Script\Battle\StatusEffectType.cs" />
+    <Compile Include="Assets\Script\Skill\SkillData.cs" />
+    <Compile Include="Assets\Script\Skill\ElementType.cs" />
     <Compile Include="Assets\Script\Battle\PlayerManager.cs" />
   </ItemGroup>
   <ItemGroup>

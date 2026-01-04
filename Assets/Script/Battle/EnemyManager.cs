@@ -7,14 +7,10 @@ using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
 
-
-
-
-
-
 // 敵全体を管理(ステータス/クリック検出)
 public class EnemyManager : UnitBase
-{
+{    
+
     Action OnTapAction;
 
     public EnemyData data;
@@ -22,57 +18,24 @@ public class EnemyManager : UnitBase
     [Header("VFX")]
     public GameObject damageEffect;
 
-    // 追加：部位タップ管理
-    [Header("Parts (部位タップ用)")]
-    public List<EnemyPart> parts = new();
+    private bool isBurning;
+    private bool isBroken;
 
-    // 追加：部位ごとの状態
-    private HashSet<BodyPart> burnParts = new HashSet<BodyPart>();
-    private HashSet<BodyPart> brokenParts = new HashSet<BodyPart>();
+    private const float BurnRate = 0.05f;
+    private const float AccuracyDown = 0.15f;
 
-    // 追加：1部位につき毎ターン5%（例）
-    private const float BurnRatePerPart = 0.05f;
-    // 追加：1部位につき命中-15%（例）
-    private const float AccuracyDownPerBrokenPart = 0.15f;
+    public void ApplyBurn() => isBurning = true;
+    public void ApplyBreak() => isBroken = true;
 
-    // 追加：火傷付与（部位ごと）
-    public void ApplyBurn(BodyPart part)
-    {
-        burnParts.Add(part);
-    }
+    public float GetAccuracyPenalty() => isBroken ? AccuracyDown : 0f;
 
-    // 追加：欠損付与（部位ごと）
-    public void ApplyBreak(BodyPart part)
-    {
-        brokenParts.Add(part);
-    }
-
-    // 追加：欠損による命中ペナルティ（この敵の攻撃命中に使う）
-    public float GetAccuracyPenalty()
-    {
-        return brokenParts.Count * AccuracyDownPerBrokenPart;
-    }
-
-    // 追加：ターン開始時の火傷ダメージ（この敵が火傷してるなら減る）
     public int TickBurnDamage()
     {
-        if (burnParts.Count <= 0) return 0;
-
-        // 1部位ごとに maxHp の5%（最低1）
-        int dmg = Mathf.Max(1, Mathf.RoundToInt(maxHp * BurnRatePerPart * burnParts.Count));
-        TakePhysical(dmg); // 物理扱いでHPを減らす（演出/死亡処理も流れる）
+        if (!isBurning) return 0;
+        int dmg = Mathf.Max(1, Mathf.RoundToInt(maxHp * BurnRate));
+        TakePhysical(dmg);
         return dmg;
     }
-    public void EnablePartsTap(bool enable)
-    {
-        foreach (var p in parts)
-        {
-            if (p == null) continue;
-            p.SetTapEnabled(enable);
-        }
-    }
-
-
     private void Start()
     {
         // EnemyData から初期化
@@ -90,6 +53,11 @@ public class EnemyManager : UnitBase
     {
         return player.TakePhysical(at);
     }
+    private void OnMouseDown()
+    {
+        FindFirstObjectByType<BattleManager>()?.OnEnemyTapped();
+    }
+
 
     // ダメージ演出だけ敵用に上書き
     protected override void OnDamaged(int damage, bool isMagic)
@@ -129,6 +97,18 @@ public class EnemyManager : UnitBase
         private void OnDestroy()
     {
         OnTapAction = null;
+    }
+
+    private Dictionary<StatusEffectType, GameObject> activeVfx = new();
+
+    public void ShowStatusVfx(StatusEffectData effect)
+    {
+        if (effect == null || effect.vfxPrefab == null) return;
+
+        if (activeVfx.ContainsKey(effect.type)) return;
+
+        var vfx = Instantiate(effect.vfxPrefab, transform);
+        activeVfx[effect.type] = vfx;
     }
 
 }

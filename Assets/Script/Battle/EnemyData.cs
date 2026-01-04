@@ -33,13 +33,9 @@ public class EnemyData : ScriptableObject
     public AudioClip hitSE;
     public AudioClip deathSE;
 
-    [Header("部位データ（任意）")]
-    public List<EnemyPartData> parts = new(); // 既に使ってるならここでOK
-
-    [Header("アクションAI（最小）")]
-    [Tooltip("とりあえず通常攻撃に使うスキルID（未実装なら-1）")]
-    public int attackSkillId = -1;
-
     [Tooltip("使えるスキル一覧（任意）")]
-    public List<int> skillList = new();
+    
+    public SkillData attackSkill;                 // 通常攻撃（保険）
+    public List<SkillData> skillList = new();    // ここに最大4つ入れる（Inspector）
+
 }

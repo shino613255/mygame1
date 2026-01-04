@@ -310,7 +310,7 @@ MonoBehaviour:
   player: {fileID: 540119328}
   playerUI: {fileID: 1685071483}
   stageUI: {fileID: 759524086}
-  enemyPrefab: {fileID: 4039787223579819014, guid: 968d55858ad3a56409b10e2f4bbb591e, type: 3}
+  enemyPrefab: {fileID: 4039787223579819014, guid: a2292037aa443b447b29736051d773ca, type: 3}
   battleManager: {fileID: 1136246650}
   sceneTransitionManager: {fileID: 1952424751}
   QuestBG: {fileID: 1371250473}
@@ -473,6 +473,7 @@ MonoBehaviour:
   expToNext: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   critRate: 0.02
   critMultiplier: 2
+  skillMultiplier: 2
   skillMpCost: 10
   useSkill: 0
 --- !u!4 &540119329
@@ -1395,6 +1396,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29983a571e6bb6c4a85d6763ff85e718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerBaseAccuracy: 0.9
+  enemyBaseAccuracy: 0.9
+  elementProcChance: 0.05
+  playerDefaultSkill: {fileID: 0}
   playerDamagePanel: {fileID: 519420032}
   questManager: {fileID: 471562400}
   playerUI: {fileID: 1685071483}
@@ -2642,6 +2647,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyManager
       objectReference: {fileID: 0}
+    - target: {fileID: 9101477937082637892, guid: 2353a6a7fd8894742a60c2b34ad21b42, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: 7eaf2d2898d963245a4d22c8dd5fc72b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

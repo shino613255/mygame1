@@ -10,8 +10,8 @@ public class BattleManager : MonoBehaviour
 {
     [SerializeField] private float playerBaseAccuracy = 0.9f;
     [SerializeField] private float enemyBaseAccuracy = 0.9f;
-    [SerializeField] private float elementProcChance = 0.05f; // 5%                                                              
-    [SerializeField] private SkillData playerDefaultSkill;    
+    [SerializeField] private float elementProcChance = 0.05f; // 5%
+    [SerializeField] private SkillData playerDefaultSkill;
 
 
     public Transform playerDamagePanel;
@@ -20,7 +20,6 @@ public class BattleManager : MonoBehaviour
     public EnemyUIManager enemyUI;
     public PlayerManager player;
     EnemyManager enemy;
-    private BodyPart selectedPart;
     private bool waitingTap;        // タップ待ち中か
     private bool isPlayerTurn;      // 今プレイヤーのターンか
 
@@ -32,10 +31,8 @@ public class BattleManager : MonoBehaviour
         enemyUI.gameObject.SetActive(false);
     }
 
-
-    // 初期設定
     public void Setup(EnemyManager enemymanager)
-    {       
+    {
         SoundManager.instance.PlayBGM("Battle"); // 戦闘BGM再生
         enemyUI.gameObject.SetActive(true);
 
@@ -48,8 +45,50 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(BattleLoop());
 
     }
+    public void OnEnemyTapped()
+    {
+        if (!isPlayerTurn) return;
 
-    // ★ここから追加（Setupの下）
+        waitingTap = false;
+
+        var result = SkillExecutor.Execute(
+            player,
+            enemy,
+            playerDefaultSkill,
+            0f
+        );
+
+        enemyUI.UpdateUI(enemy);
+        playerUI.UpdateUI(player);
+
+        DialogTextManager.instance.SetScenarios(new[]
+        {
+        result.message
+    });
+    }
+
+    IEnumerator PlayerActByTap()
+    {
+        isPlayerTurn = true;
+        waitingTap = true;
+
+        DialogTextManager.instance.SetScenarios(new string[]
+        {
+        "プレイヤーのターン。\n敵をタップ！"
+        });
+
+        // ★敵タップされるまで待つ
+        while (waitingTap)
+            yield return null;
+
+        isPlayerTurn = false;
+
+        enemyUI.UpdateUI(enemy);
+
+        if (!enemy.IsAlive)
+            yield return StartCoroutine(EndBattle());
+    }
+
 
     IEnumerator BattleLoop()
     {
@@ -76,125 +115,111 @@ public class BattleManager : MonoBehaviour
             yield return null;
         }
     }
-    private EnemyPartData GetPartData(BodyPart part)
+
+
+
+
+    // BattleManager.cs に追加（クラス内のどこでもOK）
+    private SkillData PickEnemySkillOrNormal()
     {
-        if (enemy == null || enemy.data == null || enemy.data.parts == null) return null;
-        return enemy.data.parts.FirstOrDefault(p => p != null && p.partId == part);
-    }
+        if (enemy == null || enemy.data == null) return null;
 
-    // プレイヤーターン：部位タップされるまで待つ
-    IEnumerator PlayerActByTap()
-    {
-        isPlayerTurn = true;
-        waitingTap = true;
+        // 1) 通常攻撃（EnemyData.attackSkill）が入ってたら、それは常に候補に入れる
+        List<SkillData> pool = new();
 
-        // ここで「敵の部位タップをON」にする（Enemy側で実装が必要）
-        // enemy.EnablePartsTap(true);
+        if (enemy.data.attackSkill != null)
+            pool.Add(enemy.data.attackSkill);
 
-        DialogTextManager.instance.SetScenarios(new string[]
+        // 追加スキル（EnemyData.skillSlots or skillList）も候補に入れる（最大4想定でもOK）
+        if (enemy.data.skillList != null && enemy.data.skillList.Count > 0)
         {
-        "プレイヤーのターン。\n攻撃する部位をタップ！"
-        });
+            foreach (var s in enemy.data.skillList)
+            {
+                if (s == null) continue;
+                pool.Add(s);
+            }
+        }
 
-        while (waitingTap) yield return null; // タップされるまで止まる
+        // 候補が無いなら null（呼び出し側で通常攻撃にフォールバック）
+        if (pool.Count == 0) return null;
 
-        // enemy.EnablePartsTap(false);
-        isPlayerTurn = false;
-
-        enemyUI.UpdateUI(enemy);
-
-        if (!enemy.IsAlive)
-            yield return StartCoroutine(EndBattle());
+        // 候補からランダムで1つ
+        return pool[Random.Range(0, pool.Count)];
     }
 
-    
-
-
-
-
-
-// 敵ターン：自動で攻撃
+    // 敵ターン：自動で攻撃
+    // BattleManager.cs の EnemyActAuto をこれに丸ごと置き換え
     IEnumerator EnemyActAuto()
+    {
+        if (enemy == null || player == null) yield break;
+
+        // ① 敵ターン開始時：火傷ダメージ（敵が燃えてるなら減る）
+        int burnDmg = enemy.TickBurnDamage();
+        if (burnDmg > 0)
         {
-            if (enemy == null || player == null) yield break;
-
-
-            // EnemyActAuto() の攻撃直前あたりで
-            float finalAcc = enemyBaseAccuracy - enemy.GetAccuracyPenalty();
-            bool hit = DamageRule.RollHit(finalAcc, 0f); // evasionは今0でOK
-            
-            if (!hit)
+            enemyUI.UpdateUI(enemy);
+            DialogTextManager.instance.SetScenarios(new string[]
             {
-                DialogTextManager.instance.SetScenarios(new string[]
-                {
-                "敵の攻撃！\nしかし外れた！"
-                });
-                yield break;
-            }
-
-            // 追加：敵ターン開始時に火傷ダメージ（敵が燃えてたらここで減る）
-            int burnDmg = enemy.TickBurnDamage();
-            if (burnDmg > 0)
-            {
-                enemyUI.UpdateUI(enemy);
-                DialogTextManager.instance.SetScenarios(new string[]
-                {
             $"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた"
-                });
+            });
 
-                if (enemy == null || !enemy.IsAlive) yield break;
-            }
+            if (enemy == null || !enemy.IsAlive) yield break;
+            yield return new WaitForSeconds(0.5f);
+        }
 
-            yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.8f);
 
+        // ② 敵の命中判定（欠損の命中低下を反映）
+        float finalAcc = enemyBaseAccuracy - enemy.GetAccuracyPenalty();
+        bool hit = DamageRule.RollHit(finalAcc, 0f); // evasionは今0でOK
+
+        if (!hit)
+        {
+            DialogTextManager.instance.SetScenarios(new string[]
+            {
+            "敵の攻撃！\nしかし外れた！"
+            });
+            yield break;
+        }
+
+        // ③ スキルがあるなら「スキル + 通常攻撃(attackSkill)」を同じプールでランダム
+        SkillData skill = PickEnemySkillOrNormal();
+
+        // ④ スキルが無いなら従来の通常攻撃にフォールバック
+        if (skill == null)
+        {
             SoundManager.instance.PlayButtonSE(1);
             playerDamagePanel.DOShakePosition(0.3f, 0.5f, 20, 0, false, true);
 
-            int damage = player.TakePhysical(enemy.at);
+            int dmg = player.TakePhysical(enemy.at);
             playerUI.UpdateUI(player);
 
             DialogTextManager.instance.SetScenarios(new string[]
             {
-            "敵の攻撃！\nプレイヤーは"+damage+"ダメージ受けた"
+            $"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた"
             });
+            yield break;
         }
 
-    // 部位タップされた時に部位側から呼ぶ（EnemyPart → BattleManager）
-    // BattleManager.cs（部位タップ時）
-    // BattleManager.cs の中：OnEnemyPartTapped をこれに丸ごと置き換え
-    public void OnEnemyPartTapped(BodyPart part)
-    {
-        if (!isPlayerTurn || enemy == null) return;
-
-        waitingTap = false;
-
-        SoundManager.instance.PlayButtonSE(1);
-
+        // ⑤ スキル実行（敵→プレイヤーなので部位は固定でOK）
         var result = SkillExecutor.Execute(
-            player,             // 攻撃者
-            enemy,              // 対象
-            playerDefaultSkill, // 使うスキル（Inspectorで設定）
-            part                // タップした部位
+            enemy,
+            player,
+            skill,
+            0f
         );
 
-        enemyUI.UpdateUI(enemy);
         playerUI.UpdateUI(player);
 
         DialogTextManager.instance.SetScenarios(new string[]
         {
         result.message
         });
-
-        if (!enemy.IsAlive)
-            StartCoroutine(EndBattle());
     }
 
 
-
-
-
     IEnumerator EndBattle()
-    {        
+    {
         yield return new WaitForSeconds(2f); // 1秒待機
         DialogTextManager.instance.SetScenarios(new string[]
         {
