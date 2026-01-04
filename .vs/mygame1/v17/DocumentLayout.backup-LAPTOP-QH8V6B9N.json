@@ -1,0 +1,135 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|c:\\users\\shino\\onedrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\github\\mygame1\\assets\\script\\quest\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\quest\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\assets\\script\\quest\\questmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\quest\\questmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\assets\\script\\soundmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\soundmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\assets\\script\\town\\townmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\town\\townmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\assets\\script\\title\\titlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\title\\titlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\assets\\script\\scenetransitionmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\scenetransitionmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\assets\\script\\quest\\stageuimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\quest\\stageuimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "SceneTransitionManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\SceneTransitionManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\SceneTransitionManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\SceneTransitionManager.cs",
+              "RelativeToolTip": "Assets\\Script\\SceneTransitionManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwoAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T12:26:00.094Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SoundManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\SoundManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\SoundManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\SoundManager.cs",
+              "RelativeToolTip": "Assets\\Script\\SoundManager.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAmwDUAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:31:40.984Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "QuestManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Quest\\QuestManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Quest\\QuestManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Quest\\QuestManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Quest\\QuestManager.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAYwD8AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T10:15:04.227Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BattleManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Quest\\BattleManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Quest\\BattleManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Quest\\BattleManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Quest\\BattleManager.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAgwDwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T12:08:57.213Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "StageUIManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Quest\\StageUIManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Quest\\StageUIManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Quest\\StageUIManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Quest\\StageUIManager.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T13:00:20.387Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TownManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Town\\TownManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Town\\TownManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Town\\TownManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Town\\TownManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwcAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:35:56.548Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TitleManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Title\\TitleManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Title\\TitleManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C9\u30AD\u30E5\u30E1\u30F3\u30C8\\GitHub\\mygame1\\Assets\\Script\\Title\\TitleManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Title\\TitleManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:30:39.938Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

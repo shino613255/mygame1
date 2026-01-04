@@ -1,0 +1,247 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\damagecalculator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\damagecalculator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\statuseffectdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\statuseffectdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|c:\\users\\shino\\onedrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\statuseffecttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\statuseffecttype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\elementtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\elementtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\unitbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\unitbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\enemypartdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemypartdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\enemydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\bodypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\bodypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\enemypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\EnemyPart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Script\\EnemyPart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\dialogtextmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\dialogtextmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "StatusEffectData.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\StatusEffectData.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\StatusEffectData.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\StatusEffectData.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\StatusEffectData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvxAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-03T01:15:58.711Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "StatusEffectType.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\StatusEffectType.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\StatusEffectType.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\StatusEffectType.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\StatusEffectType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-03T00:42:58.029Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "EnemyManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyManager.cs",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAYwF0AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:45.777Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BattleManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\BattleManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\BattleManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE8AAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:33.417Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ElementType.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\ElementType.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\ElementType.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\ElementType.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\ElementType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-03T00:40:53.205Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DamageCalculator.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\DamageCalculator.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\DamageCalculator.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\DamageCalculator.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\DamageCalculator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-03T01:15:15.654Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "EnemyPartData.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyPartData.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyPartData.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyPartData.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyPartData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:40:00.57Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PlayerManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\PlayerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\PlayerManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\PlayerManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\PlayerManager.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:44.325Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "EnemyData.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyData.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyData.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyData.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvxEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:42.929Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UnitBase.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\UnitBase.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\UnitBase.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\UnitBase.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\UnitBase.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAADwvyEAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:41:36.297Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "BodyPart.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\BodyPart.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\BodyPart.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\BodyPart.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\BodyPart.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T21:18:05.776Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "EnemyPart.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyPart.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyPart.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyPart.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyPart.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T21:17:09.957Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "EnemyPart.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\EnemyPart.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\EnemyPart.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\EnemyPart.cs",
+              "RelativeToolTip": "Assets\\Script\\EnemyPart.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-29T19:49:47.637Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "DialogTextManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\DialogTextManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\DialogTextManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\DialogTextManager.cs",
+              "RelativeToolTip": "Assets\\Script\\DialogTextManager.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAAAFAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-29T20:08:22.131Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

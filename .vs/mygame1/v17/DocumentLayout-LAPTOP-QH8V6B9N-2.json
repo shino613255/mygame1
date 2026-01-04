@@ -1,0 +1,149 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|c:\\users\\shino\\onedrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\unitbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\unitbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\enemypartdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemypartdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\battle\\enemydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\enemypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\enemypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\assets\\script\\dialogtextmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\dialogtextmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UnitBase.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\UnitBase.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\UnitBase.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\UnitBase.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\UnitBase.cs",
+              "ViewState": "AgIAACkAAAAAAAAAAAAUwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:41:36.297Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "EnemyPartData.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyPartData.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyPartData.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyPartData.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyPartData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvxUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:40:00.57Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BattleManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\BattleManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\BattleManager.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAgwHkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:33.417Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "EnemyManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:45.777Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PlayerManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\PlayerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\PlayerManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\PlayerManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\PlayerManager.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:44.325Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "EnemyData.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyData.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyData.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\Battle\\EnemyData.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvw8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-02T10:38:42.929Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DialogTextManager.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\DialogTextManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\DialogTextManager.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\DialogTextManager.cs",
+              "RelativeToolTip": "Assets\\Script\\DialogTextManager.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAAAFAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-29T20:08:22.131Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "EnemyPart.cs",
+              "DocumentMoniker": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\EnemyPart.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\EnemyPart.cs",
+              "ToolTip": "C:\\Users\\shino\\OneDrive\\\u30C7\u30B9\u30AF\u30C8\u30C3\u30D7\\mygame1\\Assets\\Script\\EnemyPart.cs",
+              "RelativeToolTip": "Assets\\Script\\EnemyPart.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-29T19:49:47.637Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
