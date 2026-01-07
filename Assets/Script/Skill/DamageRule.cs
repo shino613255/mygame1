@@ -31,16 +31,17 @@ public static class DamageRule
         return Random.value < final;
     }
 
-    // クリティカル：rate は 0〜1、bonusMultiplier は 1.5f など
-    // 戻り値：critしたらダメージ増加後の値、しなければ元のダメージ
     public static int RollCrit(int baseDamage, float rate, float bonusMultiplier = 1.5f, int minDamage = 1)
     {
         rate = Mathf.Clamp01(rate);
 
-        if (baseDamage <= 0) return 0;
+        // ★ 最低1に寄せる
+        baseDamage = Mathf.Max(minDamage, baseDamage);
+
         if (Random.value >= rate) return baseDamage;
 
         int crit = Mathf.RoundToInt(baseDamage * bonusMultiplier);
         return Mathf.Max(minDamage, crit);
     }
+
 }

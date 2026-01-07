@@ -1,4 +1,4 @@
-using DG.Tweening;
+ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,8 @@ using UnityEngine;
 // PlayerとEnemyの戦闘を管理するクラス
 public class BattleManager : MonoBehaviour
 {
+    [SerializeField] private EnemyPartsController enemyParts;
+    [SerializeField] private Camera mainCamera;
     [SerializeField] private float playerBaseAccuracy = 0.9f;
     [SerializeField] private float enemyBaseAccuracy = 0.9f;
     [SerializeField] private float elementProcChance = 0.05f; // 5%
@@ -33,39 +35,94 @@ public class BattleManager : MonoBehaviour
 
     public void Setup(EnemyManager enemymanager)
     {
-        SoundManager.instance.PlayBGM("Battle"); // 戦闘BGM再生
+        SoundManager.instance.PlayBGM("Battle");
         enemyUI.gameObject.SetActive(true);
 
         enemy = enemymanager;
+
+        if (mainCamera == null) mainCamera = Camera.main;
+        if (enemyParts == null) enemyParts = enemy.GetComponent<EnemyPartsController>();
 
         enemyUI.SetupUI(enemy);
         playerUI.SetupUI(player);
 
         units = new List<UnitBase> { player, enemy };
         StartCoroutine(BattleLoop());
-
     }
-    public void OnEnemyTapped()
+
+    private void Update()
     {
         if (!isPlayerTurn) return;
+        if (!waitingTap) return;
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            TryPickBodyPart(Input.mousePosition);
+        }
+
+        // スマホ対応（任意）
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            TryPickBodyPart(Input.GetTouch(0).position);
+        }
+    }
+
+    private void TryPickBodyPart(Vector2 screenPos)
+    {
+        Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);
+        Debug.Log($"tap worldPos={worldPos}");
+
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+        Debug.Log(hit.collider ? $"HIT: {hit.collider.name}" : "HIT: none");
+
+        if (!hit.collider) return;
+
+        var part = hit.collider.GetComponentInParent<BodyPart>();
+        Debug.Log(part ? $"PART: {part.partType}" : "PART: null");
+
+        if (part == null) return;
+
+        OnBodyPartTapped(part);
+    }
+
+
+    public void OnBodyPartTapped(BodyPart part)
+    {
+        Debug.Log($"OnBodyPartTapped called. isPlayerTurn={isPlayerTurn} waitingTap={waitingTap}");
+
+        if (enemyParts == null)
+            enemyParts = enemy.GetComponent<EnemyPartsController>();
+
+        if (enemyParts == null) return;
+
+        // ※デバッグが終わったら戻してOK
+        // if (!isPlayerTurn) return;
 
         waitingTap = false;
 
-        var result = SkillExecutor.Execute(
-            player,
-            enemy,
-            playerDefaultSkill,
-            0f
-        );
+        // タップした部位を選択（ハイライトON/OFF）
+        enemyParts.SetSelectedPart(part);
 
+        // ダメージ計算（1回）
+        int damage = DamageRule.CalcPhysical(player.at, enemy.def, 1f, 1);
+
+        // ★★ これが無いと絶対に減りませんわ ★★
+        enemyParts.ApplyMainAndPartDamage(damage);
+
+        // UI更新
         enemyUI.UpdateUI(enemy);
         playerUI.UpdateUI(player);
 
         DialogTextManager.instance.SetScenarios(new[]
         {
-        result.message
+        $"{part.partType}を攻撃！\n本体＆部位に {damage} ダメージですわ！"
     });
     }
+
+
+
+
 
     IEnumerator PlayerActByTap()
     {

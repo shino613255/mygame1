@@ -38,26 +38,25 @@ public class EnemyManager : UnitBase
     }
     private void Start()
     {
-        // EnemyData から初期化
+        if (data == null)
+        {
+            Debug.LogError($"EnemyData が未設定ですわ！ object={gameObject.name}", this);
+            return;
+        }
+
         name = data.enemyName;
-        hp = data.maxHp;
+        maxHp = data.maxHp;
+        hp = maxHp;
         at = data.at;
         damageEffect = data.damageEffect;
-
-        // ※EnemyDataにまだdef/mat/mdef/spdが無いなら、とりあえずInspectorの値を使う
-        // （将来 EnemyData に追加したらここで代入すればOK）
     }
+
 
     // プレイヤーを攻撃（物理）
     public int Attack(PlayerManager player)
     {
         return player.TakePhysical(at);
     }
-    private void OnMouseDown()
-    {
-        FindFirstObjectByType<BattleManager>()?.OnEnemyTapped();
-    }
-
 
     // ダメージ演出だけ敵用に上書き
     protected override void OnDamaged(int damage, bool isMagic)
@@ -84,21 +83,6 @@ public class EnemyManager : UnitBase
         yield break;
     }
 
-    // タップイベント
-    public void AddEventListenerOnTap(Action action)
-    {
-        OnTapAction += action;
-    }
-
-    public void OnTap()
-    {
-        OnTapAction?.Invoke();
-    }
-        private void OnDestroy()
-    {
-        OnTapAction = null;
-    }
-
     private Dictionary<StatusEffectType, GameObject> activeVfx = new();
 
     public void ShowStatusVfx(StatusEffectData effect)
@@ -109,6 +93,18 @@ public class EnemyManager : UnitBase
 
         var vfx = Instantiate(effect.vfxPrefab, transform);
         activeVfx[effect.type] = vfx;
+    }
+
+    public void TakeDamageRaw(int damage)
+    {
+        damage = Mathf.Max(0, damage);
+        hp = Mathf.Clamp(hp - damage, 0, maxHp);
+
+        if (hp <= 0)
+        {
+            OnDied();
+            Destroy(gameObject);
+        }
     }
 
 }

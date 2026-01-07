@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
   m_Name: Magic
   m_EditorClassIdentifier: 
-  enemyName: 
+  enemyName: "\u9B54\u6CD5\u4F7F\u3044"
   icon: {fileID: 0}
-  prefab: {fileID: 0}
-  maxHp: 35
+  prefab: {fileID: 4039787223579819014, guid: a2292037aa443b447b29736051d773ca, type: 3}
+  maxHp: 34
   maxMp: 40
   at: 4
   def: 1

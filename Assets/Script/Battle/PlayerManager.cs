@@ -41,9 +41,6 @@ public class PlayerManager : UnitBase
             yield break;
         }
 
-        // 敵のタップイベントに登録（タップされたら OnEnemyTapped が呼ばれる）
-        targetEnemy.AddEventListenerOnTap(OnEnemyTapped); 
-
         // タップされるまで待つ（＝プレイヤー入力待ち）
         while (!acted)
         {
