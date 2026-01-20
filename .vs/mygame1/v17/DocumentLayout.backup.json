@@ -1,12 +1,171 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\mygame1\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|c:\\mygame1\\assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\skill\\damagerule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\skill\\damagerule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\battle\\unitbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\unitbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\body\\bodypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\body\\bodypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\body\\enemypartscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\body\\enemypartscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\body\\enemypartdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\body\\enemypartdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\body\\attackcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\body\\attackcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DamageRule.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Skill\\DamageRule.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Skill\\DamageRule.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Skill\\DamageRule.cs",
+              "RelativeToolTip": "Assets\\Script\\Skill\\DamageRule.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T11:47:05.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UnitBase.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\UnitBase.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\UnitBase.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Battle\\UnitBase.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\UnitBase.cs",
+              "ViewState": "AgIAAK0AAAAAAAAAAAAAAJMAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T11:41:26.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BattleManager.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\BattleManager.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\BattleManager.cs",
+              "ViewState": "AgIAANkAAAAAAAAAAAAAAOYAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T11:28:53.094Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EnemyManager.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\EnemyManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyManager.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Battle\\EnemyManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\EnemyManager.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAqwCsAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T11:00:52.083Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "BodyPart.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Body\\BodyPart.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Body\\BodyPart.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Body\\BodyPart.cs",
+              "RelativeToolTip": "Assets\\Script\\Body\\BodyPart.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAuwEIAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T10:55:33.81Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "EnemyPartsController.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Body\\EnemyPartsController.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Body\\EnemyPartsController.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Body\\EnemyPartsController.cs",
+              "RelativeToolTip": "Assets\\Script\\Body\\EnemyPartsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T10:55:30.198Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PlayerManager.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\PlayerManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Battle\\PlayerManager.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Battle\\PlayerManager.cs",
+              "RelativeToolTip": "Assets\\Script\\Battle\\PlayerManager.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAAwCsAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T11:42:50.696Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AttackContext.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Body\\AttackContext.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Body\\AttackContext.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Body\\AttackContext.cs",
+              "RelativeToolTip": "Assets\\Script\\Body\\AttackContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T10:55:34.715Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "EnemyPartData.cs",
+              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Body\\EnemyPartData.cs",
+              "RelativeDocumentMoniker": "Assets\\Script\\Body\\EnemyPartData.cs",
+              "ToolTip": "C:\\mygame1\\Assets\\Script\\Body\\EnemyPartData.cs",
+              "RelativeToolTip": "Assets\\Script\\Body\\EnemyPartData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-07T10:55:04.631Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

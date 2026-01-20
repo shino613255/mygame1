@@ -59,11 +59,16 @@ public class BodyPart : MonoBehaviour
         }
     }
 
-#if UNITY_EDITOR
+    private void OnBroken()
+    {
+        var enemy = GetComponentInParent<EnemyManager>();
+        if (enemy != null) return;
+
+        enemy.OnPartBroken(partType);
+    }
     private void OnValidate()
     {
         if (maxPartHp < 1) maxPartHp = 1;
         if (partType == PartType.Belly) canBreak = false;
     }
-#endif
 }

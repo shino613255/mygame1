@@ -41,8 +41,7 @@ public class BattleManager : MonoBehaviour
         enemy = enemymanager;
 
         if (mainCamera == null) mainCamera = Camera.main;
-        if (enemyParts == null) enemyParts = enemy.GetComponent<EnemyPartsController>();
-
+        
         enemyUI.SetupUI(enemy);
         playerUI.SetupUI(player);
 
@@ -70,34 +69,26 @@ public class BattleManager : MonoBehaviour
     private void TryPickBodyPart(Vector2 screenPos)
     {
         Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);
-        Debug.Log($"tap worldPos={worldPos}");
-
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
-
-        Debug.Log(hit.collider ? $"HIT: {hit.collider.name}" : "HIT: none");
 
         if (!hit.collider) return;
 
         var part = hit.collider.GetComponentInParent<BodyPart>();
-        Debug.Log(part ? $"PART: {part.partType}" : "PART: null");
-
         if (part == null) return;
 
         OnBodyPartTapped(part);
     }
-
-
     public void OnBodyPartTapped(BodyPart part)
     {
         Debug.Log($"OnBodyPartTapped called. isPlayerTurn={isPlayerTurn} waitingTap={waitingTap}");
 
         if (enemyParts == null)
-            enemyParts = enemy.GetComponent<EnemyPartsController>();
+            enemyParts = part.GetComponentInParent<EnemyPartsController>();
 
         if (enemyParts == null) return;
 
-        // ※デバッグが終わったら戻してOK
-        // if (!isPlayerTurn) return;
+        
+        if (!isPlayerTurn) return;
 
         waitingTap = false;
 
@@ -116,13 +107,9 @@ public class BattleManager : MonoBehaviour
 
         DialogTextManager.instance.SetScenarios(new[]
         {
-        $"{part.partType}を攻撃！\n本体＆部位に {damage} ダメージですわ！"
+        $"{part.partType}を攻撃！\n本体＆部位に {damage} ダメージ！"
     });
     }
-
-
-
-
 
     IEnumerator PlayerActByTap()
     {
@@ -172,10 +159,6 @@ public class BattleManager : MonoBehaviour
             yield return null;
         }
     }
-
-
-
-
     // BattleManager.cs に追加（クラス内のどこでもOK）
     private SkillData PickEnemySkillOrNormal()
     {
@@ -203,7 +186,6 @@ public class BattleManager : MonoBehaviour
         // 候補からランダムで1つ
         return pool[Random.Range(0, pool.Count)];
     }
-
     // 敵ターン：自動で攻撃
     // BattleManager.cs の EnemyActAuto をこれに丸ごと置き換え
     IEnumerator EnemyActAuto()
@@ -273,8 +255,6 @@ public class BattleManager : MonoBehaviour
         result.message
         });
     }
-
-
     IEnumerator EndBattle()
     {
         yield return new WaitForSeconds(2f); // 1秒待機

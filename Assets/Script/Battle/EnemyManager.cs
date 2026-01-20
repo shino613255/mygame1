@@ -2,16 +2,24 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
-
-// 敵全体を管理(ステータス/クリック検出)
 public class EnemyManager : UnitBase
-{    
+{
+    // 命中率低下の累積値
+    private float accuracyPenalty = 0f;
 
-    Action OnTapAction;
+    // 命中率低下を加算
+    public void ApplyAccuracyDown(float value)
+    {
+        accuracyPenalty += value;
+    }
+
+    // BattleManager などから参照する用
+    public float GetAccuracyPenalty()
+    {
+        return accuracyPenalty;
+    }
 
     public EnemyData data;
 
@@ -19,15 +27,27 @@ public class EnemyManager : UnitBase
     public GameObject damageEffect;
 
     private bool isBurning;
-    private bool isBroken;
-
     private const float BurnRate = 0.05f;
-    private const float AccuracyDown = 0.15f;
-
     public void ApplyBurn() => isBurning = true;
-    public void ApplyBreak() => isBroken = true;
+    public void OnPartBroken(PartType part)
+    {
+        switch (part)
+        {
+            case PartType.RightHand:
+            case PartType.LeftHand:
+                ApplyAccuracyDown(0.2f);
+                break;
 
-    public float GetAccuracyPenalty() => isBroken ? AccuracyDown : 0f;
+            case PartType.RightLeg:
+            case PartType.LeftLeg:
+                spd -= 1;
+                break;
+
+            case PartType.Face:
+                def -= 1;
+                break;
+        }
+    }
 
     public int TickBurnDamage()
     {
@@ -50,7 +70,6 @@ public class EnemyManager : UnitBase
         at = data.at;
         damageEffect = data.damageEffect;
     }
-
 
     // プレイヤーを攻撃（物理）
     public int Attack(PlayerManager player)

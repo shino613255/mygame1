@@ -14,7 +14,6 @@ public static class SkillExecutor
         public string message;  // 表示用
     }
 
-    // attacker/target は UnitBase を想定（あなたのプロジェクトに合わせて）
     // enemy部位タップに対応するため part を受け取る（不要なら BodyPart.Body でOK）
     public static Result Execute(UnitBase attacker, UnitBase target, SkillData skill, float targetEvasion = 0f)
     {
@@ -123,7 +122,7 @@ public static class SkillExecutor
         float chance = (skill.applyChance > 0f) ? skill.applyChance : skill.statusEffect.applyChance;
         if (Random.value > chance) return;
 
-        // いまは敵への Burn/Deficiency にだけ対応（あなたの EnemyManager 実装に合わせる）
+        // いまは敵への Burn/Deficiency にだけ対応（EnemyManager 実装に合わせる）
         if (target is EnemyManager em)
         {
             if (skill.statusEffect.type == StatusEffectType.Burn)
@@ -133,7 +132,7 @@ public static class SkillExecutor
             }
             else if (skill.statusEffect.type == StatusEffectType.Deficiency)
             {
-                em.ApplyBreak();
+                // 後で「部位破壊（PartType）」に置き換える
                 r.message += "\n欠損させた！";
             }
         }
