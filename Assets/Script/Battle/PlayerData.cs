@@ -1,5 +1,4 @@
 using System.Collections;
-// PlayerData.cs
 using System.Collections.Generic;
 using UnityEngine;
 

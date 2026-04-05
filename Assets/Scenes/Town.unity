@@ -668,6 +668,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 603641116555429020, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 603641116555429020, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 603641116555429020, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -440
+      objectReference: {fileID: 0}
     - target: {fileID: 2978782878563092908, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -752,6 +764,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DialogUICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 8987384664415581113, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -793,7 +809,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 100}
   m_SizeDelta: {x: 130, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1514346722

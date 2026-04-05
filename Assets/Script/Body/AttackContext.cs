@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct AttackContext
+public struct AttackContext     // 攻撃のコンテキスト（ダメージ計算に必要な情報をまとめる）
 {
     public float baseDamage;        // 攻撃の基本ダメ（通常攻撃/スキルで決まる）
     public float mainDamageRate;    // 本体に入る倍率（例: 1.0）

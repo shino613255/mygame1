@@ -1,2 +1,19 @@
 fileFormatVersion: 2
 guid: 29983a571e6bb6c4a85d6763ff85e718
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - enemyParts: {instanceID: 0}
+  - mainCamera: {instanceID: 0}
+  - playerDefaultSkill: {fileID: 11400000, guid: 6203574bf80b9954186844490dc91dda, type: 2}
+  - playerDamagePanel: {instanceID: 0}
+  - questManager: {instanceID: 0}
+  - playerUI: {instanceID: 0}
+  - enemyUI: {instanceID: 0}
+  - player: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

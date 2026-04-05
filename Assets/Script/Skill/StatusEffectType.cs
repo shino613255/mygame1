@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// StatusEffectType.cs
-public enum StatusEffectType
+public enum StatusEffectType        //ó‘ÔˆÙí‚Ìí—Ş
 {
     None,
     ice,

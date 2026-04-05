@@ -9,6 +9,7 @@ public class PlayerManager : UnitBase
     [Header("Skill")]
     public int skillMpCost = 10;        //スキル消費MP
     public bool useSkill = false;       //スキル使用フラグ（UIボタンで切り替える想定）
+    private SkillData currentSkill;        //（任意）現在選択中のスキルデータ（UIで選択させるなら必要）
 
     //魔法・スキルで攻撃
     public bool TrySkillAttack(EnemyManager enemy)
@@ -28,7 +29,7 @@ public class PlayerManager : UnitBase
 
     //SPD順で呼ばれた「自分のターン」
     public override IEnumerator Act()
-    {
+    {  
         Debug.Log("プレイヤーの行動（入力待ち）");
 
         acted = false;
@@ -60,6 +61,7 @@ public class PlayerManager : UnitBase
             // スキルONなら魔法（MP足りなければ通常攻撃にフォールバック）
             if (!TrySkillAttack(targetEnemy))
             {
+                BattleManager.Instance.PlaySkillEffect(currentSkill, targetEnemy.transform);
                 int dmg = MakePhysicalDamage();
                 targetEnemy.TakePhysical(dmg);
             }
@@ -74,20 +76,9 @@ public class PlayerManager : UnitBase
         acted = true; //ターン終了
     }
 
-    //（任意）テスト用：TキーでEXPを10追加（後で消す）
+    
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            AddExp(10);
-            Debug.Log($"EXP+10 → Lv:{level} / EXP:{exp}");
-        }
-
-        //（任意）テスト用：MキーでスキルON/OFF切り替え（後でUIに置き換える）
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            useSkill = !useSkill;
-            Debug.Log("スキル使用: " + useSkill);
-        }
+           
     }
 }

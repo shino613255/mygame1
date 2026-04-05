@@ -96,7 +96,7 @@ public class EnemyManager : UnitBase
         DOTween.Kill(transform);
     }
 
-    // BattleManager用（とりあえず未使用なら空でもOK）
+    // BattleManager用
     public override IEnumerator Act()
     {        
         yield break;

@@ -36,31 +36,7 @@ public abstract class UnitBase : MonoBehaviour
     [Header("Evasion")]
     [Range(0f, 1f)]
     public float evasionRate = 0f;  //回避率(今は0%にしてある)
-
-    // MPが足りるかの判定
-    public bool HasMp(int cost) 
-    {
-        return mp >= cost;
-    }
-
-    // MP消費（足りなければ消費しない）
-    public bool TrySpendMp(int cost) 
-    {
-        if (cost <= 0) return true;
-        if (mp < cost) return false;    // mpが足りない場合使用できない
-        mp -= cost;
-        return true;
-    }
-
-    // MP回復
-    public void RecoverMp(int amount) 
-    {
-        mp = Mathf.Min(maxMp, mp + Mathf.Max(0, amount));   // maxMpを超えず、0未満にならないように回復
-    }
-
     
-
-
     [Header("Level")]
     public int level = 1;                 
     public int maxLevel = 20;             
@@ -112,6 +88,27 @@ public abstract class UnitBase : MonoBehaviour
     public float critRate = 0.02f;        //　クリティカル率（2%）
     public float critMultiplier = 2f;     //　クリティカルの攻撃（2倍）
     public float skillMultiplier = 2f;  　// スキル倍率（2倍）
+
+    // MPが足りるかの判定
+    public bool HasMp(int cost)
+    {
+        return mp >= cost;
+    }
+
+    // MP消費（足りなければ消費しない）
+    public bool TrySpendMp(int cost)
+    {
+        if (cost <= 0) return true;
+        if (mp < cost) return false;    // mpが足りない場合使用できない
+        mp -= cost;
+        return true;
+    }
+
+    // MP回復
+    public void RecoverMp(int amount)
+    {
+        mp = Mathf.Min(maxMp, mp + Mathf.Max(0, amount));   // maxMpを超えず、0未満にならないように回復
+    }
 
     //死亡・生存判定
     public bool IsDead => hp <= 0;

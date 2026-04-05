@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-// SkillData.cs
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/Skill/Skill Data", fileName = "Skill_")]
@@ -17,6 +17,11 @@ public class SkillData : ScriptableObject
 
     [Header("種別")]
     public SkillType skillType = SkillType.Physical;
+
+    [Header("エフェクト")]
+    public GameObject effectPrefab;
+    public float effectDuration = 1.5f;
+    public Vector2 effectOffset;
 
     [Header("威力")]
     [Tooltip("固定加算ダメージ/回復（使わないなら0でOK）")]
@@ -41,6 +46,16 @@ public class SkillData : ScriptableObject
 
     [Header("対象")]
     public TargetType targetType = TargetType.Single;
+
+    [Header("部位攻撃設定")]
+    [Tooltip("このスキルで部位を選んで攻撃できるか")]
+    public bool canTargetPart = true;
+
+    [Tooltip("本体に入るダメージ倍率")]
+    public float mainDamageRate = 1f;
+
+    [Tooltip("部位に入るダメージ倍率")]
+    public float partDamageRate = 1f;
 
     [Header("追加効果（状態異常）")]
     public StatusEffectData statusEffect;      // 付与する状態

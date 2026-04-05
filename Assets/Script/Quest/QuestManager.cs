@@ -14,12 +14,12 @@ public class QuestManager : MonoBehaviour
     public SceneTransitionManager sceneTransitionManager;
     public GameObject QuestBG;
     // 敵に遭遇するテーブル：1なら遭遇しない、0なら遭遇
-    int[] encountTable = { 1, 1, 0, 1, 0, 1 };
+    int[] encountTable = { 1, 0, 0, 1, 0, 1 };
 
     int currentStage = 0; //現在のステージ進行度
     private void Start()
     {
-        // ★ダンジョン開始時：HP/MPを全回復（ここに入れる）
+        // ダンジョン開始時：HP/MPを全回復（ここに入れる）
         player.hp = player.maxHp;
         player.mp = player.maxMp;
         playerUI.UpdateUI(player); // UIがあるなら
@@ -30,8 +30,7 @@ public class QuestManager : MonoBehaviour
         DialogTextManager.instance.SetScenarios(new string[]
         {
             "クエストに出発した！",
-            "森の中を進んでいく。",
-            "突然、敵が現れた！"
+            "森の中を進んでいく。",            
         });
     }
 
@@ -43,7 +42,7 @@ public class QuestManager : MonoBehaviour
         });
         // 背景を大きく
         QuestBG.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 1.5f)
-            .OnComplete(() => QuestBG.transform.localScale = new Vector3(0.5f, 0.95f, 1));
+            .OnComplete(() => QuestBG.transform.localScale = new Vector3(0.93f, 0.93f, 1));
         // フェードアウト
         SpriteRenderer questBGRenderer = QuestBG.GetComponent<SpriteRenderer>();
         questBGRenderer.DOFade(0, 1.5f)
@@ -89,7 +88,7 @@ public class QuestManager : MonoBehaviour
     {
         DialogTextManager.instance.SetScenarios(new string[]
         {
-            "突然、敵が現れた！"
+            "敵が現れた！"
         });
         stageUI.HideButtons();
         GameObject enemyOgj = Instantiate(enemyPrefab);
@@ -111,9 +110,6 @@ public class QuestManager : MonoBehaviour
         });
         SoundManager.instance.StopBGM();
         SoundManager.instance.PlayButtonSE(2); // クエストクリアSE再生
-        // クエストクリアと表示
-        // 街に戻るボタン
         stageUI.ShowStageClear();
-        //sceneTransitionManager.LoadTo("Town");
     }
 }

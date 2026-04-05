@@ -1,19 +1,18 @@
 using System.Collections;
-// SkillCooldowns.cs（各ユニットに付ける：Player/EnemyどちらでもOK）
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillCooldowns : MonoBehaviour
 {
     private readonly Dictionary<SkillData, int> cd = new();
-
+    // スキル使用前に呼ぶ
     public bool IsReady(SkillData skill)
     {
         if (skill == null) return false;
         return !cd.TryGetValue(skill, out var t) || t <= 0;
     }
-
-    public void StartCooldown(SkillData skill)
+    // スキル使用後や行動終了後に呼ぶ
+    public void StartCooldown(SkillData skill)      
     {
         if (skill == null) return;
         cd[skill] = Mathf.Max(0, skill.cooldown);

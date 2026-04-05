@@ -14,7 +14,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private float enemyBaseAccuracy = 0.9f;
     [SerializeField] private float elementProcChance = 0.05f; // 5%
     [SerializeField] private SkillData playerDefaultSkill;
-
+    [SerializeField] private bool useDefaultSkill = false;
 
     public Transform playerDamagePanel;
     public QuestManager questManager;
@@ -33,7 +33,7 @@ public class BattleManager : MonoBehaviour
         enemyUI.gameObject.SetActive(false);
     }
 
-    public void Setup(EnemyManager enemymanager)
+    public void Setup(EnemyManager enemymanager)        
     {
         SoundManager.instance.PlayBGM("Battle");
         enemyUI.gameObject.SetActive(true);
@@ -54,19 +54,20 @@ public class BattleManager : MonoBehaviour
         if (!isPlayerTurn) return;
         if (!waitingTap) return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))        // タップ（クリック）されたとき
         {
             TryPickBodyPart(Input.mousePosition);
         }
 
-        // スマホ対応（任意）
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (Input.GetKeyDown(KeyCode.Q))        // Qキーでスキル使用切り替え
         {
-            TryPickBodyPart(Input.GetTouch(0).position);
+            useDefaultSkill = !useDefaultSkill;
+            Debug.Log("スキル使用切り替え: " + useDefaultSkill);
         }
+
     }
 
-    private void TryPickBodyPart(Vector2 screenPos)
+    private void TryPickBodyPart(Vector2 screenPos)     // 画面上の座標から敵の部位をピックする処理
     {
         Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
@@ -78,7 +79,7 @@ public class BattleManager : MonoBehaviour
 
         OnBodyPartTapped(part);
     }
-    public void OnBodyPartTapped(BodyPart part)
+    public void OnBodyPartTapped(BodyPart part)     // プレイヤーが敵の部位をタップしたときの処理
     {
         Debug.Log($"OnBodyPartTapped called. isPlayerTurn={isPlayerTurn} waitingTap={waitingTap}");
 
@@ -92,26 +93,121 @@ public class BattleManager : MonoBehaviour
 
         waitingTap = false;
 
-        // タップした部位を選択（ハイライトON/OFF）
+        // タップした部位を選択
         enemyParts.SetSelectedPart(part);
+        // 攻撃処理
+        AttackContext ctx;
 
-        // ダメージ計算（1回）
-        int damage = DamageRule.CalcPhysical(player.at, enemy.def, 1f, 1);
+        if (useDefaultSkill && playerDefaultSkill != null)
+        {
+            if (!player.TrySpendMp(playerDefaultSkill.mpCost))
+            {
+                Debug.Log("MPが足りませんわ！");
+                return;
+            }
 
-        // ★★ これが無いと絶対に減りませんわ ★★
-        enemyParts.ApplyMainAndPartDamage(damage);
+            ctx = CreateSkillAttackContext(playerDefaultSkill);
+        }
+        else
+        {
+            ctx = CreateNormalAttackContext();
+        }
+
+        if (ctx.sourceSkill != null)
+        {
+            PlaySkillEffect(ctx.sourceSkill, part.transform);
+        }
+        // ここで、攻撃の命中判定やダメージ計算を行う
+        var result = enemyParts.ApplyAttack(ctx);
 
         // UI更新
-        enemyUI.UpdateUI(enemy);
+        if (enemy != null)
+        {
+            enemyUI.UpdateUI(enemy);
+        }
         playerUI.UpdateUI(player);
+
+        string attackMessage;
+
+        if (ctx.sourceSkill != null)
+        {
+            attackMessage = $"{ctx.sourceSkill.skillName}！\n{part.GetPartNameJP()}に攻撃！";
+        }
+        else
+        {
+            attackMessage = $"{part.GetPartNameJP()}を攻撃！";
+        }
+
+        if (result.mainDamage > 0)
+        {
+            attackMessage += $"\n本体に{result.mainDamage}ダメージ！";
+        }
+
+        if (result.partDamage > 0)
+        {
+            attackMessage += $"\n部位に{result.partDamage}ダメージ！";
+        }
+        else if (part.IsBroken)
+        {
+            attackMessage += "\nその部位はもう破壊されていますわ！";
+        }
 
         DialogTextManager.instance.SetScenarios(new[]
         {
-        $"{part.partType}を攻撃！\n本体＆部位に {damage} ダメージ！"
-    });
+            attackMessage
+        });
+
+        Debug.Log(attackMessage);
+    }
+    private AttackContext CreateNormalAttackContext()       // 通常攻撃のAttackContextを作る用
+    {
+        return new AttackContext
+        {
+            baseDamage = DamageRule.CalcPhysical(player.at, enemy.def, 1f, 1),
+            mainDamageRate = 1f,
+            partDamageRate = 1f,
+            canApplyStatus = false,
+            sourceSkill = null
+        };
+    }
+    private AttackContext CreateSkillAttackContext(SkillData skill)     // スキル攻撃のAttackContextを作る用
+    {
+        return new AttackContext
+        {
+            baseDamage = DamageRule.CalcPhysical(player.at, enemy.def, skill.multiplier, 1) + skill.power,
+            mainDamageRate = skill.mainDamageRate,
+            partDamageRate = skill.partDamageRate,
+            canApplyStatus = skill.statusEffect != null,
+            sourceSkill = skill
+        };
     }
 
-    IEnumerator PlayerActByTap()
+    public static BattleManager Instance;
+
+    void Awake()
+    {
+        Instance = this;
+    }
+    public void PlaySkillEffect(SkillData skill, Transform target)
+    {        
+        if (skill == null) return;
+        if (skill.effectPrefab == null) return;
+        if (target == null) return;
+
+        Vector3 pos = target.position + (Vector3)skill.effectOffset;
+
+        GameObject effect = Instantiate(
+            skill.effectPrefab,
+            pos,
+            Quaternion.identity     // 回転は無し
+        );
+
+        var renderer = effect.GetComponentInChildren<Renderer>();
+        
+        Destroy(effect, skill.effectDuration);
+    }
+
+    IEnumerator PlayerActByTap()        // プレイヤーターン：タップ待ちで攻撃
     {
         isPlayerTurn = true;
         waitingTap = true;
@@ -124,10 +220,15 @@ public class BattleManager : MonoBehaviour
         // ★敵タップされるまで待つ
         while (waitingTap)
             yield return null;
+        // 攻撃のテキストメッセージを読める時間を作る
+        yield return new WaitForSeconds(1.5f);
 
         isPlayerTurn = false;
 
-        enemyUI.UpdateUI(enemy);
+        if (enemy != null)
+        {
+            enemyUI.UpdateUI(enemy);
+        }
 
         if (!enemy.IsAlive)
             yield return StartCoroutine(EndBattle());
@@ -158,9 +259,8 @@ public class BattleManager : MonoBehaviour
 
             yield return null;
         }
-    }
-    // BattleManager.cs に追加（クラス内のどこでもOK）
-    private SkillData PickEnemySkillOrNormal()
+    }   
+    private SkillData PickEnemySkillOrNormal()      // 敵のスキル（EnemyData.attackSkill と skillList）からランダムで1つ選ぶ。なければ null を返す（呼び出し側で通常攻撃にフォールバック）
     {
         if (enemy == null || enemy.data == null) return null;
 
@@ -263,7 +363,6 @@ public class BattleManager : MonoBehaviour
             "モンスターはやられた。"
         });
         enemyUI.gameObject.SetActive(false);
-        //Destroy(enemy.gameObject);
         SoundManager.instance.PlayBGM("Quest"); // クエストBGM再生
         questManager.EndBattle();
         Debug.Log("戦闘終了");

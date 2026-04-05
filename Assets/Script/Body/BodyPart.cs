@@ -22,6 +22,19 @@ public class BodyPart : MonoBehaviour
 
     public bool IsBroken => canBreak && partHp <= 0;
 
+    public string GetPartNameJP()
+    {
+        switch (partType)
+        {
+            case PartType.Face: return "顔";
+            case PartType.Belly: return "腹";
+            case PartType.RightHand: return "右手";
+            case PartType.LeftHand: return "左手";
+            case PartType.RightLeg: return "右脚";
+            case PartType.LeftLeg: return "左脚";
+            default: return partType.ToString();
+        }
+    }
     private void Awake()
     {
         partHp = maxPartHp;
@@ -39,30 +52,35 @@ public class BodyPart : MonoBehaviour
         highlight.enabled = selected;
     }
 
-    public void TakePartDamage(int damage)
+    public int TakePartDamage(int damage)
     {
-        if (damage <= 0) return;
-        if (IsBroken) return;
+        if (damage <= 0) return 0;
+        if (IsBroken) return 0;
 
+        int before = partHp;
         partHp -= damage;
 
         if (!canBreak)
         {
             if (partHp <= 0) partHp = 1;
-            return;
+            Debug.Log($"[BodyPart] {GetPartNameJP()} の部位HP: {before} → {partHp}");
+            return before - partHp;
         }
 
         if (partHp <= 0)
         {
             partHp = 0;
-            // OnBroken() 後で追加
+            OnBroken();
         }
+
+        Debug.Log($"[BodyPart] {GetPartNameJP()} の部位HP: {before} → {partHp}");
+        return before - partHp;
     }
 
     private void OnBroken()
     {
         var enemy = GetComponentInParent<EnemyManager>();
-        if (enemy != null) return;
+        if (enemy == null) return;
 
         enemy.OnPartBroken(partType);
     }

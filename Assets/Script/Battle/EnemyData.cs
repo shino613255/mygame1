@@ -29,7 +29,7 @@ public class EnemyData : ScriptableObject
 
     [Header("パフォーマンス / 演出")]
     public GameObject damageEffect;
-    public GameObject deathEffect; // 将来用（今は未使用でもOK）
+    public GameObject deathEffect; // 将来用
     public AudioClip hitSE;
     public AudioClip deathSE;
 

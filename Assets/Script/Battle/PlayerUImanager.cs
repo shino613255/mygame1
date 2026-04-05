@@ -6,17 +6,19 @@ using UnityEngine.UI;
 public class PlayerUIManager : MonoBehaviour
 {
     public Text hpText;
-    public Text atText;
+    public Text mpText;
 
+    // プレイヤーのステータスUIを初期化するときに呼び出す
     public void SetupUI(PlayerManager player)
     {
         hpText.text = string.Format("HP:{0}", player.hp);
-        atText.text = string.Format("AT:{0}", player.at);
+        mpText.text = string.Format("MP:{0}", player.mp);
     }
 
+    // プレイヤーのステータスUIが変化したときに呼び出す
     public void UpdateUI(PlayerManager player)
     {
         hpText.text = $"HP:{player.hp}";
-        atText.text = $"AT:{player.at}";
+        mpText.text = $"MP:{player.mp}";
     }
 }
