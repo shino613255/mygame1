@@ -61,7 +61,9 @@ public class PlayerManager : UnitBase
             // スキルONなら魔法（MP足りなければ通常攻撃にフォールバック）
             if (!TrySkillAttack(targetEnemy))
             {
-                BattleManager.Instance.PlaySkillEffect(currentSkill, targetEnemy.transform);
+                Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                clickPos.z = 0;
+                BattleManager.Instance.PlaySkillEffect(currentSkill, clickPos);
                 int dmg = MakePhysicalDamage();
                 targetEnemy.TakePhysical(dmg);
             }

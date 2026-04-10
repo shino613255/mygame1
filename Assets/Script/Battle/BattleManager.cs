@@ -115,7 +115,10 @@ public class BattleManager : MonoBehaviour
 
         if (ctx.sourceSkill != null)
         {
-            PlaySkillEffect(ctx.sourceSkill, part.transform);
+            Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            clickPos.z = 0f;
+
+            PlaySkillEffect(ctx.sourceSkill, clickPos);
         }
         // ここで、攻撃の命中判定やダメージ計算を行う
         var result = enemyParts.ApplyAttack(ctx);
@@ -188,13 +191,13 @@ public class BattleManager : MonoBehaviour
     {
         Instance = this;
     }
-    public void PlaySkillEffect(SkillData skill, Transform target)
+    public void PlaySkillEffect(SkillData skill, Vector3 worldPos)
     {        
         if (skill == null) return;
         if (skill.effectPrefab == null) return;
-        if (target == null) return;
 
-        Vector3 pos = target.position + (Vector3)skill.effectOffset;
+        Vector3 pos = worldPos + (Vector3)skill.effectOffset;
+        pos.z = 0f; // Zは0固定
 
         GameObject effect = Instantiate(
             skill.effectPrefab,
@@ -202,8 +205,13 @@ public class BattleManager : MonoBehaviour
             Quaternion.identity     // 回転は無し
         );
 
-        var renderer = effect.GetComponentInChildren<Renderer>();
-        
+        Renderer[] renderers = effect.GetComponentsInChildren<Renderer>(true);
+        foreach (var r in renderers)
+        {
+            r.sortingLayerName = "Default";
+            r.sortingOrder = 10;
+        }
+
         Destroy(effect, skill.effectDuration);
     }
 

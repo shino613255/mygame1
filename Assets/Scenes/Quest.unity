@@ -536,7 +536,7 @@ MonoBehaviour:
   team: 0
   maxHp: 100
   hp: 100
-  mp: 50
+  mp: 100
   maxMp: 50
   at: 30
   def: 5
