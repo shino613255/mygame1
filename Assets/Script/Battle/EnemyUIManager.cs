@@ -10,13 +10,13 @@ public class EnemyUIManager : MonoBehaviour
     // 敵のステータスUIを初期化するときに呼び出す
     public void SetupUI(EnemyManager enemy)
     {
-        hpText.text = $"HP:{enemy.hp}";
-        nameText.text = $"{enemy.data.enemyName}";
+        hpText.text = $"HP:{enemy.data.maxHp}";
+        nameText.text = enemy.data.enemyName;
     }
     // 敵のステータスが変化したときに呼び出す
     public void UpdateUI(EnemyManager enemy)
     {
         hpText.text = $"HP:{enemy.hp}";
-        nameText.text = $"{enemy.data.enemyName}";
+        nameText.text = enemy.data.enemyName;
     }
 }

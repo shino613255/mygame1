@@ -64,6 +64,7 @@
     <Compile Include="Assets\Script\Body\BodyPart.cs" />
     <Compile Include="Assets\Script\Town\TownManager.cs" />
     <Compile Include="Assets\Script\Skill\SkillCooldowns.cs" />
+    <Compile Include="Assets\Script\Battle\PlayerUIManager.cs" />
     <Compile Include="Assets\Script\Battle\EnemyData.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartsController.cs" />
     <Compile Include="Assets\Script\Skill\SkillType.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="Assets\Script\Skill\TargetType.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartData.cs" />
     <Compile Include="Assets\Script\DialogTextManager.cs" />
-    <Compile Include="Assets\Script\Battle\PlayerUImanager.cs" />
     <Compile Include="Assets\Script\Skill\DamageRule.cs" />
     <Compile Include="Assets\Script\Skill\StatusEffectData.cs" />
     <Compile Include="Assets\Script\Skill\SkillExecutor.cs" />

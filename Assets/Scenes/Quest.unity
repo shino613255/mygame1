@@ -1222,7 +1222,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3367841432249872769, guid: 8df646c252fca0e48997837cab6f51b3, type: 3}
       propertyPath: m_Volume
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3367841432249872769, guid: 8df646c252fca0e48997837cab6f51b3, type: 3}
       propertyPath: m_Resource
@@ -1351,7 +1351,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'HP : 100'
+  m_Text: 'HP : 1000'
 --- !u!222 &1069353103
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -9,17 +9,11 @@ public class PlayerData : ScriptableObject
     public string playerName;
 
     [Header("初期ステータス")]
-    public int startLevel = 1;
     public int startMaxHp = 100;
     public int startMaxMp = 30;
     public int startAt = 10;
     public int startDef = 5;
     public int startMag = 5;
-    public int startMdef = 3;
-    public int startSpd = 5;
-
-    [Header("成長テーブル（Lvごとの増加量）")]
-    public List<LevelGrowth> growthTable = new();
 
     [Header("初期スキル所持（ID管理）")]
     public List<int> startSkillIds = new();
@@ -36,6 +30,4 @@ public class LevelGrowth
     public int addAt;
     public int addDef;
     public int addMag;
-    public int addMdef;
-    public int addSpd;
 }

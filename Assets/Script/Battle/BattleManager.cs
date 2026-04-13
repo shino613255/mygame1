@@ -59,7 +59,7 @@ public class BattleManager : MonoBehaviour
             TryPickBodyPart(Input.mousePosition);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))        // Qキーでスキル使用切り替え
+        if (Input.GetKeyDown(KeyCode.S))        // Sキーでスキル使用切り替え
         {
             useDefaultSkill = !useDefaultSkill;
             Debug.Log("スキル使用切り替え: " + useDefaultSkill);
