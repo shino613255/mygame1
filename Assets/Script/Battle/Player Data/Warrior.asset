@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a39ee9c6ec8d4da019d5358f7419b, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: 
-  playerName: 
-  startLevel: 1
+  playerName: "\u6226\u58EB"
+  role: 0
   startMaxHp: 100
   startMaxMp: 30
   startAt: 10
-  startDef: 5
-  startMag: 5
-  startMdef: 3
-  startSpd: 5
-  growthTable: []
-  startSkillIds: 
-  startEquipItemIds: 
+  damageCutRate: 0.1
+  evasionRate: 0.05
+  skillSlotCount: 3
+  bodyEnhanceSlotCount: 2
+  uniquePassiveName: 
+  uniquePassiveDescription: 
+  startSkills: []

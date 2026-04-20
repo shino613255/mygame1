@@ -77,6 +77,7 @@
     <Compile Include="Assets\Script\Battle\BattleManager.cs" />
     <Compile Include="Assets\Script\Quest\StageUIManager.cs" />
     <Compile Include="Assets\Script\Skill\TargetType.cs" />
+    <Compile Include="Assets\Script\Town\PlayerSelectionManager.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartData.cs" />
     <Compile Include="Assets\Script\DialogTextManager.cs" />
     <Compile Include="Assets\Script\Battle\PlayerUImanager.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Assets\Script\SoundManager.cs" />
     <Compile Include="Assets\Script\Battle\EnemyManager.cs" />
     <Compile Include="Assets\Script\Skill\SkillData.cs" />
+    <Compile Include="Assets\Script\Town\PlayerSelectButton.cs" />
     <Compile Include="Assets\Script\Skill\ElementType.cs" />
     <Compile Include="Assets\Script\Battle\PlayerManager.cs" />
   </ItemGroup>

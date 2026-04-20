@@ -7,30 +7,28 @@ public class PlayerData : ScriptableObject
 {
     [Header("基本情報")]
     public string playerName;
+    public PlayerRole role;
 
     [Header("初期ステータス")]
     public int startMaxHp = 100;
     public int startMaxMp = 30;
     public int startAt = 10;
-    public int startDef = 5;
-    public int startMag = 5;
+    [Range(0f, 1f)] public float damageCutRate = 0.1f;
+    [Range(0f, 1f)] public float evasionRate = 0.05f;
+
+    [Header("役職用の枠")]
+    public int skillSlotCount = 3; // 役職ごとにスキルの枠を変えるための変数
+    public int bodyEnhanceSlotCount = 2; // 役職ごとに体強化の枠を変えるための変数
+
+    [Header("固有情報")]
+    public string uniquePassiveName;
+    [TextArea] public string uniquePassiveDescription;
 
     [Header("初期スキル所持（ID管理）")]
-    public List<int> startSkillIds = new();
+    public List<SkillData> startSkills = new();
 
-    [Header("初期装備（ID管理：後でItemDataに差し替え）")]
-    public List<int> startEquipItemIds = new();
 }
 
-[System.Serializable]
-public class LevelGrowth
-{
-    public int addHp;
-    public int addMp;
-    public int addAt;
-    public int addDef;
-    public int addMag;
-}
 public enum PlayerRole
 {
     Warrior,
