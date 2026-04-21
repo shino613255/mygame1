@@ -61,11 +61,11 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2023.2.22f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\Editor\BloomGraphDrawer.cs" />
-    <Compile Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\Editor\BloomEditor.cs" />
+    <Compile Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\Editor\BloomEditor.cs" />
+    <Compile Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\Editor\BloomGraphDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\Editor\KinoBloom.Editor.asmdef" />
+    <None Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\Editor\KinoBloom.Editor.asmdef" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

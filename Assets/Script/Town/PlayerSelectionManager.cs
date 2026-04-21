@@ -11,6 +11,7 @@ public class PlayerSelectionManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void SelectPlayer(PlayerData data)

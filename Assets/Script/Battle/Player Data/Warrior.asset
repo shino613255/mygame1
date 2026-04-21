@@ -15,12 +15,13 @@ MonoBehaviour:
   playerName: "\u6226\u58EB"
   role: 0
   startMaxHp: 100
-  startMaxMp: 30
-  startAt: 10
+  startMaxMp: 2
+  startAt: 50
   damageCutRate: 0.1
   evasionRate: 0.05
   skillSlotCount: 3
   bodyEnhanceSlotCount: 2
   uniquePassiveName: 
   uniquePassiveDescription: 
-  startSkills: []
+  startSkills:
+  - {fileID: 11400000, guid: 6203574bf80b9954186844490dc91dda, type: 2}

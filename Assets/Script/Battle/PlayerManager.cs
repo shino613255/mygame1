@@ -11,6 +11,21 @@ public class PlayerManager : UnitBase
     public bool useSkill = false;       //スキル使用フラグ（UIボタンで切り替える想定）
     private SkillData currentSkill;        //（任意）現在選択中のスキルデータ（UIで選択させるなら必要）
 
+    // PlayerManager.cs 内に追加
+    public void Setup(PlayerData data)
+    {
+        if (data == null) return;
+
+        // UnitBaseから継承しているステータス変数に、役職データを代入します
+        // ※変数名はご自身のUnitBaseでの定義に合わせて調整してください
+        this.maxHp = data.startMaxHp;
+        this.hp = data.startMaxHp;
+        this.maxMp = data.startMaxMp;
+        this.mp = data.startMaxMp;
+        this.at = data.startAt;
+
+        Debug.Log($"[完了] {data.playerName}のステータスを同期しましたわ！ (AT:{this.at})");
+    }
     //魔法・スキルで攻撃
     public bool TrySkillAttack(EnemyManager enemy)
     {

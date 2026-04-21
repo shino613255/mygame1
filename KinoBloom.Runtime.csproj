@@ -61,13 +61,13 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2023.2.22f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\Bloom.cs" />
+    <Compile Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\Bloom.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\Shader\Bloom.shader" />
-    <None Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\Shader\Bloom.cginc" />
-    <None Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\KinoBloom.Runtime.asmdef" />
-    <None Include="Assets\JMO Assets\motion\Demo Assets\Kino Bloom\Kino Bloom License.txt" />
+    <None Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\Shader\Bloom.shader" />
+    <None Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\Shader\Bloom.cginc" />
+    <None Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\KinoBloom.Runtime.asmdef" />
+    <None Include="Assets\Effect Assets\motion\Demo Assets\Kino Bloom\Kino Bloom License.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

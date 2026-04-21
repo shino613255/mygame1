@@ -21,8 +21,8 @@ public abstract class UnitBase : MonoBehaviour
     [Header("Stats")]
     public int maxHp = 100;
     public int hp = 100;
-    public int mp = 50;
-    public int maxMp = 50;
+    public int mp = 30;
+    public int maxMp = 30;
     public int at = 10;
     public int def = 5;
     public int mag = 10;

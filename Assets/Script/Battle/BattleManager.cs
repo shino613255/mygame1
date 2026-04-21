@@ -21,6 +21,7 @@ public class BattleManager : MonoBehaviour
     public PlayerUIManager playerUI;
     public EnemyUIManager enemyUI;
     public PlayerManager player;
+    public PlayerData playerData;
     EnemyManager enemy;
     private bool waitingTap;        // タップ待ち中か
     private bool isPlayerTurn;      // 今プレイヤーのターンか
@@ -31,6 +32,19 @@ public class BattleManager : MonoBehaviour
     private void Start()
     {
         enemyUI.gameObject.SetActive(false);
+        playerData = PlayerSelectionManager.Instance.selectedPlayer;
+
+        if (playerData != null && player != null)
+        {
+            // ここでPlayerManagerに「このデータを使って！」と指示を出します
+            player.Setup(playerData);
+
+            // スキルも役職のものに入れ替える
+            if (playerData.startSkills != null && playerData.startSkills.Count > 0)
+            {
+                playerDefaultSkill = playerData.startSkills[0];
+            }
+        }
     }
 
     public void Setup(EnemyManager enemymanager)        

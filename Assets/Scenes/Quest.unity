@@ -1480,13 +1480,14 @@ MonoBehaviour:
   playerBaseAccuracy: 0.9
   enemyBaseAccuracy: 0.9
   elementProcChance: 0.05
-  playerDefaultSkill: {fileID: 11400000, guid: 6203574bf80b9954186844490dc91dda, type: 2}
+  playerDefaultSkill: {fileID: 0}
   useDefaultSkill: 0
   playerDamagePanel: {fileID: 519420032}
   questManager: {fileID: 471562400}
   playerUI: {fileID: 1685071483}
   enemyUI: {fileID: 1738886357}
   player: {fileID: 540119328}
+  playerData: {fileID: 0}
 --- !u!4 &1136246651
 Transform:
   m_ObjectHideFlags: 0

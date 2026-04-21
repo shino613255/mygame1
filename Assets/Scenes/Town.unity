@@ -286,7 +286,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30AF\u30A8\u30B9\u30C8\u3078"
+  m_Text: "\u6226\u58EB"
 --- !u!222 &370337123
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -409,7 +409,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30AF\u30A8\u30B9\u30C8\u3078"
+  m_Text: "\u9B54\u6CD5\u4F7F\u3044"
 --- !u!222 &950805260
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1048,6 +1048,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1627387224}
+  - component: {fileID: 1627387225}
   m_Layer: 0
   m_Name: PlayerSelectionManager
   m_TagString: Untagged
@@ -1070,6 +1071,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1627387225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627387222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 445555e1f7db8b740a8083a92fd5c0fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedPlayer: {fileID: 0}
 --- !u!1 &1637686435
 GameObject:
   m_ObjectHideFlags: 0
@@ -1646,7 +1660,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30AF\u30A8\u30B9\u30C8\u3078"
+  m_Text: "\u30D0\u30FC\u30B5\u30FC\u30AB\u30FC"
 --- !u!222 &2048925384
 CanvasRenderer:
   m_ObjectHideFlags: 0
