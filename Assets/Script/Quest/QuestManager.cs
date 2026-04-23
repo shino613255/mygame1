@@ -19,9 +19,16 @@ public class QuestManager : MonoBehaviour
     int currentStage = 0; //現在のステージ進行度
     private void Start()
     {
-        // ダンジョン開始時：HP/MPを全回復（ここに入れる）
-        player.hp = player.maxHp;
-        player.mp = player.maxMp;
+        PlayerData data = PlayerSelectionManager.Instance.selectedPlayer;
+        if (data != null)
+        {
+            player.Setup(data);
+        }
+        else
+        {
+            Debug.LogError("プレイヤーデータが選択されていません！");
+        }
+
         playerUI.UpdateUI(player); // UIがあるなら
 
         // 進行度をUIに反映
