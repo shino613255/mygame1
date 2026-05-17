@@ -14,9 +14,9 @@ public class QuestManager : MonoBehaviour
     public SceneTransitionManager sceneTransitionManager;
     public GameObject QuestBG;
     // 敵に遭遇するテーブル：1なら遭遇しない、0なら遭遇
-    int[] encountTable = { 1, 0, 0, 1, 0, 1 };
+    int[] encountTable = { 1, 0, 0, 0, 1};
 
-    int currentStage = 0; //現在のステージ進行度
+    int currentStage = 0; //ステージ進行度
     private void Start()
     {
         PlayerData data = PlayerSelectionManager.Instance.selectedPlayer;
@@ -29,9 +29,9 @@ public class QuestManager : MonoBehaviour
             Debug.LogError("プレイヤーデータが選択されていません！");
         }
 
-        playerUI.UpdateUI(player); // UIがあるなら
+        playerUI.UpdateUI(player); 
 
-        // 進行度をUIに反映
+        // 進行度の反映
         stageUI.UpdateUI(currentStage);
 
         DialogTextManager.instance.SetScenarios(new string[]
@@ -47,25 +47,24 @@ public class QuestManager : MonoBehaviour
         {
             "周囲を探索している...",
         });
-        // 背景を大きく
+        // 背景
         QuestBG.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 1.5f)
             .OnComplete(() => QuestBG.transform.localScale = new Vector3(0.93f, 0.93f, 1));
         // フェードアウト
         SpriteRenderer questBGRenderer = QuestBG.GetComponent<SpriteRenderer>();
         questBGRenderer.DOFade(0, 1.5f)
             .OnComplete(() => questBGRenderer.DOFade(1, 0));
-        //1秒缶処理を待機する
+        //1秒缶の処理を待機する
         yield return new WaitForSeconds(1.5f);
         
         currentStage++;
-        // 進行度をUIに反映
+        // 進行度のUI
         stageUI.UpdateUI(currentStage);
 
         if (encountTable.Length <= currentStage)
         {
             Debug.Log("クエストクリア");
-            QuestClear();
-            // クリア処理
+            QuestClear();　// クリア処理
         }
         else if (encountTable[currentStage] == 0)
         {

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TitleManager : MonoBehaviour
 {
-    public void OnToTownButton() // タウンへ戻るボタンが押されたとき
+    public void OnToTownButton() // ボタンが押されたとき
     {
-        SoundManager.instance.PlayButtonSE(0); // ボタンSE再生
+        SoundManager.instance.PlayButtonSE(0); // SE再生
     }
 }

@@ -23,4 +23,5 @@ MonoBehaviour:
   bodyEnhanceSlotCount: 2
   uniquePassiveName: 
   uniquePassiveDescription: 
-  startSkills: []
+  startSkills:
+  - {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}

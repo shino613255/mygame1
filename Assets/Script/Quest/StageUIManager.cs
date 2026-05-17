@@ -11,12 +11,12 @@ public class StageUIManager : MonoBehaviour
     public GameObject toTownButton;
     public GameObject stageClearText;
 
-    private void Start()        // ステージクリア非表示            
+    private void Start()                    
     {
-        stageClearText.SetActive(false);
+        stageClearText.SetActive(false);　// ステージクリア非表示
     }
 
-    public void UpdateUI(int currentStage)      // ステージ番号の更新
+    public void UpdateUI(int currentStage)      // ステージ番号
     {
         stageText.text = string.Format("ステージ:{0}",currentStage+1);
     }

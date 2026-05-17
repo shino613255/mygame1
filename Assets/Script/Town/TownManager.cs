@@ -11,8 +11,8 @@ public class TownManager : MonoBehaviour
             "街に到着した。",           
         });
     }
-    public void OnToQuestButton() // タウンへ戻るボタンが押されたとき
+    public void OnToQuestButton() // ボタンが押されたとき
     {
-        SoundManager.instance.PlayButtonSE(0); // ボタンSE再生
+        SoundManager.instance.PlayButtonSE(0); // SE再生
     }
 }
