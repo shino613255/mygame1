@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\mygame1\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|c:\\mygame1\\assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\playermanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,20 +15,8 @@
       "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\player data\\playerdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\battlemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\quest\\questmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\quest\\questmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|c:\\mygame1\\assets\\script\\quest\\stageuimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\quest\\stageuimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|c:\\mygame1\\assets\\script\\dialogtextmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\dialogtextmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\battle\\unitbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -43,20 +35,8 @@
       "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemydata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\skill\\skilldata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\skill\\skilldata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\skill\\skillexecutor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\skill\\skillexecutor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\battle\\enemymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\skill\\statuseffectdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|solutionrelative:assets\\script\\skill\\statuseffectdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}|Assembly-CSharp.csproj|C:\\mygame1\\assets\\script\\body\\bodypart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -82,21 +62,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "StageUIManager.cs",
-              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Quest\\StageUIManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Script\\Quest\\StageUIManager.cs",
-              "ToolTip": "C:\\mygame1\\Assets\\Script\\Quest\\StageUIManager.cs",
-              "RelativeToolTip": "Assets\\Script\\Quest\\StageUIManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-07T05:12:36.306Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 3,
@@ -107,25 +74,24 @@
               "RelativeToolTip": "Assets\\Script\\Quest\\QuestManager.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-08T18:01:06.531Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-08T18:01:06.531Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "BattleManager.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\BattleManager.cs",
               "ToolTip": "C:\\mygame1\\Assets\\Script\\Battle\\BattleManager.cs",
               "RelativeToolTip": "Assets\\Script\\Battle\\BattleManager.cs",
-              "ViewState": "AgIAAFgAAAAAAAAAAAAAABcAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAE8AAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-08T16:28:04.261Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "PlayerData.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\Player Data\\PlayerData.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\Player Data\\PlayerData.cs",
@@ -133,12 +99,11 @@
               "RelativeToolTip": "Assets\\Script\\Battle\\Player Data\\PlayerData.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-14T09:32:57.149Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-14T09:32:57.149Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "PlayerManager.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\PlayerManager.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\PlayerManager.cs",
@@ -146,12 +111,11 @@
               "RelativeToolTip": "Assets\\Script\\Battle\\PlayerManager.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T19:08:38.165Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-09T19:08:38.165Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "PlayerUImanager.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\PlayerUIManager.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\PlayerUIManager.cs",
@@ -163,20 +127,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DialogTextManager.cs",
-              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\DialogTextManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Script\\DialogTextManager.cs",
-              "ToolTip": "C:\\mygame1\\Assets\\Script\\DialogTextManager.cs",
-              "RelativeToolTip": "Assets\\Script\\DialogTextManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T09:05:24.161Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
               "Title": "EnemyUIManager.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\EnemyUIManager.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyUIManager.cs",
@@ -188,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "UnitBase.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\UnitBase.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\UnitBase.cs",
@@ -200,7 +151,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "EnemyData.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\EnemyData.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyData.cs",
@@ -212,31 +163,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "SkillData.cs",
-              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Skill\\SkillData.cs",
-              "RelativeDocumentMoniker": "Assets\\Script\\Skill\\SkillData.cs",
-              "ToolTip": "C:\\mygame1\\Assets\\Script\\Skill\\SkillData.cs",
-              "RelativeToolTip": "Assets\\Script\\Skill\\SkillData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-08T16:17:25.571Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "SkillExecutor.cs",
-              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Skill\\SkillExecutor.cs",
-              "RelativeDocumentMoniker": "Assets\\Script\\Skill\\SkillExecutor.cs",
-              "ToolTip": "C:\\mygame1\\Assets\\Script\\Skill\\SkillExecutor.cs",
-              "RelativeToolTip": "Assets\\Script\\Skill\\SkillExecutor.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAIwAUAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-08T16:17:31.834Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 8,
               "Title": "EnemyManager.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Battle\\EnemyManager.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Battle\\EnemyManager.cs",
@@ -248,7 +175,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 9,
               "Title": "BodyPart.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Body\\BodyPart.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Body\\BodyPart.cs",
@@ -260,7 +187,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 10,
               "Title": "EnemyPartsController.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Body\\EnemyPartsController.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Body\\EnemyPartsController.cs",
@@ -272,19 +199,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "StatusEffectData.cs",
-              "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Skill\\StatusEffectData.cs",
-              "RelativeDocumentMoniker": "Assets\\Script\\Skill\\StatusEffectData.cs",
-              "ToolTip": "C:\\mygame1\\Assets\\Script\\Skill\\StatusEffectData.cs",
-              "RelativeToolTip": "Assets\\Script\\Skill\\StatusEffectData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-08T16:17:43.695Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 12,
               "Title": "AttackContext.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Body\\AttackContext.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Body\\AttackContext.cs",
@@ -296,7 +211,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 11,
               "Title": "ElementType.cs",
               "DocumentMoniker": "C:\\mygame1\\Assets\\Script\\Skill\\ElementType.cs",
               "RelativeDocumentMoniker": "Assets\\Script\\Skill\\ElementType.cs",

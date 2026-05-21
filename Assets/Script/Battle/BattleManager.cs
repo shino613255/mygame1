@@ -15,6 +15,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private float elementProcChance = 0.05f; // 5%
     [SerializeField] private SkillData playerDefaultSkill;
     [SerializeField] private bool useDefaultSkill = false;
+    [Header("UI References")]
+    [SerializeField] private GameObject skillSelectionPanel;    // スキル選択UI（
 
     public Transform playerDamagePanel;
     public QuestManager questManager;
@@ -68,17 +70,35 @@ public class BattleManager : MonoBehaviour
         if (!isPlayerTurn) return;
         if (!waitingTap) return;
 
-        if (Input.GetMouseButtonDown(0))        // タップ（クリック）されたとき
+        if (Input.GetKeyDown(KeyCode.S))        // Sキーでスキル使用切り替え
+        {
+            bool isActive = skillSelectionPanel.activeSelf;
+            useDefaultSkill = !useDefaultSkill;
+            skillSelectionPanel.SetActive(isActive);
+
+            // パネルが開いている間は、敵へのクリック（攻撃）を無効化する
+            waitingTap = !isActive;
+            Debug.Log("スキル使用切り替え: " + useDefaultSkill);
+        }
+
+        if (waitingTap && Input.GetMouseButtonDown(0))
         {
             TryPickBodyPart(Input.mousePosition);
         }
 
-        if (Input.GetKeyDown(KeyCode.S))        // Sキーでスキル使用切り替え
-        {
-            useDefaultSkill = !useDefaultSkill;
-            Debug.Log("スキル使用切り替え: " + useDefaultSkill);
-        }
+    }
 
+    public void OnSkillSelected(SkillData selectedSkill)
+    {
+        // 現在使うスキルを上書きする
+        playerDefaultSkill = selectedSkill;
+        useDefaultSkill = true; // スキル使用モードにする
+
+        // パネルを閉じて、敵へのタップ待ちに戻す
+        skillSelectionPanel.SetActive(false);
+        waitingTap = true;
+
+        Debug.Log($"スキル「{selectedSkill.skillName}」を選択しましたわ！");
     }
 
     private void TryPickBodyPart(Vector2 screenPos)     // 画面上の座標から敵の部位をピックする処理
