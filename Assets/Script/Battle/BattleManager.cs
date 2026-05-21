@@ -73,12 +73,14 @@ public class BattleManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))        // Sキーでスキル使用切り替え
         {
             bool isActive = skillSelectionPanel.activeSelf;
-            useDefaultSkill = !useDefaultSkill;
-            skillSelectionPanel.SetActive(isActive);
+            bool nextActive = !isActive;
+
+            skillSelectionPanel.SetActive(nextActive);
 
             // パネルが開いている間は、敵へのクリック（攻撃）を無効化する
             waitingTap = !isActive;
-            Debug.Log("スキル使用切り替え: " + useDefaultSkill);
+
+            Debug.Log("スキル選択パネル: " + nextActive);
         }
 
         if (waitingTap && Input.GetMouseButtonDown(0))
@@ -90,11 +92,15 @@ public class BattleManager : MonoBehaviour
 
     public void OnSkillSelected(SkillData selectedSkill)
     {
-        // 現在使うスキルを上書きする
+        if (selectedSkill == null) 
+        { 
+            Debug.Log("スキルが選択不可");
+            return;
+        }
         playerDefaultSkill = selectedSkill;
-        useDefaultSkill = true; // スキル使用モードにする
+        useDefaultSkill = true; // スキル使用モード
 
-        // パネルを閉じて、敵へのタップ待ちに戻す
+        // パネルを閉じる
         skillSelectionPanel.SetActive(false);
         waitingTap = true;
 
