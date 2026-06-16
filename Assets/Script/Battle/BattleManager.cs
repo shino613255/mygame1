@@ -33,6 +33,7 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        skillSelectionPanel.SetActive(false);
         enemyUI.gameObject.SetActive(false);
         playerData = PlayerSelectionManager.Instance.selectedPlayer;
 
@@ -72,6 +73,7 @@ public class BattleManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S))        // Sキーでスキル使用切り替え
         {
+            skillSelectionPanel.SetActive(true);
             bool isActive = skillSelectionPanel.activeSelf;
             bool nextActive = !isActive;
 
