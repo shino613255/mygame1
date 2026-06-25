@@ -1,11 +1,10 @@
- using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using System.Linq;
 using UnityEngine;
+using System.Collections;
+// PlayerとEnemyの戦闘を管理するクラスusing System.Collections;
+using System.Collections.Generic;
 
-
-// PlayerとEnemyの戦闘を管理するクラス
 public class BattleManager : MonoBehaviour
 {
     [SerializeField] private EnemyPartsController enemyParts;
@@ -68,28 +67,23 @@ public class BattleManager : MonoBehaviour
 
     private void Update()
     {
+
         if (!isPlayerTurn) return;
-        if (!waitingTap) return;
 
-        if (Input.GetKeyDown(KeyCode.S))        // Sキーでスキル使用切り替え
-        {
-            skillSelectionPanel.SetActive(true);
-            bool isActive = skillSelectionPanel.activeSelf;
-            bool nextActive = !isActive;
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    skillSelectionPanel.SetActive(!skillSelectionPanel.activeSelf);
+                    return;
+                }
 
-            skillSelectionPanel.SetActive(nextActive);
+                if (skillSelectionPanel.activeSelf) 
+                    return;
 
-            // パネルが開いている間は、敵へのクリック（攻撃）を無効化する
-            waitingTap = !isActive;
-
-            Debug.Log("スキル選択パネル: " + nextActive);
-        }
-
-        if (waitingTap && Input.GetMouseButtonDown(0))
-        {
-            TryPickBodyPart(Input.mousePosition);
-        }
-
+                if (Input.GetMouseButtonDown(0)) // 左クリックで攻撃対象を選択
+            {
+                TryPickBodyPart(Input.mousePosition);
+            }
+        
     }
 
     public void OnSkillSelected(SkillData selectedSkill)
@@ -121,6 +115,18 @@ public class BattleManager : MonoBehaviour
 
         OnBodyPartTapped(part);
     }
+    public void SelectPlayerSkill(SkillData skill)
+    {
+        if (skill == null) return;
+
+        playerDefaultSkill = skill;
+        useDefaultSkill = true;
+
+        skillSelectionPanel.SetActive(false);
+
+        Debug.Log("スキル「" + skill.skillName + "」を選択しました");
+    }
+
     public void OnBodyPartTapped(BodyPart part)     // プレイヤーが敵の部位をタップしたときの処理
     {
         Debug.Log($"OnBodyPartTapped called. isPlayerTurn={isPlayerTurn} waitingTap={waitingTap}");

@@ -1,17 +1,20 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
 public class PlayerManager : UnitBase
-{
-    private bool acted;                 //行動したか
-    private EnemyManager targetEnemy;   //今のターンのターゲット
+{ 
+    [Header("Skill Panel")]
+    [SerializeField] private SkillSlotUI[] skillSlots;
 
-    [Header("Skill")]
-    public int skillMpCost = 10;        //スキル消費MP
-    public bool useSkill = false;       //スキル使用フラグ（UIボタンで切り替える想定）
-    private SkillData currentSkill;        //（任意）現在選択中のスキルデータ（UIで選択させるなら必要）
+    private List<SkillData> currentSkills = new List<SkillData>();
+    private SkillData currentSkill;        //   現在選択中のスキルデータ(UIで選択させるなら必要)
+    private bool acted;                 //  行動したか
+    private EnemyManager targetEnemy;   //  今のターンのターゲット
 
-    // PlayerManager.cs 内に追加
+    public int skillMpCost = 10;        //  スキル消費MP
+    public bool useSkill = false;       //  スキル使用フラグ（UIボタンで切り替える想定)
+
     public void Setup(PlayerData data)
     {
         if (data == null) return;
@@ -24,8 +27,56 @@ public class PlayerManager : UnitBase
         this.mp = data.startMaxMp;
         this.at = data.startAt;
 
+
         Debug.Log($"[完了] {data.playerName}のステータスを同期しましたわ！ (AT:{this.at})");
+
+        currentSkills.Clear();
+
+        if (data.startSkills != null)
+        {
+            currentSkills.AddRange(data.startSkills);
+        }
+
+        RefreshSkillPanel(); // UIのスキルパネルを更新
+        Debug.Log("初期スキル数: " + currentSkills.Count);
     }
+
+    private void RefreshSkillPanel()
+    {
+        Debug.Log(skillSlots == null);
+        for (int i = 0; i < skillSlots.Length; i++)
+        {
+            if (i < currentSkills.Count)
+            {
+                skillSlots[i].SetSkill(currentSkills[i], this);
+            }
+            else
+            {
+                skillSlots[i].SetSkill(null, this);
+            }
+        }
+    }
+
+    public void SelectSkill(SkillData skill)
+    {
+        if (skill == null) return;
+
+        currentSkill = skill;
+        useSkill = true;
+
+        Debug.Log("スキル「" + skill.skillName + "」を選択しました");
+    }
+
+    public void AddSkill(SkillData skill)
+    {
+        if (skill == null) return;
+
+        currentSkills.Add(skill);
+        RefreshSkillPanel();
+
+        Debug.Log("スキル「" + skill.skillName + "」を習得しました");
+    }
+
     //魔法・スキルで攻撃
     public bool TrySkillAttack(EnemyManager enemy)
     {

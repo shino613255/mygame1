@@ -10,11 +10,11 @@ public class PlayerData : ScriptableObject
     public PlayerRole role;
 
     [Header("初期ステータス")]
-    public int startMaxHp = 100;
-    public int startMaxMp = 30;
-    public int startAt = 10;
-    [Range(0f, 1f)] public float damageCutRate = 0.1f;
-    [Range(0f, 1f)] public float evasionRate = 0.05f;
+    public int startMaxHp;
+    public int startMaxMp;
+    public int startAt;
+    [Range(0f, 1f)] public float damageCutRate;
+    [Range(0f, 1f)] public float evasionRate;
 
     [Header("役職用の枠")]
     public int skillSlotCount = 3; // 役職ごとにスキルの枠を変えるための変数

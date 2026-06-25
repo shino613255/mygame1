@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
   m_Name: Skill_Fire
   m_EditorClassIdentifier: 
-  skillName: "\u706B"
+  skillName: Fire
   description: 
   icon: {fileID: 0}
   mpCost: 5
