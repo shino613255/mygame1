@@ -7,14 +7,14 @@ public class StatusEffectData : ScriptableObject
 {
     public StatusEffectType type = StatusEffectType.None;
 
-    [Min(1)] public int durationTurns = 1;
-    [Range(0f, 1f)] public float applyChance = 0.05f;
+    [Min(1)] public int durationTurns = 1;      
+    [Range(0f, 1f)] public float applyChance = 0.05f;   
 
     // Burn 用
-    [Range(0f, 1f)] public float tickHpRate = 0.05f;
+    [Range(0f, 1f)] public float tickHpRate = 0.05f;    
     public int tickDamageFlat = 0;
 
-    // Deficiency 用
+    // frozen 用
     [Range(0f, 1f)] public float statDownRate = 0.15f;
 
     [Header("VFX")]

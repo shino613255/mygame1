@@ -38,4 +38,7 @@ public class EnemyData : ScriptableObject
     public SkillData attackSkill;                 // 通常攻撃（保険）
     public List<SkillData> skillList = new();    // ここに最大4つ入れる（Inspector）
 
+    [Header("敵の種類")]
+    public EnemyType enemyType = EnemyType.Normal;
+
 }

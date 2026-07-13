@@ -29,6 +29,6 @@ public class SkillSlotUI : MonoBehaviour
     {
         if (skillData == null) return;
 
-        BattleManager.Instance.SelectPlayerSkill(skillData);
+        BattleManager.Instance.OnSkillSelected(skillData);
     }
 }

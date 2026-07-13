@@ -17,12 +17,12 @@ MonoBehaviour:
   icon: {fileID: 0}
   mpCost: 5
   cooldown: 0
-  skillType: 0
+  skillType: 1
   effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
   effectDuration: 1.5
   effectOffset: {x: 0, y: 0}
   power: 0
-  multiplier: 1
+  multiplier: 20
   accuracy: 1
   canCrit: 1
   critBonus: 0

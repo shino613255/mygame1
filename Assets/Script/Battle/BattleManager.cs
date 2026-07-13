@@ -1,9 +1,10 @@
 using DG.Tweening;
-using System.Linq;
-using UnityEngine;
 using System.Collections;
 // PlayerとEnemyの戦闘を管理するクラスusing System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
@@ -90,15 +91,16 @@ public class BattleManager : MonoBehaviour
     {
         if (selectedSkill == null) 
         { 
-            Debug.Log("スキルが選択不可");
+            Debug.LogWarning
+                ("選択されたスキルがnullですわ！");
             return;
         }
+
         playerDefaultSkill = selectedSkill;
         useDefaultSkill = true; // スキル使用モード
+        waitingTap = true;      // タップ待ちに戻す
 
-        // パネルを閉じる
-        skillSelectionPanel.SetActive(false);
-        waitingTap = true;
+        skillSelectionPanel.SetActive(false);   // スキル選択UIを閉じる        
 
         Debug.Log($"スキル「{selectedSkill.skillName}」を選択しましたわ！");
     }
@@ -115,31 +117,20 @@ public class BattleManager : MonoBehaviour
 
         OnBodyPartTapped(part);
     }
-    public void SelectPlayerSkill(SkillData skill)
-    {
-        if (skill == null) return;
-
-        playerDefaultSkill = skill;
-        useDefaultSkill = true;
-
-        skillSelectionPanel.SetActive(false);
-
-        Debug.Log("スキル「" + skill.skillName + "」を選択しました");
-    }
 
     public void OnBodyPartTapped(BodyPart part)     // プレイヤーが敵の部位をタップしたときの処理
     {
-        Debug.Log($"OnBodyPartTapped called. isPlayerTurn={isPlayerTurn} waitingTap={waitingTap}");
+        Debug.Log(
+            $"OnBodyPartTapped called. "+
+            $"isPlayerTurn={isPlayerTurn} waitingTap={waitingTap}");
+
+        if (enemyParts == null) return;        
+        if (!isPlayerTurn) return;
 
         if (enemyParts == null)
             enemyParts = part.GetComponentInParent<EnemyPartsController>();
 
         if (enemyParts == null) return;
-
-        
-        if (!isPlayerTurn) return;
-
-        waitingTap = false;
 
         // タップした部位を選択
         enemyParts.SetSelectedPart(part);
@@ -161,6 +152,8 @@ public class BattleManager : MonoBehaviour
             ctx = CreateNormalAttackContext();
         }
 
+        waitingTap = false;
+
         if (ctx.sourceSkill != null)
         {
             Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -168,8 +161,15 @@ public class BattleManager : MonoBehaviour
 
             PlaySkillEffect(ctx.sourceSkill, clickPos);
         }
+
         // ここで、攻撃の命中判定やダメージ計算を行う
         var result = enemyParts.ApplyAttack(ctx);
+
+        if(useDefaultSkill) // スキル使用後は通常攻撃に戻す
+        {
+            useDefaultSkill = false;
+            playerDefaultSkill = null;
+        }
 
         // UI更新
         if (enemy != null)
@@ -210,6 +210,7 @@ public class BattleManager : MonoBehaviour
 
         Debug.Log(attackMessage);
     }
+
     private AttackContext CreateNormalAttackContext()       // 通常攻撃のAttackContextを作る用
     {
         return new AttackContext
@@ -225,7 +226,12 @@ public class BattleManager : MonoBehaviour
     {
         return new AttackContext
         {
-            baseDamage = DamageRule.CalcPhysical(player.at, enemy.def, skill.multiplier, 1) + skill.power,
+            baseDamage = DamageRule.CalcPhysical(
+                player.at, 
+                enemy.def, 
+                skill.multiplier,   // スキル倍率を反映
+                1   // 1部位攻撃想定
+                ) + skill.power,
             mainDamageRate = skill.mainDamageRate,
             partDamageRate = skill.partDamageRate,
             canApplyStatus = skill.statusEffect != null,

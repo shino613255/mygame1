@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static EnemyData;
 
 public class EnemyManager : UnitBase
 {
@@ -27,8 +28,16 @@ public class EnemyManager : UnitBase
     public GameObject damageEffect;
 
     private bool isBurning;
-    private const float BurnRate = 0.05f;
-    public void ApplyBurn() => isBurning = true;
+    private int remainingBurnTurns;
+
+    private const int BurnDurating = 3;   
+    public void ApplyBurn()
+    {
+        isBurning = true;
+        remainingBurnTurns = BurnDurating;
+
+        Debug.Log($"火傷状態になった！ 残りターン: {remainingBurnTurns}");
+    }   
     public void OnPartBroken(PartType part)
     {
         switch (part)
@@ -52,9 +61,57 @@ public class EnemyManager : UnitBase
     public int TickBurnDamage()
     {
         if (!isBurning) return 0;
-        int dmg = Mathf.Max(1, Mathf.RoundToInt(maxHp * BurnRate));
-        TakePhysical(dmg);
-        return dmg;
+
+        float burnRate;
+
+        if (data == null)
+        {
+            Debug.LogError("EnemyDataが設定されていません");
+            return 0;
+        }
+
+        switch (data.enemyType)
+        {
+            case EnemyType.Boss:
+                burnRate = 0.02f;
+                break;
+
+            case EnemyType.Reinforced:
+                burnRate = 0.03f;
+                break;
+
+            case EnemyType.Normal:
+            default:
+                burnRate = 0.05f;
+                break;
+        }
+
+        int damage = 
+            Mathf.FloorToInt(maxHp * burnRate);
+
+        damage =Mathf.Max(1, damage);
+
+        TakeDamageRaw(damage);
+        
+        remainingBurnTurns--;
+
+        Debug.Log(
+            $"火傷ダメージ: {damage} 残りターン: {remainingBurnTurns}"
+        );
+
+        if (remainingBurnTurns <= 0)
+        {
+            RemoveBurn();
+        }
+
+        return damage;
+    }
+    private void RemoveBurn()
+    {
+        isBurning = false;
+        remainingBurnTurns = 0;
+
+        Debug.Log("火傷状態が解除されました");
     }
     private void Start()
     {

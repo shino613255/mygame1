@@ -116,34 +116,6 @@ public class PlayerManager : UnitBase
 
         yield break;
     }
-
-    //ここを追加：敵がタップされた時に実行（ここで攻撃→ターン終了）
-    private void OnEnemyTapped()
-    {
-        if (acted) return; //二重入力防止
-
-        if (useSkill)
-        {
-            // スキルONなら魔法（MP足りなければ通常攻撃にフォールバック）
-            if (!TrySkillAttack(targetEnemy))
-            {
-                Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                clickPos.z = 0;
-                BattleManager.Instance.PlaySkillEffect(currentSkill, clickPos);
-                int dmg = MakePhysicalDamage();
-                targetEnemy.TakePhysical(dmg);
-            }
-        }
-        else
-        {
-            // 通常攻撃
-            int dmg = MakePhysicalDamage();
-            targetEnemy.TakePhysical(dmg);
-        }
-
-        acted = true; //ターン終了
-    }
-
     
     void Update()
     {

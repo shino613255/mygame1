@@ -6,7 +6,6 @@ public enum StatusEffectType        //ó‘ÔˆÙí‚Ìí—Ş
 {
     None,
     ice,
-    rock,
     Burn,
     Deficiency
 }
