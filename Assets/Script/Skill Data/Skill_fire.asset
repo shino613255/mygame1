@@ -18,11 +18,11 @@ MonoBehaviour:
   mpCost: 5
   cooldown: 0
   skillType: 1
-  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
+  effectPrefab: {fileID: 725748389856807714, guid: 2959f07ec20e2e745a82db444708ecbd, type: 3}
   effectDuration: 1.5
   effectOffset: {x: 0, y: 0}
   power: 0
-  multiplier: 20
+  multiplier: 2
   accuracy: 1
   canCrit: 1
   critBonus: 0
@@ -31,6 +31,6 @@ MonoBehaviour:
   canTargetPart: 1
   mainDamageRate: 1
   partDamageRate: 1
-  statusEffect: {fileID: 0}
-  applyChance: 0
-  overrideDurationTurns: 0
+  statusEffect: {fileID: 11400000, guid: 440da4452168a284d891e5988c1740c1, type: 2}
+  applyChance: 1
+  overrideDurationTurns: 3

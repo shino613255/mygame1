@@ -124,13 +124,17 @@ public class BattleManager : MonoBehaviour
             $"OnBodyPartTapped called. "+
             $"isPlayerTurn={isPlayerTurn} waitingTap={waitingTap}");
 
-        if (enemyParts == null) return;        
+        if (part == null) return;        
         if (!isPlayerTurn) return;
 
-        if (enemyParts == null)
             enemyParts = part.GetComponentInParent<EnemyPartsController>();
 
-        if (enemyParts == null) return;
+        if (enemyParts == null)
+        {
+            Debug.LogWarning(
+                $"部位「{part.GetPartNameJP()}」の親にEnemyPartsControllerが見つかりませんでしたわ！");
+            return;
+        }
 
         // タップした部位を選択
         enemyParts.SetSelectedPart(part);
@@ -165,7 +169,36 @@ public class BattleManager : MonoBehaviour
         // ここで、攻撃の命中判定やダメージ計算を行う
         var result = enemyParts.ApplyAttack(ctx);
 
-        if(useDefaultSkill) // スキル使用後は通常攻撃に戻す
+        if (
+            ctx.sourceSkill != null &&
+            ctx.sourceSkill.statusEffect != null &&
+            enemy != null &&
+            enemy.IsAlive
+)
+        {
+            StatusEffectData effect =
+                ctx.sourceSkill.statusEffect;
+
+            float chance =
+                ctx.sourceSkill.applyChance > 0f
+                    ? ctx.sourceSkill.applyChance
+                    : effect.applyChance;
+
+            if (Random.value <= chance)
+            {
+                int duration =
+                    ctx.sourceSkill.overrideDurationTurns > 0
+                        ? ctx.sourceSkill.overrideDurationTurns
+                        : effect.durationTurns;
+
+                if (effect.type == StatusEffectType.Burn)
+                {
+                    enemy.ApplyBurn(effect, duration);
+                }
+            }
+        }
+
+        if (useDefaultSkill) // スキル使用後は通常攻撃に戻す
         {
             useDefaultSkill = false;
             playerDefaultSkill = null;
@@ -364,8 +397,13 @@ public class BattleManager : MonoBehaviour
             $"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた"
             });
 
-            if (enemy == null || !enemy.IsAlive) yield break;
             yield return new WaitForSeconds(0.5f);
+
+            if (enemy == null || !enemy.IsAlive)
+            {
+                yield return StartCoroutine(EndBattle());
+                yield break;
+            }
         }
 
         yield return new WaitForSeconds(0.8f);

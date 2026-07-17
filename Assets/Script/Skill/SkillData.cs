@@ -59,6 +59,10 @@ public class SkillData : ScriptableObject
 
     [Header("追加効果（状態異常）")]
     public StatusEffectData statusEffect;      // 付与する状態
-    [Range(0f, 1f)] public float applyChance = 0.0f;  // 付与確率（スキル側で上書き）
-    [Min(0)] public int overrideDurationTurns = 0;     // 0ならStatusEffectDataのdurationを使う
+
+    [Range(0f, 1f)] 
+    public float applyChance = 0.0f;  // 付与確率（スキル側で上書き）
+
+    [Min(0)] 
+    public int overrideDurationTurns = 0;     // 0ならStatusEffectDataのdurationを使う
 }

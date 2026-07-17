@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
+
 // SkillExecutor.cs（スキルを実行する本体）
 using UnityEngine;
 
@@ -127,7 +129,7 @@ public static class SkillExecutor
         {
             if (skill.statusEffect.type == StatusEffectType.Burn)
             {
-                em.ApplyBurn();                
+                em.ApplyBurn(skill.statusEffect, skill.overrideDurationTurns);                
                 r.message += "\n火傷を与えた！";
             }
             else if (skill.statusEffect.type == StatusEffectType.Deficiency)

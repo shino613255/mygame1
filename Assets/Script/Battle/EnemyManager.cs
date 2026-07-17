@@ -29,12 +29,42 @@ public class EnemyManager : UnitBase
 
     private bool isBurning;
     private int remainingBurnTurns;
+    private GameObject burnVfxInstance;
 
-    private const int BurnDurating = 3;   
-    public void ApplyBurn()
+    public void ApplyBurn(StatusEffectData effect, int duration)
     {
+        Debug.Log(
+        $"ApplyBurn called / " +
+        $"effect={(effect != null ? effect.name : "null")} / " +
+        $"vfx={(effect != null && effect.vfxPrefab != null ? effect.vfxPrefab.name : "null")} / " +
+        $"currentInstance={(burnVfxInstance != null ? burnVfxInstance.name : "null")}"
+    );
+
+        if (effect == null)
+        {
+            Debug.LogWarning("StatusEffectData が null です。火傷状態を適用できませんわ。");
+            return;
+        }
+
         isBurning = true;
-        remainingBurnTurns = BurnDurating;
+
+        remainingBurnTurns = 
+            duration > 0
+                ? duration
+                : effect.durationTurns;
+
+        if (burnVfxInstance == null && effect.vfxPrefab != null)
+        {
+            burnVfxInstance = Instantiate(
+                effect.vfxPrefab,
+                transform
+            );
+
+            burnVfxInstance.transform.localPosition = Vector3.zero;
+            burnVfxInstance.transform.localRotation = Quaternion.identity;
+            burnVfxInstance.transform.localScale = Vector3.one;
+            Debug.Log($"火傷VFXを生成しましたわ:{burnVfxInstance.name}");
+        }
 
         Debug.Log($"火傷状態になった！ 残りターン: {remainingBurnTurns}");
     }   
@@ -62,13 +92,13 @@ public class EnemyManager : UnitBase
     {
         if (!isBurning) return 0;
 
-        float burnRate;
-
         if (data == null)
         {
             Debug.LogError("EnemyDataが設定されていません");
             return 0;
         }
+
+        float burnRate;
 
         switch (data.enemyType)
         {
@@ -110,6 +140,12 @@ public class EnemyManager : UnitBase
     {
         isBurning = false;
         remainingBurnTurns = 0;
+
+        if (burnVfxInstance != null)
+        {
+            Destroy(burnVfxInstance);
+            burnVfxInstance = null;
+        }
 
         Debug.Log("火傷状態が解除されました");
     }
