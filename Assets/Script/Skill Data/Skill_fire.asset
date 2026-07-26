@@ -26,7 +26,7 @@ MonoBehaviour:
   accuracy: 1
   canCrit: 1
   critBonus: 0
-  element: 0
+  element: 1
   targetType: 0
   canTargetPart: 1
   mainDamageRate: 1

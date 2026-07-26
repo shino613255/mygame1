@@ -65,9 +65,9 @@
     <Compile Include="Assets\Script\Town\TownManager.cs" />
     <Compile Include="Assets\Script\Skill\SkillCooldowns.cs" />
     <Compile Include="Assets\Script\Battle\PlayerUIManager.cs" />
-    <Compile Include="Assets\Script\Battle\EnemyData.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartsController.cs" />
     <Compile Include="Assets\Script\Skill\SkillSlotUI.cs" />
+    <Compile Include="Assets\Script\Enemy Data\EnemyData.cs" />
     <Compile Include="Assets\Script\Skill\SkillType.cs" />
     <Compile Include="Assets\Script\Battle\EnemyUIManager.cs" />
     <Compile Include="Assets\Script\Battle\Player Data\PlayerData.cs" />

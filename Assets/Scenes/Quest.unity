@@ -2056,7 +2056,7 @@ MonoBehaviour:
   playerDefaultSkill: {fileID: 0}
   useDefaultSkill: 0
   skillSelectionPanel: {fileID: 2059511733}
-  playerDamagePanel: {fileID: 519420032}
+  screenShakeTarget: {fileID: 519420032}
   questManager: {fileID: 471562400}
   playerUI: {fileID: 1685071483}
   enemyUI: {fileID: 1738886357}

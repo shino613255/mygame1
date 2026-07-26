@@ -117,6 +117,7 @@ public static class SkillExecutor
         return r;
     }
 
+
     private static void ApplyStatusEffect(UnitBase attacker, UnitBase target, SkillData skill, ref Result r)
     {
         if (skill.statusEffect == null) return;
