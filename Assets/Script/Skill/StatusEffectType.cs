@@ -5,7 +5,7 @@ using UnityEngine;
 public enum StatusEffectType        //ó‘ÔˆÙí‚Ìí—Ş
 {
     None,
-    ice,
+    Frozen,
     Burn,
     Deficiency
 }

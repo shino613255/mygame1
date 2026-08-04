@@ -7,48 +7,65 @@ public class PlayerManager : UnitBase
     [Header("Skill Panel")]
     [SerializeField] private SkillSlotUI[] skillSlots;
 
-    private List<SkillData> currentSkills = new List<SkillData>();
-    private SkillData currentSkill;        //   現在選択中のスキルデータ(UIで選択させるなら必要)
-    private bool acted;                 //  行動したか
-    private EnemyManager targetEnemy;   //  今のターンのターゲット
-
-    public int skillMpCost = 10;        //  スキル消費MP
-    public bool useSkill = false;       //  スキル使用フラグ（UIボタンで切り替える想定)
+    private List<SkillData> currentSkills = new List<SkillData>();                                          // スキルスロットの中身を保持するリスト
+    private SkillData currentSkill;                                                                         // 選択されているスキル
+    private bool acted;                                                                                     // 行動済みフラグ
+    private EnemyManager targetEnemy;                                                                       // 今のターンのターゲット
+    public bool useSkill = false;                                                                           //  スキル使用フラグ
 
     public void Setup(PlayerData data)
     {
-        if (data == null) return;
+        if (data == null) return;                                                                           // nullの場合何もしない
 
-        // UnitBaseから継承しているステータス変数に、役職データを代入します
-        // ※変数名はご自身のUnitBaseでの定義に合わせて調整してください
         this.maxHp = data.startMaxHp;
         this.hp = data.startMaxHp;
         this.maxMp = data.startMaxMp;
         this.mp = data.startMaxMp;
         this.at = data.startAt;
+        this.def = data.startDef;
+        this.mdef = data.startMdef;
 
 
         Debug.Log($"[完了] {data.playerName}のステータスを同期しましたわ！ (AT:{this.at})");
 
-        currentSkills.Clear();
+        currentSkills.Clear();                                                                              // 現在のスキルリストを初期化        
 
-        if (data.startSkills != null)
+        if (data.startSkills != null)                                                                       // スタートスキルがnullでない場合
         {
-            currentSkills.AddRange(data.startSkills);
+            currentSkills.AddRange(data.startSkills);                                                       // スタートスキルを現在のスキルリストに追加
         }
 
-        RefreshSkillPanel(); // UIのスキルパネルを更新
+        RefreshSkillPanel();                                                                                // UIのスキルパネルを更新
         Debug.Log("初期スキル数: " + currentSkills.Count);
+    }  
+
+    public void SelectSkill(SkillData skill)
+    {
+        if (skill == null) return;                                                                          // nullの場合何もしない        
+
+        currentSkill = skill;                                                                               // 選択されたスキルをcurrentSkillに設定
+        useSkill = true;
+
+        Debug.Log("スキル「" + skill.skillName + "」を選択しました");
     }
 
-    private void RefreshSkillPanel()
+    public void AddSkill(SkillData skill)
+    {
+        if (skill == null) return;                                                                              // nullの場合何もしない
+
+        currentSkills.Add(skill);                                                                               // スキルリストに追加
+        RefreshSkillPanel();                                                                                    // UIのスキルパネルを更新
+
+        Debug.Log("スキル「" + skill.skillName + "」を習得しました");
+    }
+    private void RefreshSkillPanel()                                                                        // スキルパネルのUIを更新するメソッド
     {
         Debug.Log(skillSlots == null);
         for (int i = 0; i < skillSlots.Length; i++)
         {
             if (i < currentSkills.Count)
             {
-                skillSlots[i].SetSkill(currentSkills[i], this);
+                skillSlots[i].SetSkill(currentSkills[i], this);                                             // スキルスロットにスキルをセット
             }
             else
             {
@@ -57,61 +74,37 @@ public class PlayerManager : UnitBase
         }
     }
 
-    public void SelectSkill(SkillData skill)
-    {
-        if (skill == null) return;
-
-        currentSkill = skill;
-        useSkill = true;
-
-        Debug.Log("スキル「" + skill.skillName + "」を選択しました");
-    }
-
-    public void AddSkill(SkillData skill)
-    {
-        if (skill == null) return;
-
-        currentSkills.Add(skill);
-        RefreshSkillPanel();
-
-        Debug.Log("スキル「" + skill.skillName + "」を習得しました");
-    }
-
-    //魔法・スキルで攻撃
     public bool TrySkillAttack(EnemyManager enemy)
     {
-        if (enemy == null) return false;
+        if (enemy == null) return false;                                                                        // nullの場合何もしない
 
-        if (!TrySpendMp(skillMpCost))
+        if (!TrySpendMp(currentSkill.mpCost))                                                                   // MPを消費できるか確認(UnitBaseを呼び出し)
         {
             Debug.Log("MPが足りない！");
             return false;
         }
 
-        int dmg = MakeMagicDamage();
-        enemy.TakeMagic(dmg);
+        int dmg = MakeMagicDamage();                                                                            // 魔法ダメージを計算(UnitBaseを呼び出し)
+        enemy.TakeMagic(dmg);                                                                                   // 敵に魔法ダメージを与える(UnitBaseを呼び出し)
         return true;
     }
 
-    //SPD順で呼ばれた「自分のターン」
     public override IEnumerator Act()
     {  
         Debug.Log("プレイヤーの行動（入力待ち）");
 
-        acted = false;
+        acted = false;                                                                                          // 行動フラグをリセット
 
-        // いまは敵1体想定：存在する敵を取得
-        targetEnemy = UnityEngine.Object.FindAnyObjectByType<EnemyManager>();
-        if (targetEnemy == null)
+        targetEnemy = UnityEngine.Object.FindAnyObjectByType<EnemyManager>();                                   // ターゲットとなる敵を取得（シーン内の最初のEnemyManagerを取得）
+        if (targetEnemy == null)                                                                                // 敵が存在しない場合                                
         {
             acted = true;
             yield break;
         }
 
-        // タップされるまで待つ（＝プレイヤー入力待ち）
-        while (!acted)
+        while (!acted)                                                                                          // 行動が完了するまでの間
         {
-            yield return null;
+            yield return null;                                                                                  // 1フレーム待機を続けることで選択する時間を与える
         }
 
         yield break;

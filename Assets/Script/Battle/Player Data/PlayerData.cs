@@ -13,6 +13,8 @@ public class PlayerData : ScriptableObject
     public int startMaxHp;
     public int startMaxMp;
     public int startAt;
+    public int startDef;
+    public int startMdef;
     [Range(0f, 1f)] public float damageCutRate;
     [Range(0f, 1f)] public float evasionRate;
 

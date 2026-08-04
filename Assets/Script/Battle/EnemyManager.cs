@@ -7,10 +7,9 @@ using static EnemyData;
 
 public class EnemyManager : UnitBase
 {
-    // 命中率低下の累積値
+
     private float accuracyPenalty = 0f;
 
-    // 命中率低下を加算
     public void ApplyAccuracyDown(float value)
     {
         accuracyPenalty += value;
@@ -79,7 +78,6 @@ public class EnemyManager : UnitBase
 
             case PartType.RightLeg:
             case PartType.LeftLeg:
-                spd -= 1;
                 break;
 
             case PartType.Face:
@@ -162,6 +160,11 @@ public class EnemyManager : UnitBase
         hp = maxHp;
         at = data.at;
         damageEffect = data.damageEffect;
+        maxMp = data.maxMp;
+        mp = data.maxMp;
+        def = data.def;
+        mag = data.mag;
+        mdef = data.mdef;
     }
 
     // プレイヤーを攻撃（物理）
