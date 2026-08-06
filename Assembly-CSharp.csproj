@@ -84,6 +84,7 @@
     <Compile Include="Assets\Script\DialogTextManager.cs" />
     <Compile Include="Assets\Script\Skill\DamageRule.cs" />
     <Compile Include="Assets\Script\Skill\StatusEffectData.cs" />
+    <Compile Include="Assets\Script\Battle\EnemyRole.cs" />
     <Compile Include="Assets\Script\Skill\SkillExecutor.cs" />
     <Compile Include="Assets\Script\Skill\StatusEffectType.cs" />
     <Compile Include="Assets\Script\Town\SceneTransitionManager.cs" />

@@ -17,8 +17,11 @@ MonoBehaviour:
   startMaxHp: 100
   startMaxMp: 100
   startAt: 10
+  startMag: 50
+  startDef: 0
+  startMdef: 0
   damageCutRate: 0.269
-  evasionRate: 0.669
+  evasionRate: 0.574
   skillSlotCount: 3
   bodyEnhanceSlotCount: 2
   uniquePassiveName: 

@@ -5,12 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game/Enemy/Enemy Data", fileName = "EnemyData_")]
 public class EnemyData : ScriptableObject
 {
-    [Header("Šî–{î•ñ")]
+    [Header("åŸºæœ¬æƒ…å ±")]
     public string enemyName;
     public Sprite icon;
-    public GameObject prefab; // •K—v‚È‚ç”z’u—p
+    public GameObject prefab; // å¿…è¦ãªã‚‰é…ç½®ç”¨
 
-    [Header("Šî–{ƒXƒe[ƒ^ƒX")]
+    [Header("åŸºæœ¬ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹")]
     public int maxHp = 10;
     public int maxMp = 0;
 
@@ -20,25 +20,29 @@ public class EnemyData : ScriptableObject
     public int mag = 0;
     public int mdef = 0;
 
-    public int spd = 1;
+    [Range(0f, 1f)]
+    public float evasionRate = 0f;
 
-    [Header("•ñV")]
+    [Header("å ±é…¬")]
     public int expReward = 0;
     public int goldReward = 0;
-    public DropTable dropTable; // ”CˆÓi‚ ‚Æ‚Åì‚éj
+    public DropTable dropTable; // ä»»æ„ï¼ˆã‚ã¨ã§ä½œã‚‹ï¼‰
 
-    [Header("ƒpƒtƒH[ƒ}ƒ“ƒX / ‰‰o")]
+    [Header("ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ / æ¼”å‡º")]
     public GameObject damageEffect;
-    public GameObject deathEffect; // «—ˆ—p
+    public GameObject deathEffect; // å°†æ¥ç”¨
     public AudioClip hitSE;
     public AudioClip deathSE;
 
-    [Tooltip("g‚¦‚éƒXƒLƒ‹ˆê——i”CˆÓj")]
+    [Tooltip("ä½¿ãˆã‚‹ã‚¹ã‚­ãƒ«ä¸€è¦§ï¼ˆä»»æ„ï¼‰")]
     
-    public SkillData attackSkill;                 // ’ÊíUŒ‚i•ÛŒ¯j
-    public List<SkillData> skillList = new();    // ‚±‚±‚ÉÅ‘å4‚Â“ü‚ê‚éiInspectorj
+    public SkillData attackSkill;                 // é€šå¸¸æ”»æ’ƒï¼ˆä¿é™ºï¼‰
+    public List<SkillData> skillList = new();    // ã“ã“ã«æœ€å¤§4ã¤å…¥ã‚Œã‚‹ï¼ˆInspectorï¼‰
 
-    [Header("“G‚Ìí—Ş")]
+    [Header("æ•µã®ç¨®é¡ï¼ˆå¼·ã•ãƒ©ãƒ³ã‚¯ï¼‰")]
+    // ã€è§£èª¬ã€‘ã“ã¡ã‚‰ã¯å…ƒã‹ã‚‰ã‚ã£ãŸã€Œå¼·ã•ã®ãƒ©ãƒ³ã‚¯ã€ã€‚ç«å‚·ãƒ€ãƒ¡ãƒ¼ã‚¸ã®å€ç‡è¨ˆç®—ãªã©ã«ä½¿ç”¨ä¸­ã€‚
     public EnemyType enemyType = EnemyType.Normal;
 
+    [Header("æ•µã®å½¹å‰²ï¼ˆæˆ¦ã„æ–¹ã®ã‚¿ã‚¤ãƒ—ï¼‰")]
+    public EnemyRole role = EnemyRole.Attacker;
 }

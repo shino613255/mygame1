@@ -8,8 +8,8 @@ public class SkillData : ScriptableObject
 {
     [Header("基本")]
     public string skillName;
-    [TextArea] public string description;
-    public Sprite icon;
+    [TextArea] public string description;                                   // スキルの説明文
+    public Sprite icon;                                                     // スキルアイコン
 
     [Header("コスト（任意）")]
     [Min(0)] public int mpCost = 0;
@@ -49,7 +49,7 @@ public class SkillData : ScriptableObject
 
     [Header("部位攻撃設定")]
     [Tooltip("このスキルで部位を選んで攻撃できるか")]
-    public bool canTargetPart = true;
+    public bool canTargetPart = true;                                       // 部位攻撃可能かどうか(将来的に使うかもしれない)
 
     [Tooltip("本体に入るダメージ倍率")]
     public float mainDamageRate = 1f;
@@ -58,11 +58,11 @@ public class SkillData : ScriptableObject
     public float partDamageRate = 1f;
 
     [Header("追加効果（状態異常）")]
-    public StatusEffectData statusEffect;      // 付与する状態
+    public StatusEffectData statusEffect;                                   // 付与する状態
 
     [Range(0f, 1f)] 
-    public float applyChance = 0.0f;  // 付与確率（スキル側で上書き）
+    public float applyChance = 0.0f;                                        // 付与確率（スキル側で上書き）
 
     [Min(0)] 
-    public int overrideDurationTurns = 0;     // 0ならStatusEffectDataのdurationを使う
+    public int overrideDurationTurns = 0;                                   // 状態異常の継続ターン（スキル側で上書き）
 }

@@ -22,6 +22,7 @@ public class PlayerManager : UnitBase
         this.maxMp = data.startMaxMp;
         this.mp = data.startMaxMp;
         this.at = data.startAt;
+        this.mag = data.startMag;
         this.def = data.startDef;
         this.mdef = data.startMdef;
 

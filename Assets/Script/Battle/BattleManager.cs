@@ -130,14 +130,30 @@ public class BattleManager : MonoBehaviour
     }
     private AttackContext CreateSkillAttackContext(SkillData skill)                     // スキル攻撃のAttackContextを作る用
     {
-        return new AttackContext
+        int baseDamage;
+
+        if (skill.skillType == SkillType.Magic)
+        {
+            baseDamage = DamageRule.CalcMagic(
+                player.mag,
+                enemy.mdef,
+                skill.multiplier,
+                1
+            ) + skill.power;
+        }
+        else
         {
             baseDamage = DamageRule.CalcPhysical(
                 player.at,
                 enemy.def,
-                skill.multiplier,                                                       // スキル倍率を反映
-                1                                                                       // 1部位攻撃想定
-                ) + skill.power,                                                        // スキルの固定加算ダメージを反映
+                skill.multiplier,
+                1
+            ) + skill.power;
+        }
+
+        return new AttackContext
+        {
+            baseDamage = baseDamage,
             mainDamageRate = skill.mainDamageRate,                                      // スキルごとの本体ダメージ倍率を反映
             partDamageRate = skill.partDamageRate,                                      // スキルごとの部位ダメージ倍率を反映
             canApplyStatus = skill.statusEffect != null,                                // 状態異常の適用可否を反映
@@ -381,6 +397,13 @@ public class BattleManager : MonoBehaviour
                 yield return StartCoroutine(EndBattle());                               // EndBattle()を呼び出し、終わるまで待つ(yield return)
                 yield break;
             }
+
+            var cooldowns = enemy.GetComponent<SkillCooldowns>();
+
+            if (cooldowns != null)
+            {
+                cooldowns.Tick();
+            }
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -419,6 +442,11 @@ public class BattleManager : MonoBehaviour
             skill,
             0f
         );
+
+        if (result.crit)                                                                // クリティカルが発生した場合
+        {
+            Debug.Log("クリティカル！");
+        }
 
         playerUI.UpdateUI(player);                                                      // プレイヤーのHPのUIを更新
 

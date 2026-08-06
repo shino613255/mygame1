@@ -531,25 +531,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ad235feb70c007458de1ccf42d64ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  team: 0
   attackElement: 0
   resistElement: 0
-  team: 0
   maxHp: 100
   hp: 100
-  mp: 100
   maxMp: 50
+  mp: 100
   at: 30
   def: 5
   mag: 10
   mdef: 3
-  spd: 5
-  isDeficiency: 0
-  isburn: 0
   evasionRate: 0
-  level: 1
-  maxLevel: 20
-  exp: 0
-  expToNext: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   critRate: 0.02
   critMultiplier: 2
   skillMultiplier: 2
@@ -558,7 +551,6 @@ MonoBehaviour:
   - {fileID: 1586867361}
   - {fileID: 1105466557}
   - {fileID: 739916020}
-  skillMpCost: 10
   useSkill: 0
 --- !u!4 &540119329
 Transform:
@@ -3893,8 +3885,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8655767747190990780, guid: 2353a6a7fd8894742a60c2b34ad21b42, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5442752931095159690}
   m_SourcePrefab: {fileID: 100100000, guid: 2353a6a7fd8894742a60c2b34ad21b42, type: 3}
+--- !u!1 &5442752931095159689 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8655767747190990780, guid: 2353a6a7fd8894742a60c2b34ad21b42, type: 3}
+  m_PrefabInstance: {fileID: 5442752931095159688}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5442752931095159690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5442752931095159689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea88dea723e67d4295d0901daf3156e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
