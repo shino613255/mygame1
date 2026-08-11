@@ -141,6 +141,27 @@ public class EnemyManager : UnitBase
 
         Debug.Log("火傷状態が解除されました");
     }
+    
+    public void Setup(EnemyData enemyData)
+    {
+        data = enemyData;
+
+        name = data.enemyName;
+
+        maxHp = data.maxHp;
+        hp = maxHp;
+
+        at = data.at;
+        def = data.def;
+
+        mag = data.mag;
+        mdef = data.mdef;
+
+        evasionRate = data.evasionRate;
+
+        damageEffect = data.damageEffect;
+    }
+
     private void Start()
     {
         if (data == null)

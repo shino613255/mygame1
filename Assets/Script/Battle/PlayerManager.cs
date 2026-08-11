@@ -17,6 +17,8 @@ public class PlayerManager : UnitBase
     {
         if (data == null) return;                                                                           // null‚Ìê‡‰½‚à‚µ‚È‚¢
 
+        name = data.playerName;                                                                             // ƒvƒŒƒCƒ„[–¼‚ğİ’è
+
         this.maxHp = data.startMaxHp;
         this.hp = data.startMaxHp;
         this.maxMp = data.startMaxMp;

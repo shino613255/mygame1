@@ -14,17 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: "\u9B54\u6CD5\u4F7F\u3044"
   role: 1
-  startMaxHp: 100
+  startMaxHp: 200
   startMaxMp: 100
   startAt: 10
-  startMag: 50
+  startMag: 30
   startDef: 0
   startMdef: 0
-  damageCutRate: 0.269
-  evasionRate: 0.574
+  damageCutRate: 0
+  evasionRate: 0
   skillSlotCount: 3
   bodyEnhanceSlotCount: 2
   uniquePassiveName: 
   uniquePassiveDescription: 
   startSkills:
   - {fileID: 11400000, guid: 8b6d659774624694da5cae9c522789cf, type: 2}
+  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}

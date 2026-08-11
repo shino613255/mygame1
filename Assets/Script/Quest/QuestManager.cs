@@ -3,36 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-//クエスト全体を管理
 public class QuestManager : MonoBehaviour
 {
-    public PlayerManager player;
-    public PlayerUIManager playerUI; 
-    public StageUIManager stageUI;
-    public GameObject enemyPrefab;
-    public BattleManager battleManager;
-    public SceneTransitionManager sceneTransitionManager;
-    public GameObject QuestBG;
-    // 敵に遭遇するテーブル：1なら遭遇しない、0なら遭遇
-    int[] encountTable = { 1, 0, 0, 0, 1};
+    public PlayerManager player;                                                                                // PlayerManagerの登録
+    public PlayerUIManager playerUI;                                                                            // PlayerUIManagerの登録
+    public StageUIManager stageUI;                                                                              // StageUIManagerの登録
+    public BattleManager battleManager;                                                                         // BattleManagerの登録
+    public SceneTransitionManager sceneTransitionManager;                                                       // SceneTransitionManagerの登録
+    [SerializeField] private EnemyData[] enemyDatas;                                                            // 敵のデータを格納する配列
+    public GameObject QuestBG;                                                                                  // クエスト背景
 
-    int currentStage = 0; //ステージ進行度
+    int[] encountTable = { 0, 0, 0, 0, 1};                                                                      // 敵に遭遇するテーブル：1なら遭遇しない、0なら遭遇
+
+    int currentStage = 0;                                                                                       //ステージ進行度
     private void Start()
     {
-        PlayerData data = PlayerSelectionManager.Instance.selectedPlayer;
+        PlayerData data = PlayerSelectionManager.Instance.selectedPlayer;                                       // キャラ選択画面で選んだプレイヤーデータを取得
+
         if (data != null)
         {
-            player.Setup(data);
+            player.Setup(data);                                                                                 //  PlayerDateをPlayerManagerにセットアップ
         }
         else
         {
             Debug.LogError("プレイヤーデータが選択されていません！");
         }
 
-        playerUI.UpdateUI(player); 
+        playerUI.UpdateUI(player);                                                                              // PlayerUIの更新
 
-        // 進行度の反映
-        stageUI.UpdateUI(currentStage);
+        stageUI.UpdateUI(currentStage);                                                                         // 進行度のUIの更新を繁栄
 
         DialogTextManager.instance.SetScenarios(new string[]
         {
@@ -47,24 +46,24 @@ public class QuestManager : MonoBehaviour
         {
             "周囲を探索している...",
         });
-        // 背景
-        QuestBG.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 1.5f)
-            .OnComplete(() => QuestBG.transform.localScale = new Vector3(0.93f, 0.93f, 1));
-        // フェードアウト
+
+        QuestBG.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 1.0f)                                          // 1.0秒かけてx,y,zを1.2倍に拡大
+            .OnComplete(() => QuestBG.transform.localScale = new Vector3(0.93f, 0.93f, 1));                     // 拡大後に元のサイズに戻す
+
         SpriteRenderer questBGRenderer = QuestBG.GetComponent<SpriteRenderer>();
-        questBGRenderer.DOFade(0, 1.5f)
-            .OnComplete(() => questBGRenderer.DOFade(1, 0));
-        //1秒缶の処理を待機する
-        yield return new WaitForSeconds(1.5f);
+        questBGRenderer.DOFade(0, 1.0f)                                                                         // 1.5秒かけてBGを透明(0)にする
+            .OnComplete(() => questBGRenderer.DOFade(1, 0));                                                    // 透明化後に元の不透明度(1)に戻す
+
+        yield return new WaitForSeconds(1.0f);
         
-        currentStage++;
-        // 進行度のUI
+        currentStage++;                                                             
+
         stageUI.UpdateUI(currentStage);
 
-        if (encountTable.Length <= currentStage)
+        if (encountTable.Length <= currentStage)                                                                // 進行度がテーブルの長さを超えた場合はクエストクリア
         {
             Debug.Log("クエストクリア");
-            QuestClear();　// クリア処理
+            QuestClear();　
         }
         else if (encountTable[currentStage] == 0)
         {
@@ -72,39 +71,50 @@ public class QuestManager : MonoBehaviour
         }
         else
         {
-            // ボタンを再表示
-            stageUI.ShowButtons();
+            stageUI.ShowButtons();                                                                              // 進むボタンを表示
         }
     }
 
-    // Nextボタンが押されたとき
     public void OnNextButton()
     {
-        SoundManager.instance.PlayButtonSE(0); // ボタンSE再生
-        stageUI.HideButtons(); // ボタンを隠す
-        StartCoroutine(Searching());        
+        SoundManager.instance.PlayButtonSE(0);                                                                  // ボタンSE再生
+        stageUI.HideButtons();                                                                                  // ボタンを隠す
+        StartCoroutine(Searching());                                                                            // Searchingコルーチンを開始
     }
 
     public void OnToTownButton()
     {
-        SoundManager.instance.PlayButtonSE(0); // ボタンSE再生
+        SoundManager.instance.PlayButtonSE(0);                                                                  // ボタンSE再生
+    }
+
+    private EnemyData GetRandomEnemyData()
+    {
+        int index = Random.Range(0, enemyDatas.Length);
+        return enemyDatas[index];
     }
 
     void EncountEnemy()
     {
+
         DialogTextManager.instance.SetScenarios(new string[]
         {
             "敵が現れた！"
         });
-        stageUI.HideButtons();
-        GameObject enemyOgj = Instantiate(enemyPrefab);
-        EnemyManager enemy = enemyOgj.GetComponent<EnemyManager>();
-        battleManager.Setup(enemy);
+
+        stageUI.HideButtons();                                                                                  // ボタンを隠す
+
+        EnemyData selectedData = GetRandomEnemyData();
+
+        GameObject enemyObj = Instantiate(selectedData.prefab);                                                 // 敵のプレハブを生成
+
+        EnemyManager enemy = enemyObj.GetComponent<EnemyManager>();                                             // EnemyManagerを取得
+        enemy.data = selectedData;
+        battleManager.Setup(enemy);                                                                             // BattleManagerに敵をセットアップ
     }
 
     public void EndBattle()
     {
-        stageUI.ShowButtons();
+        stageUI.ShowButtons();                                                                                  // 進むボタンを表示
     }
 
     void QuestClear()
@@ -114,8 +124,8 @@ public class QuestManager : MonoBehaviour
             "クエストクリア！",
             "街に戻ろう。"
         });
-        SoundManager.instance.StopBGM();
-        SoundManager.instance.PlayButtonSE(2); // クエストクリアSE再生
-        stageUI.ShowStageClear();
+        SoundManager.instance.StopBGM();                                                                        // BGM停止
+        SoundManager.instance.PlayButtonSE(2);                                                                  // クエストクリアSE再生
+        stageUI.ShowStageClear();                                                                               // ステージクリアUIを表示
     }
 }

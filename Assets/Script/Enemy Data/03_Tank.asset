@@ -10,19 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
-  m_Name: Magic
+  m_Name: 03_Tank
   m_EditorClassIdentifier: 
-  enemyName: "\u9B54\u6CD5\u4F7F\u3044"
+  enemyName: "\u9A0E\u58EB"
   icon: {fileID: 0}
-  prefab: {fileID: 4039787223579819014, guid: a2292037aa443b447b29736051d773ca, type: 3}
-  maxHp: 200
-  maxMp: 40
-  at: 4
-  def: 1
-  mag: 10
-  mdef: 5
-  spd: 1
-  expReward: 5
+  prefab: {fileID: 7039346821692218117, guid: 56ad366403e2c0a4ba5b138bfc0d947e, type: 3}
+  maxHp: 300
+  maxMp: 0
+  at: 20
+  def: 30
+  mag: 0
+  mdef: 30
+  evasionRate: 0
   goldReward: 0
   dropTable: {fileID: 0}
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
@@ -31,3 +30,5 @@ MonoBehaviour:
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
   skillList: []
+  enemyType: 0
+  role: 1

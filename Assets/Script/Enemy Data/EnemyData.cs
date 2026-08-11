@@ -24,7 +24,6 @@ public class EnemyData : ScriptableObject
     public float evasionRate = 0f;
 
     [Header("報酬")]
-    public int expReward = 0;
     public int goldReward = 0;
     public DropTable dropTable; // 任意（あとで作る）
 

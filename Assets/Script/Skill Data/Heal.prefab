@@ -14828,7 +14828,7 @@ GameObject:
   - component: {fileID: 8771972552311404798}
   - component: {fileID: 8771972552311404739}
   m_Layer: 0
-  m_Name: CFXR3 Hit Light B (Air)
+  m_Name: Heal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

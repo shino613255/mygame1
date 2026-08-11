@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class BattleManager : MonoBehaviour
 {
@@ -48,16 +49,16 @@ public class BattleManager : MonoBehaviour
     public void Setup(EnemyManager enemymanager)        
     {
         SoundManager.instance.PlayBGM("Battle");
-        enemyUI.gameObject.SetActive(true);
+        enemyUI.gameObject.SetActive(true);                                             // 敵UIを表示
 
-        enemy = enemymanager;
+        enemy = enemymanager;                                                          // EnemyManagerをセット
 
-        if (mainCamera == null) mainCamera = Camera.main;
+        if (mainCamera == null) mainCamera = Camera.main;                              // メインカメラを取得
         
         enemyUI.SetupUI(enemy);
         playerUI.SetupUI(player);
 
-        StartCoroutine(BattleLoop());
+        StartCoroutine(BattleLoop());                                                  // バトルループを開始
     }
 
     private void Update()
@@ -90,8 +91,35 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
+        if (selectedSkill.skillType == SkillType.Heal && selectedSkill.targetType == TargetType.Self)
+        {
+            var result = SkillExecutor.Execute(player, player, selectedSkill);          // スキルを実行して結果を取得            
+            if (!result.executed)                                                       // スキルが実行されなかった場合は処理を中断
+            {
+                DialogTextManager.instance.SetScenarios(new string[]
+                {
+                    result.message
+                });                
+                return;                
+            }
+            PlaySkillEffect(selectedSkill,Vector3.zero);                  // プレイヤーの位置にスキルのエフェクトを再生
+
+            playerUI.UpdateUI(player);
+
+            skillSelectionPanel.SetActive(false);                                       // スキル選択UIを閉じる
+
+            waitingTap = false;
+            isPlayerTurn = false;
+
+            DialogTextManager.instance.SetScenarios(new string[]
+                {
+                    result.message
+                });
+
+            return;
+        }
         playerDefaultSkill = selectedSkill;                                             // 選択されたスキルをplayerDefaultSkillにセット
-        useDefaultSkill = true;                                                         // スキル使用モードON
+        useDefaultSkill = true;                                                         // スキル使用モードON        
         waitingTap = true;                                                              // 敵をクリックするのを待つ状態にする
 
         skillSelectionPanel.SetActive(false);                                           // スキル選択UIを閉じる        
@@ -112,52 +140,62 @@ public class BattleManager : MonoBehaviour
         OnBodyPartTapped(part);                                                         // BodyPartがクリックされたときの処理を呼び出す
     }
 
-    private AttackContext CreateNormalAttackContext()                                   // 通常攻撃のAttackContextを作って返す
+    private int CalculateDamage(SkillData skill)
     {
-        return new AttackContext                                                        // 新しいAttackContextを1つ作る
+        // 通常攻撃
+        if (skill == null)
         {
-            baseDamage = DamageRule.CalcPhysical(
+            return DamageRule.CalcPhysical(
                 player.at,
                 enemy.def,
                 1f,
-                1                                                                       // 1つの部位に攻撃する
-                ),                                                                      // 通常攻撃のダメージ計算
-            mainDamageRate = 1f,                                                        // 本体へのダメージ倍率
-            partDamageRate = 1f,                                                        // 部位へのダメージ倍率
-            canApplyStatus = false,                                                     // 状態異常は無し
-            sourceSkill = null
-        };
-    }
-    private AttackContext CreateSkillAttackContext(SkillData skill)                     // スキル攻撃のAttackContextを作る用
-    {
-        int baseDamage;
+                1
+            );
+        }
 
+        // 魔法スキル
         if (skill.skillType == SkillType.Magic)
         {
-            baseDamage = DamageRule.CalcMagic(
+            return DamageRule.CalcMagic(
                 player.mag,
                 enemy.mdef,
                 skill.multiplier,
                 1
             ) + skill.power;
         }
-        else
-        {
-            baseDamage = DamageRule.CalcPhysical(
-                player.at,
-                enemy.def,
-                skill.multiplier,
-                1
-            ) + skill.power;
-        }
 
+        // 物理スキル
+        return DamageRule.CalcPhysical(
+            player.at,
+            enemy.def,
+            skill.multiplier,
+            1
+        ) + skill.power;
+    }
+
+    private AttackContext CreateNormalAttackContext()                                   // 通常攻撃のAttackContextを作って返す
+    {
+        return new AttackContext                                                        // 新しいAttackContextを1つ作る
+        {
+            baseDamage = CalculateDamage(null),                                         // 通常攻撃のダメージ計算
+
+            mainDamageRate = 1f,                                                        // 本体へのダメージ倍率
+            partDamageRate = 1f,                                                        // 部位へのダメージ倍率
+            canApplyStatus = false,                                                     // 状態異常は無し
+            sourceSkill = null
+        };
+    }
+    private AttackContext CreateSkillAttackContext(SkillData skill)
+    {
         return new AttackContext
         {
-            baseDamage = baseDamage,
-            mainDamageRate = skill.mainDamageRate,                                      // スキルごとの本体ダメージ倍率を反映
-            partDamageRate = skill.partDamageRate,                                      // スキルごとの部位ダメージ倍率を反映
-            canApplyStatus = skill.statusEffect != null,                                // 状態異常の適用可否を反映
-            sourceSkill = skill                                                         // スキルの参照を保持
+            baseDamage = CalculateDamage(skill),
+
+            mainDamageRate = skill.mainDamageRate,
+            partDamageRate = skill.partDamageRate,
+
+            canApplyStatus = skill.statusEffect != null,                                // 状態異常効果があるかどうか
+            sourceSkill = skill                                                         // 攻撃の元となるスキルデータ
         };
     }
 
@@ -280,7 +318,7 @@ public class BattleManager : MonoBehaviour
         });
 
         Debug.Log(attackMessage);                                                       // 攻撃メッセージをデバッグログに出力
-    }
+    }    
 
     public static BattleManager Instance;
 
