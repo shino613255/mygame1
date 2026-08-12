@@ -393,8 +393,6 @@ MonoBehaviour:
   sceneTransitionManager: {fileID: 1952424751}
   enemyDatas:
   - {fileID: 11400000, guid: 1114fa510e47db84a96fa1b1a8b24ebc, type: 2}
-  - {fileID: 11400000, guid: 7eaf2d2898d963245a4d22c8dd5fc72b, type: 2}
-  - {fileID: 11400000, guid: c8395baa47ca2c44ebb70e6a50b505ad, type: 2}
   QuestBG: {fileID: 1371250473}
 --- !u!1 &519420028
 GameObject:
@@ -2045,8 +2043,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyParts: {fileID: 0}
   mainCamera: {fileID: 0}
-  playerBaseAccuracy: 0.9
-  enemyBaseAccuracy: 0.9
+  playerBaseAccuracy: 1
+  enemyBaseAccuracy: 1
   elementProcChance: 0.05
   playerDefaultSkill: {fileID: 0}
   useDefaultSkill: 0

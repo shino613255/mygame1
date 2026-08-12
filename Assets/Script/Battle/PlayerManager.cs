@@ -54,10 +54,10 @@ public class PlayerManager : UnitBase
 
     public void AddSkill(SkillData skill)
     {
-        if (skill == null) return;                                                                              // nullの場合何もしない
+        if (skill == null) return;                                                                          // nullの場合何もしない
 
-        currentSkills.Add(skill);                                                                               // スキルリストに追加
-        RefreshSkillPanel();                                                                                    // UIのスキルパネルを更新
+        currentSkills.Add(skill);                                                                           // スキルリストに追加
+        RefreshSkillPanel();                                                                                // UIのスキルパネルを更新
 
         Debug.Log("スキル「" + skill.skillName + "」を習得しました");
     }

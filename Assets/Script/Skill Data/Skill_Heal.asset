@@ -15,7 +15,7 @@ MonoBehaviour:
   skillName: Heal
   description: 
   icon: {fileID: 0}
-  mpCost: 5
+  mpCost: 10
   cooldown: 0
   skillType: 2
   effectPrefab: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}

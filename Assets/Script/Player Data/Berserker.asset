@@ -17,6 +17,9 @@ MonoBehaviour:
   startMaxHp: 300
   startMaxMp: 20
   startAt: 15
+  startMag: 0
+  startDef: 0
+  startMdef: 0
   damageCutRate: 0.1
   evasionRate: 0.05
   skillSlotCount: 3
@@ -25,3 +28,5 @@ MonoBehaviour:
   uniquePassiveDescription: 
   startSkills:
   - {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}
+  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
+  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}

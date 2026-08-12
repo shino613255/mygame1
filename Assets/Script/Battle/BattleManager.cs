@@ -9,25 +9,26 @@ using UnityEngine.PlayerLoop;
 
 public class BattleManager : MonoBehaviour
 {
-    [SerializeField] private EnemyPartsController enemyParts;   // 敵の部位を管理するコンポーネント
-    [SerializeField] private Camera mainCamera;                 // メインカメラ。マウスの画面座標をゲーム内の座標へ変換するために使う
-    [SerializeField] private float playerBaseAccuracy = 0.9f;   // プレイヤーの命中率（0.0～1.0）
-    [SerializeField] private float enemyBaseAccuracy = 0.9f;    // 敵の命中率（0.0～1.0）
-    [SerializeField] private float elementProcChance = 0.05f;   // 属性攻撃の追加効果が発動する確率（0.0～1.0）
-    [SerializeField] private SkillData playerDefaultSkill;      // プレイヤーのデフォルトスキル（通常攻撃の代わりに使うスキル）
-    [SerializeField] private bool useDefaultSkill = false;      // デフォルトスキルを使うかどうかのフラグ（trueならplayerDefaultSkillを使う）
-    [Header("UI References")]
-    [SerializeField] private GameObject skillSelectionPanel;    // スキル選択UIパネルのもと
+    [SerializeField] private EnemyPartsController enemyParts;                           // 敵の部位を管理するコンポーネント
+    [SerializeField] private Camera mainCamera;                                         // メインカメラ。マウスの画面座標をゲーム内の座標へ変換するために使う
+    [SerializeField] private float playerBaseAccuracy = 1f;                           // プレイヤーの命中率（0.0～1.0）
+    [SerializeField] private float enemyBaseAccuracy = 1f;                              // 敵の命中率（0.0～1.0）
+    [SerializeField] private float elementProcChance = 0.05f;                           // 属性攻撃の追加効果が発動する確率（0.0～1.0）
+    [SerializeField] private SkillData playerDefaultSkill;                              // プレイヤーのデフォルトスキル（通常攻撃の代わりに使うスキル）
+    [SerializeField] private bool useDefaultSkill = false;                              // デフォルトスキルを使うかどうかのフラグ（trueならplayerDefaultSkillを使う）
 
-    public Transform screenShakeTarget;     // プレイヤーがダメージを受けたときに揺れすようにするため
-    public QuestManager questManager;       // QuestManagerの参照
-    public PlayerUIManager playerUI;        // PlayerUIManagerの参照
-    public EnemyUIManager enemyUI;          // EnemyUIManagerの参\参照
-    public PlayerManager player;            // PlayerManagerの参照
-    public PlayerData playerData;           // PlayerDataの参照
-    private EnemyManager enemy;             // EnemyManagerの参照
-    private bool waitingTap;                // タップ待ち中かのフラグ
-    private bool isPlayerTurn;              // プレイヤーのターンかのフラグ
+    [Header("UI References")]
+    [SerializeField] private GameObject skillSelectionPanel;                            // スキル選択UIパネルのもと
+
+    public Transform screenShakeTarget;                                                 // プレイヤーがダメージを受けたときに揺れすようにするため
+    public QuestManager questManager;                                                   // QuestManagerの参照
+    public PlayerUIManager playerUI;                                                    // PlayerUIManagerの参照
+    public EnemyUIManager enemyUI;                                                      // EnemyUIManagerの参\参照
+    public PlayerManager player;                                                        // PlayerManagerの参照
+    public PlayerData playerData;                                                       // PlayerDataの参照
+    private EnemyManager enemy;                                                         // EnemyManagerの参照
+    private bool waitingTap;                                                            // タップ待ち中かのフラグ
+    private bool isPlayerTurn;                                                          // プレイヤーのターンかのフラグ
 
     private void Start()
     {
@@ -510,6 +511,39 @@ public class BattleManager : MonoBehaviour
                 pool.Add(s);                                                            // スキルを候補に追加
             }
         }
+
+        if (pool.Count == 0) return null;                                               // 候補が0の場合はnullを返す
+
+        float hpRate = (float)enemy.hp / enemy.maxHp;                                   // 敵のHP割合を計算      
+
+        pool.RemoveAll(s => s.mpCost > enemy.mp);                                       // MPが足りないスキルを候補から消す
+
+        if (pool.Count == 0) return null;
+
+        List<SkillData> healSkills =
+           pool.FindAll(s => s.skillType == SkillType.Heal);                           // HP割合が条件を満たすスキルだけを残す
+
+        float healChance = 0f;                                                          // Healを使う確率を初期化
+
+        if (hpRate <= 0.1f)
+        {
+            healChance = 1f;
+        }
+        else if (hpRate <= 0.5f)
+        {
+            healChance = 0.4f;
+        }
+        else
+        {
+            healChance = 0f;
+        }
+
+        if (healSkills.Count > 0 && Random.value < healChance && enemy.mp >= healSkills[0].mpCost)                          // Healを使う判定
+        {
+            return healSkills[Random.Range(0, healSkills.Count)];
+        }
+
+        pool.RemoveAll(s => s.skillType == SkillType.Heal);                             // Healを選ばなかった場合、候補からHealを消す
 
         if (pool.Count == 0) return null;                                               // 候補が0の場合はnullを返す
 

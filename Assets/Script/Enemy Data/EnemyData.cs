@@ -8,7 +8,7 @@ public class EnemyData : ScriptableObject
     [Header("基本情報")]
     public string enemyName;
     public Sprite icon;
-    public GameObject prefab; // 必要なら配置用
+    public GameObject prefab; 
 
     [Header("基本ステータス")]
     public int maxHp = 10;
@@ -25,22 +25,22 @@ public class EnemyData : ScriptableObject
 
     [Header("報酬")]
     public int goldReward = 0;
-    public DropTable dropTable; // 任意（あとで作る）
+    public DropTable dropTable;                     
 
     [Header("パフォーマンス / 演出")]
     public GameObject damageEffect;
-    public GameObject deathEffect; // 将来用
+    public GameObject deathEffect;                  // 将来用
     public AudioClip hitSE;
     public AudioClip deathSE;
 
     [Tooltip("使えるスキル一覧（任意）")]
     
-    public SkillData attackSkill;                 // 通常攻撃（保険）
-    public List<SkillData> skillList = new();    // ここに最大4つ入れる（Inspector）
+    public SkillData attackSkill;                   // 通常攻撃（保険）
+    public List<SkillData> skillList = new();       // ここに最大4つ入れる（Inspector）
 
     [Header("敵の種類（強さランク）")]
-    // 【解説】こちらは元からあった「強さのランク」。火傷ダメージの倍率計算などに使用中。
-    public EnemyType enemyType = EnemyType.Normal;
+    
+    public EnemyType enemyType = EnemyType.Normal;  // 火傷ダメージの倍率計算などに使用中。
 
     [Header("敵の役割（戦い方のタイプ）")]
     public EnemyRole role = EnemyRole.Attacker;
