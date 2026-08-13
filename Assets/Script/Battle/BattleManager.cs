@@ -27,8 +27,15 @@ public class BattleManager : MonoBehaviour
     public PlayerManager player;                                                        // PlayerManagerの参照
     public PlayerData playerData;                                                       // PlayerDataの参照
     private EnemyManager enemy;                                                         // EnemyManagerの参照
+    private EnemyAI enemyAI;                                                           // EnemyAIの参照
     private bool waitingTap;                                                            // タップ待ち中かのフラグ
     private bool isPlayerTurn;                                                          // プレイヤーのターンかのフラグ
+
+    void Awake()
+    {
+        enemyAI = GetComponent<EnemyAI>();                                              // EnemyAIコンポーネントを取得
+        Instance = this;                                                                // BattleManagerを1つのインスタンスに設定
+    }
 
     private void Start()
     {
@@ -323,10 +330,7 @@ public class BattleManager : MonoBehaviour
 
     public static BattleManager Instance;
 
-    void Awake()
-    {
-        Instance = this;                                                                // BattleManagerを1つのインスタンスに設定
-    }
+    
     public void PlaySkillEffect(SkillData skill, Vector3 worldPos)                      // SkillDataからもらったデータをworldPosの座標を基準にしてエフェクトを再生する
     {        
         if (skill == null) return;                                                      // SkillDataがnullの場合は何もしない
@@ -459,7 +463,7 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
-        SkillData skill = PickEnemySkillOrNormal();                                     // 敵のスキルをランダムで1つ選ぶ（通常攻撃も含む）
+        SkillData skill = enemyAI.ChooseSkill(enemy);                                   // 敵のスキルをランダムで1つ選ぶ（通常攻撃も含む）
 
         if (skill == null)
         {
@@ -481,6 +485,11 @@ public class BattleManager : MonoBehaviour
             skill,
             0f
         );
+        if(result.hit && result.value > 0)                                              // 攻撃が命中し、ダメージが0より大きい場合
+        {
+            SoundManager.instance.PlayButtonSE(1);                                      // ボタンSEを再生
+            screenShakeTarget.DOShakePosition(0.3f, 0.5f, 20, 0, false, true);          // プレイヤー中の画面を揺らす
+        }        
 
         if (result.crit)                                                                // クリティカルが発生した場合
         {
@@ -494,62 +503,6 @@ public class BattleManager : MonoBehaviour
         result.message                                                                  // SkillExecutor.Execute()の結果メッセージを表示
         });
     }
-    private SkillData PickEnemySkillOrNormal()                                          // 敵が持っているスキルの中からランダムで1つ選ぶ（通常攻撃も含む）
-    {
-        if (enemy == null || enemy.data == null) return null;                       
-
-        List<SkillData> pool = new();                                                   // スキルの候補に空のリスト
-
-        if (enemy.data.attackSkill != null)                                             // 通常攻撃スキルが設定されている場合
-            pool.Add(enemy.data.attackSkill);                                           // 通常攻撃スキルを候補に追加
-
-        if (enemy.data.skillList != null && enemy.data.skillList.Count > 0)             // スキルリストが設定されている場合
-        {
-            foreach (var s in enemy.data.skillList)                                     // スキルリストの中身を1つずつ確認
-            {
-                if (s == null) continue;                                                // nullのスキルはパスする
-                pool.Add(s);                                                            // スキルを候補に追加
-            }
-        }
-
-        if (pool.Count == 0) return null;                                               // 候補が0の場合はnullを返す
-
-        float hpRate = (float)enemy.hp / enemy.maxHp;                                   // 敵のHP割合を計算      
-
-        pool.RemoveAll(s => s.mpCost > enemy.mp);                                       // MPが足りないスキルを候補から消す
-
-        if (pool.Count == 0) return null;
-
-        List<SkillData> healSkills =
-           pool.FindAll(s => s.skillType == SkillType.Heal);                           // HP割合が条件を満たすスキルだけを残す
-
-        float healChance = 0f;                                                          // Healを使う確率を初期化
-
-        if (hpRate <= 0.1f)
-        {
-            healChance = 1f;
-        }
-        else if (hpRate <= 0.5f)
-        {
-            healChance = 0.4f;
-        }
-        else
-        {
-            healChance = 0f;
-        }
-
-        if (healSkills.Count > 0 && Random.value < healChance && enemy.mp >= healSkills[0].mpCost)                          // Healを使う判定
-        {
-            return healSkills[Random.Range(0, healSkills.Count)];
-        }
-
-        pool.RemoveAll(s => s.skillType == SkillType.Heal);                             // Healを選ばなかった場合、候補からHealを消す
-
-        if (pool.Count == 0) return null;                                               // 候補が0の場合はnullを返す
-
-        return pool[Random.Range(0, pool.Count)];                                       // 候補の中からランダムで1つ返す
-    }
-
    
     
     IEnumerator EndBattle()                                                             // 戦闘終了時の処理

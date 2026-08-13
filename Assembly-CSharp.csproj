@@ -73,6 +73,7 @@
     <Compile Include="Assets\Script\Title\TitleManager.cs" />
     <Compile Include="Assets\Script\Enemy Data\EnemyRole.cs" />
     <Compile Include="Assets\Script\Battle\UnitBase.cs" />
+    <Compile Include="Assets\Script\Enemy Data\EnemyAI.cs" />
     <Compile Include="Assets\Script\Quest\QuestManager.cs" />
     <Compile Include="Assets\Script\Battle\DropTable.cs" />
     <Compile Include="Assets\Script\FadeIOManager.cs" />
