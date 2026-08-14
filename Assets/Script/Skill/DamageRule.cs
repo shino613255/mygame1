@@ -26,7 +26,6 @@ public static class DamageRule
         accuracy = Mathf.Clamp01(accuracy);
         evasion = Mathf.Clamp01(evasion);
 
-        // 最終命中率（簡単式）
         float final = Mathf.Clamp01(accuracy - evasion);
         return Random.value < final;
     }
@@ -35,7 +34,6 @@ public static class DamageRule
     {
         rate = Mathf.Clamp01(rate);
 
-        // ★ 最低1に寄せる
         baseDamage = Mathf.Max(minDamage, baseDamage);
 
         if (Random.value >= rate) return baseDamage;

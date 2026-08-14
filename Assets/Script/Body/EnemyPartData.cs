@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class EnemyPartData : MonoBehaviour
 {
-    public bool canBreak; // ”j‰ó‚Å‚«‚é‚©‚Ç‚¤‚©
+    public bool canBreak; 
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         

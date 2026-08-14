@@ -17,8 +17,9 @@ public class StatusEffectData : ScriptableObject
     // frozen 用
     [Range(0f, 1f)] public float statDownRate = 0.15f;
 
+    // 状態異常の見た目 
     [Header("VFX")]
-    public GameObject vfxPrefab;   // 状態異常の見た目
+    public GameObject vfxPrefab;   
     public int CalcTickDamage(int targetMaxHp)
     {
         if (type != StatusEffectType.Burn) return 0;

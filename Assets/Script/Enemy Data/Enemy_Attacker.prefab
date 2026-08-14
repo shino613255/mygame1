@@ -607,7 +607,7 @@ MonoBehaviour:
   maxHp: 34
   hp: 34
   maxMp: 40
-  mp: 40
+  mp: 50
   at: 4
   def: 1
   mag: 10

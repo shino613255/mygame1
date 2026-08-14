@@ -16,10 +16,10 @@ MonoBehaviour:
   role: 1
   startMaxHp: 200
   startMaxMp: 200
-  startAt: 15
+  startAt: 10
   startMag: 30
-  startDef: 10
-  startMdef: 10
+  startDef: 0
+  startMdef: 20
   damageCutRate: 0
   evasionRate: 0
   skillSlotCount: 3

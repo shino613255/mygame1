@@ -75,7 +75,6 @@
     <Compile Include="Assets\Script\Battle\UnitBase.cs" />
     <Compile Include="Assets\Script\Enemy Data\EnemyAI.cs" />
     <Compile Include="Assets\Script\Quest\QuestManager.cs" />
-    <Compile Include="Assets\Script\Battle\DropTable.cs" />
     <Compile Include="Assets\Script\FadeIOManager.cs" />
     <Compile Include="Assets\Script\Battle\BattleManager.cs" />
     <Compile Include="Assets\Script\Quest\StageUIManager.cs" />

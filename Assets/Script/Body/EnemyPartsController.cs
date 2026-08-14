@@ -18,27 +18,27 @@ public class EnemyPartsController : MonoBehaviour
 
     public void SetSelectedPart(BodyPart part)
     {
-        selectedPart = part;                                                                                                // BodyPartにある部位をselectedPartに設定する
+        selectedPart = part;                                                                                               
     }
-    public struct AttackResult                                                                                              // 攻撃結果をひとまとめにする構造体
+    public struct AttackResult                                                                                              
     {
         public int mainDamage;
         public int partDamage;
     }
-    public AttackResult ApplyAttack(AttackContext ctx)                                                                      // 今回の攻撃結果を記録する箱
+    public AttackResult ApplyAttack(AttackContext ctx)                                                                      
     {
-        AttackResult result = new AttackResult();                                                                           // 攻撃結果を初期化
+        AttackResult result = new AttackResult();                                                                          
 
         if (enemy == null) return result;                                                           
-        if (ctx.baseDamage <= 0) return result;                                                                             // ダメージが0以下の場合は何もしない
+        if (ctx.baseDamage <= 0) return result;                                                                             
 
-        result.mainDamage = Mathf.RoundToInt(ctx.baseDamage * ctx.mainDamageRate);                                          // 本体ダメージを計算(小数は四捨五入する)
-        enemy.TakeDamageRaw(result.mainDamage);                                                                             // 本体ダメージを実行し、与える
+        result.mainDamage = Mathf.RoundToInt(ctx.baseDamage * ctx.mainDamageRate);                                              
+        enemy.TakeDamageRaw(result.mainDamage);                                                                             
 
         if (selectedPart != null)
         {
-            result.partDamage = Mathf.RoundToInt(ctx.baseDamage * ctx.partDamageRate);                                      // 部位ダメージを計算(小数は四捨五入する)
-            selectedPart.TakePartDamage(result.partDamage);                                                                 // 部位ダメージを実行し、与える           
+            result.partDamage = Mathf.RoundToInt(ctx.baseDamage * ctx.partDamageRate);                                      
+            selectedPart.TakePartDamage(result.partDamage);                                                                 
 
         }
 

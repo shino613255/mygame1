@@ -11,7 +11,7 @@ public class SceneTransitionManager : MonoBehaviour
     }
     void Lioad(string sceneName)       
     {
-        SoundManager.instance.PlayBGM(sceneName);        // BGM‚ÌÄ¶
-        SceneManager.LoadScene(sceneName);       // ƒV[ƒ“‚Ì“Ç‚İ‚İ
+        SoundManager.instance.PlayBGM(sceneName);       
+        SceneManager.LoadScene(sceneName);       
     }
 }

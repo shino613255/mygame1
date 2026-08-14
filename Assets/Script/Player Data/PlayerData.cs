@@ -20,7 +20,7 @@ public class PlayerData : ScriptableObject
     [Range(0f, 1f)] public float evasionRate;
 
     [Header("–ğE—p‚Ì˜g")]
-    public int skillSlotCount = 3;                                                              // –ğE‚²‚Æ‚ÉƒXƒLƒ‹‚Ì˜g‚ğ•Ï‚¦‚é‚½‚ß‚Ì•Ï”
+    public int skillSlotCount = 3;                                                              
     public int bodyEnhanceSlotCount = 2;                                                        // –ğE‚²‚Æ‚É‘Ì‹­‰»‚Ì˜g‚ğ•Ï‚¦‚é‚½‚ß‚Ì•Ï”
 
     [Header("ŒÅ—Lî•ñ")]

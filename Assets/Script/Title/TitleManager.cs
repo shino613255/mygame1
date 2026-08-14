@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TitleManager : MonoBehaviour
 {
-    public void OnToTownButton() // ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+    public void OnToTownButton() 
     {
-        SoundManager.instance.PlayButtonSE(0); // SEÄ¶
+        SoundManager.instance.PlayButtonSE(0); 
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   durationTurns: 3
-  applyChance: 1
+  applyChance: 0
   tickHpRate: 0.05
   tickDamageFlat: 0
   statDownRate: 0

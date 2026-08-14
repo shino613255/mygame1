@@ -11,8 +11,8 @@ public class TownManager : MonoBehaviour
             "ŠX‚É“’…‚µ‚½B",           
         });
     }
-    public void OnToQuestButton() // ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚Æ‚«
+    public void OnToQuestButton() 
     {
-        SoundManager.instance.PlayButtonSE(0); // SEÄ¶
+        SoundManager.instance.PlayButtonSE(0); 
     }
 }

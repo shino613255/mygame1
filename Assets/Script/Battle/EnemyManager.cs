@@ -8,48 +8,49 @@ using static EnemyData;
 public class EnemyManager : UnitBase
 {
 
-    private float accuracyPenalty = 0f;                                                                         // 命中率ペナルティ
+    private float accuracyPenalty = 0f;                                                                         
 
-    public void ApplyAccuracyDown(float value)                                                                  // BattleManager などから参照する用
+    public void ApplyAccuracyDown(float value)                                                                  
     {
-        accuracyPenalty += value;                                                                               // 別のコードからのペナルティを加算
+        accuracyPenalty += value;                                                                               
     }
 
     public float GetAccuracyPenalty()
     {
-        return accuracyPenalty;                                                                                 // 現在の命中率ペナルティを返す
+        return accuracyPenalty;                                                                                
     }
 
     public void OnPartBroken(PartType part)
     {
-        switch (part)                                                                                           // 破壊された部位ごとの処理分岐
+        switch (part)                                                                                           
         {
             case PartType.RightHand:
             case PartType.LeftHand:
-                ApplyAccuracyDown(0.2f);                                                                        // 命中率ペナルティを加算
+                ApplyAccuracyDown(0.2f);                                                                        
                 break;
 
             case PartType.RightLeg:
             case PartType.LeftLeg:
-                at -= 1;                                                                                        // 攻撃力を減少
+                at -= 1;                                                                                        
                 break;
 
             case PartType.Face:
-                def -= 1;                                                                                       // 防御力を減少
+                def -= 1;                                                                                       
                 break;
         }
     }
 
     public EnemyData data;
 
+    // ダメージを受けたときの演出
     [Header("VFX")]
-    public GameObject damageEffect;                                                                             // ダメージを受けたときの演出（Inspectorで設定）
+    public GameObject damageEffect;                                                                             
 
-    private bool isBurning;                                                                                     // 火傷状態かどうかのフラグ
-    private int remainingBurnTurns;                                                                             // 火傷状態の残りターン数            
-    private GameObject burnVfxInstance;                                                                         // 火傷VFXの保存                                          
+    private bool isBurning;                                                                                    
+    private int remainingBurnTurns;                                                                             
+    private GameObject burnVfxInstance;                                                                        
 
-    public void ApplyBurn(StatusEffectData effect, int duration)                                                // BattleManager などから参照する用
+    public void ApplyBurn(StatusEffectData effect, int duration)                                                
     {
         if (effect == null)
         {
@@ -57,23 +58,24 @@ public class EnemyManager : UnitBase
             return;
         }
 
-        isBurning = true;                                                                                       // 敵を火傷状態にする
+        isBurning = true;                                                                                       
 
+        // 個別指定があれば、StatusEffectDataのターン数より優先する
         remainingBurnTurns = 
-            duration > 0                                                                                        // duration が 0 より
-                ? duration                                                                                      // 大きい場合は、指定された duration を使用し、
-                : effect.durationTurns;                                                                         // それ以外の場合は effect.durationTurns を使用する
+            duration > 0                                                                                        
+                ? duration                                                                                      
+                : effect.durationTurns;                                                                         
 
-        if (burnVfxInstance == null && effect.vfxPrefab != null)                                                // まだ火傷VFXが生成されていない場合、かつ effect.vfxPrefab が null でない場合
+        if (burnVfxInstance == null && effect.vfxPrefab != null)                                                
         {
             burnVfxInstance = Instantiate(
-                effect.vfxPrefab,                                                                               // StatusEffectDataに設定されている火傷エフェクトを生成
-                transform                                                                                       // 敵の位置に VFX を生成
+                effect.vfxPrefab,                                                                               
+                transform                                                                                       
             );
 
-            burnVfxInstance.transform.localPosition = Vector3.zero;                                             // VFXの位置を敵(0,0,0)に設定
-            burnVfxInstance.transform.localRotation = Quaternion.identity;                                      // VFXの回転をリセット
-            burnVfxInstance.transform.localScale = Vector3.one;                                                 // VFXのスケールを(1,1,1)に設定                
+            burnVfxInstance.transform.localPosition = Vector3.zero;                                             
+            burnVfxInstance.transform.localRotation = Quaternion.identity;                                      
+            burnVfxInstance.transform.localScale = Vector3.one;                                                 
             Debug.Log($"火傷VFXを生成しましたわ:{burnVfxInstance.name}");
         }
 
@@ -82,15 +84,15 @@ public class EnemyManager : UnitBase
 
     public int TickBurnDamage()
     {
-        if (!isBurning) return 0;                                                                               // 火傷状態でない場合はダメージを0にして返す
+        if (!isBurning) return 0;                                                                               
 
         if (data == null)
         {
-            Debug.LogError("EnemyDataが設定されていません");                                                     // EnemyDataがInspectorに設定されていない場合のエラーログ
+            Debug.LogError("EnemyDataが設定されていません");                                                   
             return 0;
         }
 
-        float burnRate;                                                                                         // 火傷ダメージの割合を決定する変数
+        float burnRate;                                                                                         
 
         switch (data.enemyType)
         {
@@ -109,9 +111,9 @@ public class EnemyManager : UnitBase
         }
 
         int damage = 
-            Mathf.FloorToInt(maxHp * burnRate);                                                                 // 最大HPに基づいて火傷ダメージを計算
+            Mathf.FloorToInt(maxHp * burnRate);                                                                 
 
-        damage =Mathf.Max(1, damage);                                                                           // ダメージが1未満にならないように調整
+        damage =Mathf.Max(1, damage);                                                                           
 
         TakeDamageRaw(damage);
         
@@ -185,14 +187,14 @@ public class EnemyManager : UnitBase
 
     public int Attack(PlayerManager player)
     {
-        return player.TakePhysical(at);                                                                                 // プレイヤーに物理攻撃を行い、ダメージ量を返す
+        return player.TakePhysical(at);                                                                                 
     }
 
     protected override void OnDamaged(int damage, bool isMagic)
     {
         if (damageEffect != null)
         {
-            Instantiate(damageEffect, this.transform, false);                                                           // ダメージエフェクトを敵の位置を基準に生成
+            Instantiate(damageEffect, this.transform, false);                                                           
         }
 
         transform.DOShakePosition(0.3f, 0.5f, 20, 0, false, true);                                                      // 敵を0.3秒間、強さ0.5で揺らす。細かさは20、ランダムシードは0、スナップ0, フェードアウトあり。
@@ -202,16 +204,17 @@ public class EnemyManager : UnitBase
     protected override void OnDied()
     {
         Debug.Log(name + "は倒れた");
-        DOTween.Kill(transform);                                                                                        // 敵の揺れアニメーションを停止
+        DOTween.Kill(transform);                                                                                       
     }
 
-    public override IEnumerator Act()                                                                                   // UnitBaseの実装。現在の敵行動はBattleManager側で処理
+    // 現在の敵行動はBattleManager側で処理
+    public override IEnumerator Act()                                                                                  
     {        
-        yield break;                                                                                                    // 現在は何も行動しない
+        yield break;                                                                                                    
     }
-    public void TakeDamageRaw(int damage)                                                                               // 敵に直接ダメージを与えるメソッド
+    public void TakeDamageRaw(int damage)                                                                               
     {
-        damage = Mathf.Max(1, damage);                                                                                   // ダメージが0未満にならないように調整                                      
+        damage = Mathf.Max(1, damage);                                                                                              
         hp = Mathf.Clamp(hp - damage, 0, maxHp);
 
         if (hp <= 0)

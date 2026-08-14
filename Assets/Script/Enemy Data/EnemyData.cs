@@ -21,26 +21,23 @@ public class EnemyData : ScriptableObject
     public int mdef = 0;
 
     [Range(0f, 1f)]
-    public float evasionRate = 0f;
-
-    [Header("報酬")]
-    public int goldReward = 0;
-    public DropTable dropTable;                     
+    public float evasionRate = 0f;             
 
     [Header("パフォーマンス / 演出")]
     public GameObject damageEffect;
-    public GameObject deathEffect;                  // 将来用
+    // TODO: 死亡時のエフェクトを設定する
+    public GameObject deathEffect;                  
     public AudioClip hitSE;
     public AudioClip deathSE;
 
     [Tooltip("使えるスキル一覧（任意）")]
     
-    public SkillData attackSkill;                   // 通常攻撃（保険）
-    public List<SkillData> skillList = new();       // ここに最大4つ入れる（Inspector）
+    public SkillData attackSkill;                  
+    public List<SkillData> skillList = new();       
 
     [Header("敵の種類（強さランク）")]
-    
-    public EnemyType enemyType = EnemyType.Normal;  // 火傷ダメージの倍率計算などに使用中。
+    // 火傷ダメージの倍率計算などに使用中。
+    public EnemyType enemyType = EnemyType.Normal;  
 
     [Header("敵の役割（戦い方のタイプ）")]
     public EnemyRole role = EnemyRole.Attacker;

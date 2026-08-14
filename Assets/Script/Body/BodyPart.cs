@@ -10,15 +10,15 @@ public enum PartType
 public class BodyPart : MonoBehaviour
 {
     [Header("Highlight")]
-    [SerializeField] private SpriteRenderer highlight;                      // 選択時のハイライト表示用のSpriteRenderer
+    [SerializeField] private SpriteRenderer highlight;                      
 
     [Header("Part Settings")]
-    public PartType partType;                                               // 部位の種類
-    public bool canBreak = true;                                            // 部位が破壊可能かどうか
+    public PartType partType;                                               
+    public bool canBreak = true;                                            
 
     [Header("Part HP")]
-    [Min(1)] public int maxPartHp = 30;                                     // 部位の最大HP
-    private int partHp;                                                     // 部位の現在HP      
+    [Min(1)] public int maxPartHp = 30;                                     
+    private int partHp;                                                     
 
     public bool IsBroken => canBreak && partHp <= 0;
 
@@ -30,10 +30,10 @@ public class BodyPart : MonoBehaviour
             highlight = GetComponent<SpriteRenderer>();
 
         if (highlight != null)
-            highlight.enabled = false;                                      // 初期状態ではハイライトを非表示にする
+            highlight.enabled = false;                                      
     }
 
-    public string GetPartNameJP()                                           // それぞれの部位の日本語化
+    public string GetPartNameJP()                                           
     {
         switch (partType)
         {
@@ -43,22 +43,22 @@ public class BodyPart : MonoBehaviour
             case PartType.LeftHand: return "左手";
             case PartType.RightLeg: return "右脚";
             case PartType.LeftLeg: return "左脚";
-            default: return partType.ToString();                            // どのケースにも当てはまらない場合デフォルトの名前を返す
+            default: return partType.ToString();                            
         }
     }
 
-    public void SetSelectedVisual(bool selected)                            // 選択状態のビジュアルを切り替える
+    public void SetSelectedVisual(bool selected)                            
     {
         if (highlight == null) return;
-        highlight.enabled = selected;                                       // ハイライトの表示状態を切り替える
+        highlight.enabled = selected;                                       
     }
-    public int TakePartDamage(int damage)                                   // 部位にダメージを与えるメソッド
+    public int TakePartDamage(int damage)                                   
     {
         if (damage <= 0) return 0;
-        if (IsBroken) return 0;                                             // すでに破壊されている場合はダメージを与えない
+        if (IsBroken) return 0;                                             
 
-        int before = partHp;                                                // ダメージを与える前の部位HPを保存する
-        partHp -= damage;                                                   // ダメージを部位HPから引く
+        int before = partHp;                                                
+        partHp -= damage;                                                   
 
         if (!canBreak)
         {
@@ -77,16 +77,18 @@ public class BodyPart : MonoBehaviour
         return before - partHp;
     }
 
-    private void OnBroken()                                                 // 部位が破壊されたときの処理
+    private void OnBroken()                                                 
     {
-        var enemy = GetComponentInParent<EnemyManager>();                   // EnemyManagerコンポーネントを取得し処理させる
+        var enemy = GetComponentInParent<EnemyManager>();                   
         if (enemy == null) return;
 
         enemy.OnPartBroken(partType);
     }
     private void OnValidate()
     {
-        if (maxPartHp < 1) maxPartHp = 1;                                   // 最大HPが1未満の場合は1に設定する
-        if (partType == PartType.Belly) canBreak = false;                   // 腹部の場合は破壊不可能に設定する
+        if (maxPartHp < 1) maxPartHp = 1;
+
+        // 腹部の場合は破壊不可能に設定する
+        if (partType == PartType.Belly) canBreak = false;                   
     }
 }
