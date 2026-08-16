@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
-  m_Name: 02_Speed
+  m_Name: 02_Ninja
   m_EditorClassIdentifier: 
   enemyName: "\u5FCD\u8005"
   icon: {fileID: 0}
@@ -21,9 +21,7 @@ MonoBehaviour:
   def: 0
   mag: 0
   mdef: 0
-  evasionRate: 0
-  goldReward: 0
-  dropTable: {fileID: 0}
+  evasionRate: 0.75
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}

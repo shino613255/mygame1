@@ -14,8 +14,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private float playerBaseAccuracy = 1f;                             
     [SerializeField] private float enemyBaseAccuracy = 1f;                              
     [SerializeField] private float elementProcChance = 0.05f;                           // 属性攻撃の追加効果が発動する確率                  
-    [SerializeField] private SkillData playerDefaultSkill;                              
-    [SerializeField] private bool useDefaultSkill = false;                              
+    [SerializeField] private SkillData selectedPlayerSkill;                              
+    [SerializeField] private bool useSelectedSkill = false;                              
 
     [Header("UI References")]
     [SerializeField] private GameObject skillSelectionPanel;                            
@@ -49,7 +49,7 @@ public class BattleManager : MonoBehaviour
 
             if (playerData.startSkills != null && playerData.startSkills.Count > 0)     
             {
-                playerDefaultSkill = playerData.startSkills[0];                         
+                selectedPlayerSkill = playerData.startSkills[0];                         
             }
         }
     }
@@ -126,8 +126,8 @@ public class BattleManager : MonoBehaviour
 
             return;
         }
-        playerDefaultSkill = selectedSkill;                                             
-        useDefaultSkill = true;                                                         
+        selectedPlayerSkill = selectedSkill;
+        useSelectedSkill = true;                                                         
         waitingTap = true;                                                              
 
         skillSelectionPanel.SetActive(false);                                           
@@ -227,15 +227,15 @@ public class BattleManager : MonoBehaviour
         // 攻撃の情報を作る
         AttackContext ctx;                                                             
 
-        if (useDefaultSkill && playerDefaultSkill != null)                              
+        if (useSelectedSkill && selectedPlayerSkill != null)                              
         {
-            if (!player.TryUseMp(playerDefaultSkill.mpCost))                           
+            if (!player.TryUseMp(selectedPlayerSkill.mpCost))                           
             {
                 Debug.Log("MPが足りませんわ！");
                 return;
             }
 
-            ctx = CreateSkillAttackContext(playerDefaultSkill);
+            ctx = CreateSkillAttackContext(selectedPlayerSkill);
         }
         else
         {
@@ -243,7 +243,7 @@ public class BattleManager : MonoBehaviour
         }
 
         waitingTap = false;                                                            
-        isPlayerTurn = false;                                                           
+        isPlayerTurn = false;                                                             
 
         if (ctx.sourceSkill != null)
         {
@@ -253,17 +253,45 @@ public class BattleManager : MonoBehaviour
             PlaySkillEffect(ctx.sourceSkill, clickPos);                                 
         }
 
+        float accuracy =
+            ctx.sourceSkill != null
+                ? ctx.sourceSkill.accuracy
+                : playerBaseAccuracy;
+
+        bool hit = DamageRule.RollHit(
+            accuracy,
+            enemy.evasionRate
+        );
+
+        if (!hit)
+        {
+            if (useSelectedSkill)
+            {
+                useSelectedSkill = false;
+                selectedPlayerSkill = null;
+            }
+            playerUI.UpdateUI(player);
+
+            DialogTextManager.instance.SetScenarios(new string[]
+            {
+        $"{player.name}の攻撃！\nしかし{enemy.name}に当たらなかった！"
+            });
+
+            return;
+        }
+
+        //EnemyPartsControllerで本体・部位へのダメージを計算して適用する
         var result = enemyParts.ApplyAttack(ctx);                                       
 
         if (
             ctx.sourceSkill != null &&                                                  
-            ctx.sourceSkill.statusEffect != null &&                                     // スキルに状態異常効果がある
+            ctx.sourceSkill.statusEffect != null &&                                     
             enemy != null &&                                                            
             enemy.IsAlive                                                               
 )
         {
             StatusEffectData effect =
-                ctx.sourceSkill.statusEffect;                                           // スキルの状態異常効果をeffectに代入
+                ctx.sourceSkill.statusEffect;                                           
 
             // SkillData側に個別設定があれば、StatusEffectDataより優先する
             float chance =
@@ -286,10 +314,10 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        if (useDefaultSkill)                                                         
+        if (useSelectedSkill)                                                         
         {
-            useDefaultSkill = false;                                                   
-            playerDefaultSkill = null;                                                  
+            useSelectedSkill = false;                                                   
+            selectedPlayerSkill = null;                                                  
         }
 
         if (enemy != null)
