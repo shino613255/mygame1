@@ -96,6 +96,7 @@
     <Compile Include="Assets\Script\Town\PlayerSelectButton.cs" />
     <Compile Include="Assets\Script\Skill\ElementType.cs" />
     <Compile Include="Assets\Script\Battle\PlayerManager.cs" />
+    <Compile Include="Assets\Script\Quest\FloorData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

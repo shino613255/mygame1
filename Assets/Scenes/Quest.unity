@@ -2006,8 +2006,8 @@ MonoBehaviour:
   playerBaseAccuracy: 1
   enemyBaseAccuracy: 1
   elementProcChance: 0.05
-  playerDefaultSkill: {fileID: 0}
-  useDefaultSkill: 0
+  selectedPlayerSkill: {fileID: 0}
+  useSelectedSkill: 0
   skillSelectionPanel: {fileID: 2059511733}
   screenShakeTarget: {fileID: 519420032}
   questManager: {fileID: 471562400}
@@ -3909,9 +3909,41 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1136246650}
     - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: floors.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
       propertyPath: sceneTransitionManager
       value: 
       objectReference: {fileID: 1952424751}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: floors.Array.data[0].enemyDatas.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: floors.Array.data[1].enemyDatas.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: floors.Array.data[2].enemyDatas.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: floors.Array.data[3].enemyDatas.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: 'floors.Array.data[0].enemyDatas.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 1114fa510e47db84a96fa1b1a8b24ebc, type: 2}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: 'floors.Array.data[1].enemyDatas.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c8395baa47ca2c44ebb70e6a50b505ad, type: 2}
+    - target: {fileID: 2911429201111135269, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
+      propertyPath: 'floors.Array.data[3].enemyDatas.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7eaf2d2898d963245a4d22c8dd5fc72b, type: 2}
     - target: {fileID: 4748284861677902581, guid: 8729840ef6312d249b4bc178bf9518f1, type: 3}
       propertyPath: m_Name
       value: QuestManager

@@ -1,7 +1,8 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
+using static FloorData;
 
 public class QuestManager : MonoBehaviour
 {
@@ -9,8 +10,8 @@ public class QuestManager : MonoBehaviour
     public PlayerUIManager playerUI;                                                                            
     public StageUIManager stageUI;                                                                              
     public BattleManager battleManager;                                                                         
-    public SceneTransitionManager sceneTransitionManager;                                                       
-    [SerializeField] private EnemyData[] enemyDatas;                                                            
+    public SceneTransitionManager sceneTransitionManager;
+    [SerializeField] private List<FloorData> floors = new();
     public GameObject QuestBG;
 
     // 1Ç»ÇÁëòãˆÇµÇ»Ç¢ÅA0Ç»ÇÁëòãˆ
@@ -90,23 +91,24 @@ public class QuestManager : MonoBehaviour
         SoundManager.instance.PlayButtonSE(0);                                                                  
     }
 
-    private EnemyData GetRandomEnemyData()
-    {
-        int index = Random.Range(0, enemyDatas.Length);
-        return enemyDatas[index];
-    }
-
     void EncountEnemy()
     {
+        stageUI.HideButtons();
+
+        FloorData currentFloor = floors[currentStage - 1];
+
+        if(currentFloor.enemyDatas == null || currentFloor.enemyDatas.Count == 0)                                                        
+        {
+            stageUI.ShowButtons();
+            return;
+        }
 
         DialogTextManager.instance.SetScenarios(new string[]
         {
             "ìGÇ™åªÇÍÇΩÅI"
         });
 
-        stageUI.HideButtons();                                                                                  
-
-        EnemyData selectedData = GetRandomEnemyData();
+        EnemyData selectedData = currentFloor.enemyDatas[0];
 
         GameObject enemyObj = Instantiate(selectedData.prefab);                                                     
         EnemyManager enemy = enemyObj.GetComponent<EnemyManager>();                                             
