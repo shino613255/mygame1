@@ -15,8 +15,9 @@ public class QuestManager : MonoBehaviour
     public GameObject QuestBG;
 
     // 1‚È‚ç‘˜‹ö‚µ‚È‚¢A0‚È‚ç‘˜‹ö
-    int[] encountTable = { 0, 0, 0, 0, 1};                                                              
+    int[] encountTable = { 0, 0, 0, 0, 1};
 
+    private int currentFloorIndex = 0;
     int currentStage = 0;                                                                                       
     private void Start()
     {
@@ -95,7 +96,7 @@ public class QuestManager : MonoBehaviour
     {
         stageUI.HideButtons();
 
-        FloorData currentFloor = floors[currentStage - 1];
+        FloorData currentFloor = floors[currentFloorIndex];
 
         if(currentFloor.enemyDatas == null || currentFloor.enemyDatas.Count == 0)                                                        
         {
@@ -111,8 +112,10 @@ public class QuestManager : MonoBehaviour
         EnemyData selectedData = currentFloor.enemyDatas[0];
 
         GameObject enemyObj = Instantiate(selectedData.prefab);                                                     
-        EnemyManager enemy = enemyObj.GetComponent<EnemyManager>();                                             
-        enemy.data = selectedData;
+        EnemyManager enemy = enemyObj.GetComponent<EnemyManager>();
+
+        enemy.Setup(selectedData);
+
         battleManager.Setup(enemy);                                                                             
     }
 

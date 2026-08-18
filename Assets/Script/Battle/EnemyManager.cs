@@ -175,6 +175,8 @@ public class EnemyManager : UnitBase
         name = data.enemyName;
         maxHp = data.maxHp;
         hp = maxHp;
+        maxMp = data.maxMp;
+        mp = maxMp;
 
         at = data.at;
         def = data.def;
