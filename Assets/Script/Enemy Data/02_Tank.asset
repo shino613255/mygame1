@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
-  m_Name: 02_Ninja
+  m_Name: 02_Tank
   m_EditorClassIdentifier: 
-  enemyName: "\u5FCD\u8005"
+  enemyName: "\u9A0E\u58EB"
   icon: {fileID: 0}
-  prefab: {fileID: 4235716888136053994, guid: 788a2c5c10c6b3a4b8132ecc609a117e, type: 3}
-  maxHp: 100
-  maxMp: 40
-  at: 50
-  def: 0
+  prefab: {fileID: 7039346821692218117, guid: 56ad366403e2c0a4ba5b138bfc0d947e, type: 3}
+  maxHp: 300
+  maxMp: 0
+  at: 20
+  def: 20
   mag: 0
-  mdef: 0
-  evasionRate: 0.75
+  mdef: 20
+  evasionRate: 0
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}
@@ -29,4 +29,4 @@ MonoBehaviour:
   attackSkill: {fileID: 0}
   skillList: []
   enemyType: 0
-  role: 2
+  role: 1

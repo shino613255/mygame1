@@ -17,8 +17,13 @@ public class QuestManager : MonoBehaviour
     // 1なら遭遇しない、0なら遭遇
     int[] encountTable = { 0, 0, 0, 0, 1};
 
-    private int currentFloorIndex = 0;
-    int currentStage = 0;                                                                                       
+    private int currentFloorIndex = 0;      // 今何層目か
+    private int currentEnemyIndex = 0;      // その階層の何体目の敵か
+    int currentStage = 0;
+
+    private bool hasActiveEnemy = false;    // 現在戦闘対象の敵が存在しているかどうかのフラグ
+    private bool isQuestCleared = false;    // クエストクリア済みかどうかのフラグ
+
     private void Start()
     {
         PlayerData data = PlayerSelectionManager.Instance.selectedPlayer;
@@ -94,43 +99,103 @@ public class QuestManager : MonoBehaviour
 
     void EncountEnemy()
     {
-        stageUI.HideButtons();
+        if (isQuestCleared) return;
+        if (hasActiveEnemy) return;
+
+        if(currentFloorIndex >= floors.Count)                                                                        
+        {
+            QuestClear();
+            return;
+        }
 
         FloorData currentFloor = floors[currentFloorIndex];
 
-        if(currentFloor.enemyDatas == null || currentFloor.enemyDatas.Count == 0)                                                        
+        if(currentFloor.enemyDatas == null ||
+            currentFloor.enemyDatas.Count == 0)                                                    
         {
             stageUI.ShowButtons();
             return;
         }
+
+        EnemyData selectedData 
+            = currentFloor.enemyDatas[currentEnemyIndex];        // 現在の階層の敵データを取得
+
+        if (selectedData == null || selectedData.prefab == null)
+        {
+            Debug.LogWarning("EnemyData または Prefab が未設定です。");
+            stageUI.ShowButtons();
+            return;
+        }
+
+        stageUI.HideButtons();
 
         DialogTextManager.instance.SetScenarios(new string[]
         {
             "敵が現れた！"
         });
 
-        EnemyData selectedData = currentFloor.enemyDatas[0];
+        GameObject enemyObj =
+            Instantiate(selectedData.prefab);
+        
+        EnemyManager enemy =
+            enemyObj.GetComponent<EnemyManager>();
 
-        GameObject enemyObj = Instantiate(selectedData.prefab);                                                     
-        EnemyManager enemy = enemyObj.GetComponent<EnemyManager>();
+        if (enemy == null)
+        {
+            Destroy(enemyObj);
+            stageUI.ShowButtons();
+            return;
+        }
 
         enemy.Setup(selectedData);
+
+        hasActiveEnemy = true;
 
         battleManager.Setup(enemy);                                                                             
     }
 
     public void EndBattle()
     {
-        stageUI.ShowButtons();                                                                                  
+        if (isQuestCleared) return;
+        if (!hasActiveEnemy) return;
+
+        hasActiveEnemy = false;
+
+        FloorData currentFloor = floors[currentFloorIndex];                 // 現在の階層のデータを取得
+
+        currentEnemyIndex++;
+
+        if (currentEnemyIndex < currentFloor.enemyDatas.Count)              // その階層の敵が無くなるまで戦闘
+        {
+            EncountEnemy();
+            return;
+        }
+
+        currentEnemyIndex = 0;                                              // 次の階層に進むために敵インデックスをリセット
+        currentFloorIndex++;
+
+        if (currentFloorIndex >= floors.Count)
+        {
+            QuestClear();
+            return;
+        }
+
+        stageUI.ShowButtons();
     }
 
     void QuestClear()
     {
+        if (isQuestCleared) return;
+
+        isQuestCleared = true;
+        hasActiveEnemy = false;
+
         DialogTextManager.instance.SetScenarios(new string[]
         {
             "クエストクリア！",
             "街に戻ろう。"
         });
+
         SoundManager.instance.StopBGM();                                                                        
         SoundManager.instance.PlayButtonSE(2);                                                                  
         stageUI.ShowStageClear();                                                                               

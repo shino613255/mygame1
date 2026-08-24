@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
+  m_Name: 04_Ninja
+  m_EditorClassIdentifier: 
+  enemyName: "\u5FCD\u8005"
+  icon: {fileID: 0}
+  prefab: {fileID: 4235716888136053994, guid: 788a2c5c10c6b3a4b8132ecc609a117e, type: 3}
+  maxHp: 100
+  maxMp: 40
+  at: 50
+  def: 0
+  mag: 0
+  mdef: 0
+  evasionRate: 0.75
+  damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
+  deathEffect: {fileID: 0}
+  hitSE: {fileID: 0}
+  deathSE: {fileID: 0}
+  attackSkill: {fileID: 0}
+  skillList: []
+  enemyType: 0
+  role: 2

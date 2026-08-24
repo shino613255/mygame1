@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
-  m_Name: 03_Tank
+  m_Name: 03_Elite Attacker
   m_EditorClassIdentifier: 
-  enemyName: "\u9A0E\u58EB"
+  enemyName: 
   icon: {fileID: 0}
-  prefab: {fileID: 7039346821692218117, guid: 56ad366403e2c0a4ba5b138bfc0d947e, type: 3}
-  maxHp: 300
+  prefab: {fileID: 0}
+  maxHp: 10
   maxMp: 0
-  at: 20
-  def: 20
+  at: 1
+  def: 0
   mag: 0
-  mdef: 20
+  mdef: 0
   evasionRate: 0
-  damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
+  damageEffect: {fileID: 0}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
   skillList: []
   enemyType: 0
-  role: 1
+  role: 0
