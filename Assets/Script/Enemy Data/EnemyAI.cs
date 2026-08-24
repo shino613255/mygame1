@@ -23,11 +23,30 @@ public class EnemyAI : MonoBehaviour
         }
 
         if (pool.Count == 0) return null;                                               
-        float hpRate = (float)enemy.hp / enemy.maxHp;                                   
+        float hpRate = (float)enemy.hp / enemy.maxHp;
 
-        pool.RemoveAll(s => s.mpCost > enemy.mp);                                       
+        pool.RemoveAll(s => s.mpCost > enemy.mp);
 
         if (pool.Count == 0) return null;
+
+        // Attackerは使用可能な攻撃スキルを優先する
+        if (enemy.data.role == EnemyRole.Attacker)
+        {
+            List<SkillData> attackSkills =
+                pool.FindAll(s =>
+                    s.skillType == SkillType.Physical ||
+                    s.skillType == SkillType.Magic
+                );
+
+            if (attackSkills.Count > 0)
+            {
+                return attackSkills[
+                    Random.Range(0, attackSkills.Count)
+                ];
+            }
+
+            return null;
+        }
 
         // 使用可能なHealスキルだけ抽出
         List<SkillData> healSkills =
@@ -48,9 +67,31 @@ public class EnemyAI : MonoBehaviour
             healChance = 0f;
         }
 
-        if (healSkills.Count > 0 && Random.value < healChance && enemy.mp >= healSkills[0].mpCost)                         
+        if (healSkills.Count > 0 && 
+            Random.value < healChance &&
+            enemy.mp >= healSkills[0].mpCost)                         
         {
             return healSkills[Random.Range(0, healSkills.Count)];
+        }
+
+        if (enemy.data.role == EnemyRole.Tank)
+        {
+            SkillData magicDefenseSkill =
+                pool.Find(s =>
+                    s.skillType == SkillType.Buff &&
+                    s.statusEffect != null &&
+                    s.statusEffect.type == StatusEffectType.MagicDefenseUp
+                );
+
+            if (
+                magicDefenseSkill != null &&
+                !enemy.isMagicDefenseBuffed
+            )
+            {
+                return magicDefenseSkill;
+            }
+
+            return null;
         }
 
         pool.RemoveAll(s => s.skillType == SkillType.Heal);                             

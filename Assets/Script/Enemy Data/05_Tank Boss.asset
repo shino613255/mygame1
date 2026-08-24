@@ -28,5 +28,5 @@ MonoBehaviour:
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
   skillList: []
-  enemyType: 0
-  role: 0
+  enemyType: 2
+  role: 1

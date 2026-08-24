@@ -16,14 +16,12 @@ MonoBehaviour:
   icon: {fileID: 0}
   prefab: {fileID: 4036637313795360933, guid: 5d1bd10cecc95f84f918be41d959b7ec, type: 3}
   maxHp: 150
-  maxMp: 30
+  maxMp: 20
   at: 30
   def: 10
   mag: 0
   mdef: 10
   evasionRate: 0
-  goldReward: 0
-  dropTable: {fileID: 0}
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}

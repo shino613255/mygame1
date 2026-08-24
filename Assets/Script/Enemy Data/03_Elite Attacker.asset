@@ -14,19 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: 
   icon: {fileID: 0}
-  prefab: {fileID: 0}
-  maxHp: 10
-  maxMp: 0
-  at: 1
-  def: 0
+  prefab: {fileID: 404539376385089994, guid: 314dedb7927f657408b85298c71324dd, type: 3}
+  maxHp: 250
+  maxMp: 40
+  at: 40
+  def: 20
   mag: 0
-  mdef: 0
+  mdef: 20
   evasionRate: 0
-  damageEffect: {fileID: 0}
+  damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
-  skillList: []
-  enemyType: 0
+  skillList:
+  - {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}
+  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
+  enemyType: 1
   role: 0

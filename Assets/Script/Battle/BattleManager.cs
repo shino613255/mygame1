@@ -106,7 +106,7 @@ public class BattleManager : MonoBehaviour
             var result = SkillExecutor.Execute(player, player, selectedSkill);          // スキルを実行して結果を取得            
             if (!result.executed)
             {
-                DialogTextManager.instance.SetScenarios(new string[]
+                DialogTextManager.instance.SetScenarios(new string[]                    // スキルが実行できなかった場合のメッセージを表示
                 {
                     result.message
                 });
@@ -121,7 +121,7 @@ public class BattleManager : MonoBehaviour
             waitingTap = false;
             isPlayerTurn = false;
 
-            DialogTextManager.instance.SetScenarios(new string[]
+            DialogTextManager.instance.SetScenarios(new string[]                        // スキルの結果を表示
                 {
                     result.message
                 });
@@ -466,6 +466,9 @@ public class BattleManager : MonoBehaviour
     {
         if (enemy == null || player == null) yield break;
 
+        enemy.TickDefenseBuff();
+        enemy.TickMagicDefenseBuff();
+
         int burnDmg = enemy.TickBurnDamage();
         if (burnDmg > 0)
         {
@@ -521,6 +524,9 @@ public class BattleManager : MonoBehaviour
             {
             $"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた"
             });
+
+            yield return new WaitForSeconds(0.5f);
+
             yield break;
         }
 
@@ -535,12 +541,20 @@ public class BattleManager : MonoBehaviour
             target = player;
         }
 
-        var result = SkillExecutor.Execute(
+       var result = SkillExecutor.Execute(
             enemy,
             target,
             skill,
             0f
         );
+
+        if (result.executed)
+        {
+            PlaySkillEffect(
+                skill,
+                enemy.transform.position
+            );
+        }
 
         enemyUI.UpdateUI(enemy);
 
@@ -562,6 +576,8 @@ public class BattleManager : MonoBehaviour
         {
         result.message
         });
+
+        yield return new WaitForSeconds(0.5f); 
     }
 
 

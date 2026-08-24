@@ -10,7 +10,7 @@ public class EnemyUIManager : MonoBehaviour
 
     public void SetupUI(EnemyManager enemy)
     {
-        hpText.text = $"HP:{enemy.data.maxHp}";
+        hpText.text = $"HP:{enemy.hp}";
         nameText.text = enemy.data.enemyName;
     }
 

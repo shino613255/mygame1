@@ -7,5 +7,7 @@ public enum StatusEffectType
     None,
     Frozen,
     Burn,
-    Deficiency
+    Deficiency,
+    DefenseUp,
+    MagicDefenseUp,
 }

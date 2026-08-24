@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   prefab: {fileID: 7039346821692218117, guid: 56ad366403e2c0a4ba5b138bfc0d947e, type: 3}
   maxHp: 300
-  maxMp: 0
+  maxMp: 60
   at: 20
   def: 20
   mag: 0
@@ -27,6 +27,8 @@ MonoBehaviour:
   hitSE: {fileID: 0}
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
-  skillList: []
+  skillList:
+  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
+  - {fileID: 11400000, guid: 068e3308c032ddc4aa456c90301f5868, type: 2}
   enemyType: 0
   role: 1

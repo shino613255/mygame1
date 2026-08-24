@@ -17,6 +17,12 @@ public class StatusEffectData : ScriptableObject
     // frozen 用
     [Range(0f, 1f)] public float statDownRate = 0.15f;
 
+    // 防御バフ用
+    public int defUpAmount = 10;
+
+    // 魔法防御バフ用
+    public int mdefUpAmount = 10;
+
     // 状態異常の見た目 
     [Header("VFX")]
     public GameObject vfxPrefab;   

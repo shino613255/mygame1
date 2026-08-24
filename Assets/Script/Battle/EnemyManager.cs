@@ -46,9 +46,142 @@ public class EnemyManager : UnitBase
     [Header("VFX")]
     public GameObject damageEffect;                                                                             
 
-    private bool isBurning;                                                                                    
-    private int remainingBurnTurns;                                                                             
-    private GameObject burnVfxInstance;                                                                        
+    private bool isBurning;
+    private int remainingBurnTurns;
+
+    private bool isDefenseBuffed;
+    private int remainingDefenseBuffTurns;
+    private int defenseBuffAmount;
+    private GameObject burnVfxInstance;
+
+    public bool isMagicDefenseBuffed;
+    private int remainingMagicDefenseBuffTurns;
+    private int magicDefenseBuffAmount;
+    private GameObject magicDefenseVfxInstance;
+
+
+    public void ApplyMagicDefenseBuff(StatusEffectData effect, int duration)
+    {
+        if (effect == null) return;
+
+        if (!isMagicDefenseBuffed)
+        {
+            magicDefenseBuffAmount = effect.mdefUpAmount;
+            mdef += magicDefenseBuffAmount;
+        }
+
+        isMagicDefenseBuffed = true;
+
+        remainingMagicDefenseBuffTurns =
+            duration > 0
+                ? duration
+                : effect.durationTurns;
+
+        if (magicDefenseVfxInstance == null && 
+            effect.vfxPrefab != null)
+        {
+            // 敵本体のRendererを先に取得
+            Renderer enemyRenderer =
+                GetComponentInChildren<Renderer>();
+
+            if (magicDefenseVfxInstance == null && effect.vfxPrefab != null)
+            {
+                magicDefenseVfxInstance = Instantiate(
+                    effect.vfxPrefab,
+                    transform.position,
+                    effect.vfxPrefab.transform.rotation
+                );
+
+                Renderer[] vfxRenderers =
+                    magicDefenseVfxInstance.GetComponentsInChildren<Renderer>(true);
+
+                foreach (Renderer renderer in vfxRenderers)
+                {
+                    renderer.sortingLayerName = "Default";
+                    renderer.sortingOrder = 20;
+                }
+            }
+            
+        }
+
+        Debug.Log(
+            $"魔法防御力アップ！ MDEF:{mdef} 残り{remainingMagicDefenseBuffTurns}ターン"
+        );
+    }
+
+    public void TickMagicDefenseBuff()
+    {
+        if (!isMagicDefenseBuffed) return;
+
+        remainingMagicDefenseBuffTurns--;
+
+        if (remainingMagicDefenseBuffTurns <= 0)
+        {
+            RemoveMagicDefenseBuff();
+        }
+    }
+
+    private void RemoveMagicDefenseBuff()
+    {
+        mdef -= magicDefenseBuffAmount;
+
+        magicDefenseBuffAmount = 0;
+        remainingMagicDefenseBuffTurns = 0;
+        isMagicDefenseBuffed = false;
+
+        if (magicDefenseVfxInstance != null)
+        {
+            Destroy(magicDefenseVfxInstance);
+            magicDefenseVfxInstance = null;
+        }
+
+        Debug.Log($"魔法防御力アップ終了！ MDEF:{mdef}");
+    }
+
+    public void ApplyDefenseBuff(StatusEffectData effect, int duration)
+    {
+        if (effect == null) return;
+
+        if (!isDefenseBuffed)
+        {
+            defenseBuffAmount = effect.defUpAmount;
+            def += defenseBuffAmount;
+        }
+
+        isDefenseBuffed = true;
+
+        remainingDefenseBuffTurns =
+            duration > 0
+                ? duration
+                : effect.durationTurns;
+
+        Debug.Log(
+            $"防御力アップ！ DEF:{def} 残り{remainingDefenseBuffTurns}ターン"
+        );
+    }
+
+    public void TickDefenseBuff()
+    {
+        if (!isDefenseBuffed) return;
+
+        remainingDefenseBuffTurns--;
+
+        if (remainingDefenseBuffTurns <= 0)
+        {
+            RemoveDefenseBuff();
+        }
+    }
+
+    private void RemoveDefenseBuff()
+    {
+        def -= defenseBuffAmount;
+
+        defenseBuffAmount = 0;
+        remainingDefenseBuffTurns = 0;
+        isDefenseBuffed = false;
+
+        Debug.Log($"防御力アップ終了！ DEF:{def}");
+    }
 
     public void ApplyBurn(StatusEffectData effect, int duration)                                                
     {
@@ -152,6 +285,9 @@ public class EnemyManager : UnitBase
 
         maxHp = data.maxHp;
         hp = maxHp;
+
+        maxMp = data.maxMp;
+        mp = maxMp;
 
         at = data.at;
         def = data.def;

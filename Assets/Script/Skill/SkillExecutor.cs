@@ -141,6 +141,24 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
                 em.ApplyBurn(skill.statusEffect, skill.overrideDurationTurns);                                                                                  
                 r.message += "\n火傷を与えた！";
             }
+            else if (skill.statusEffect.type == StatusEffectType.DefenseUp)
+            {
+                em.ApplyDefenseBuff(
+                    skill.statusEffect,
+                    skill.overrideDurationTurns
+                );
+
+                r.message += "\n防御力が上がった！";
+            }
+            else if (skill.statusEffect.type == StatusEffectType.MagicDefenseUp)
+            {
+                em.ApplyMagicDefenseBuff(
+                    skill.statusEffect,
+                    skill.overrideDurationTurns
+                );
+
+                r.message += "\n魔法防御力が上がった！";
+            }
             else if (skill.statusEffect.type == StatusEffectType.Deficiency)
             {
                 r.message += "\n欠損させた！";
