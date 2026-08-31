@@ -2724,9 +2724,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectIconContainer: {fileID: 0}
   effectIconPrefab: {fileID: 0}
-  burnIcon: {fileID: 0}
-  defenseUpIcon: {fileID: 0}
-  magicDefenseUpIcon: {fileID: 0}
+  burnIcon: {fileID: 21300000, guid: cc8c3f00406c12f438d7e047f456e78e, type: 3}
+  defenseUpIcon: {fileID: 21300000, guid: e5f5c906b18d71345b6231a72a4ab597, type: 3}
+  magicDefenseUpIcon: {fileID: 21300000, guid: e8cb2510017a1b142b68f8108ac2c3e2, type: 3}
   hpText: {fileID: 1492296202}
   nameText: {fileID: 1506446032}
 --- !u!114 &1738886358

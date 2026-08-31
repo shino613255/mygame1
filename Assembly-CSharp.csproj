@@ -62,13 +62,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Body\BodyPart.cs" />
+    <Compile Include="Assets\Script\Enemy Data\SpeedRoleAction.cs" />
     <Compile Include="Assets\Script\Town\TownManager.cs" />
     <Compile Include="Assets\Script\Skill\DebuffType.cs" />
     <Compile Include="Assets\Script\Skill\SkillCooldowns.cs" />
+    <Compile Include="Assets\Script\Enemy Data\AttackerRoleAction.cs" />
     <Compile Include="Assets\Script\Battle\PlayerUIManager.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartsController.cs" />
     <Compile Include="Assets\Script\Skill\SkillSlotUI.cs" />
     <Compile Include="Assets\Script\Enemy Data\EnemyData.cs" />
+    <Compile Include="Assets\Script\Enemy Data\IEnemyRoleAction.cs" />
     <Compile Include="Assets\Script\Skill\SkillType.cs" />
     <Compile Include="Assets\Script\Battle\EnemyUIManager.cs" />
     <Compile Include="Assets\Script\Title\TitleManager.cs" />
@@ -80,6 +83,7 @@
     <Compile Include="Assets\Script\Skill\BuffType.cs" />
     <Compile Include="Assets\Script\FadeIOManager.cs" />
     <Compile Include="Assets\Script\Battle\BattleManager.cs" />
+    <Compile Include="Assets\Script\Enemy Data\TankRoleAction.cs" />
     <Compile Include="Assets\Script\Quest\StageUIManager.cs" />
     <Compile Include="Assets\Script\Skill\TargetType.cs" />
     <Compile Include="Assets\Script\Town\PlayerSelectionManager.cs" />

@@ -50,12 +50,12 @@ public class EnemyUIManager : MonoBehaviour
             CreateEffectIcon(burnIcon);
         }
 
-        if (enemy.isDefenseBuffed)
+        if (enemy.IsDefenseBuffed)
         {
             CreateEffectIcon(defenseUpIcon);
         }
 
-        if (enemy.isMagicDefenseBuffed)
+        if (enemy.IsMagicDefenseBuffed)
         {
             CreateEffectIcon(magicDefenseUpIcon);
         }

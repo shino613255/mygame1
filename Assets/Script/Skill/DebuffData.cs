@@ -15,6 +15,4 @@ public class DebuffData : ScriptableObject
 
     [Range(0f, 1f)]
     public float statDownRate = 0.15f;
-
-    public GameObject vfxPrefab;
 }

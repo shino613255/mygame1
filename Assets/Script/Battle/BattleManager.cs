@@ -464,74 +464,109 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EnemyActAuto()
     {
-        if (enemy == null || player == null) yield break;
+        if (enemy == null || player == null)
+            yield break;
 
+        // Buffの残りターンを進める
         enemy.TickDefenseBuff();
         enemy.TickMagicDefenseBuff();
 
+        // Cooldownは火傷の有無に関係なく毎ターン進める
+        SkillCooldowns cooldowns =
+            enemy.GetComponent<SkillCooldowns>();
+
+        if (cooldowns != null)
+        {
+            cooldowns.Tick();
+        }
+
         enemyUI.UpdateUI(enemy);
 
+        // 火傷ダメージ
         int burnDmg = enemy.TickBurnDamage();
+
         if (burnDmg > 0)
         {
-            enemyUI.UpdateUI(enemy);
-            DialogTextManager.instance.SetScenarios(new string[]
-            {
-            $"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた"
-            });
-
-            yield return new WaitForSeconds(0.5f);
-
+            // 火傷で倒れた場合
             if (enemy == null || !enemy.IsAlive)
             {
                 yield return StartCoroutine(EndBattle());
                 yield break;
             }
 
-            var cooldowns = enemy.GetComponent<SkillCooldowns>();
+            enemyUI.UpdateUI(enemy);
 
-            if (cooldowns != null)
-            {
-                cooldowns.Tick();
-            }
+            DialogTextManager.instance.SetScenarios(
+                new string[]
+                {
+                $"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた"
+                }
+            );
+
+            yield return new WaitForSeconds(0.5f);
         }
 
         yield return new WaitForSeconds(0.5f);
 
-        // TODO: 部位破壊による命中率低下を反映
-        float finalAcc = enemyBaseAccuracy - enemy.GetAccuracyPenalty();
-
-        // TODO: 第2引数にプレイヤー回避率を渡す
-        bool hit = DamageRule.RollHit(finalAcc, 0f);
-
-        if (!hit)
-        {
-            DialogTextManager.instance.SetScenarios(new string[]
-            {
-            "敵の攻撃！\nしかし外れた！"
-            });
-            yield break;
-        }
-
+        // まず敵が使うスキルを決める
         SkillData skill = enemyAI.ChooseSkill(enemy);
 
+        // nullなら通常攻撃
         if (skill == null)
         {
-            SoundManager.instance.PlayButtonSE(1);
-            screenShakeTarget.DOShakePosition(0.3f, 0.5f, 20, 0, false, true);
+            float finalAcc =
+                enemyBaseAccuracy -
+                enemy.GetAccuracyPenalty();
 
-            int dmg = player.TakePhysical(enemy.at);
-            playerUI.UpdateUI(player);
-            DialogTextManager.instance.SetScenarios(new string[]
+            finalAcc = Mathf.Clamp01(finalAcc);
+
+            bool hit =
+                DamageRule.RollHit(
+                    finalAcc,
+                    0f
+                );
+
+            if (!hit)
             {
-            $"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた"
-            });
+                DialogTextManager.instance.SetScenarios(
+                    new string[]
+                    {
+                    "敵の攻撃！\nしかし外れた！"
+                    }
+                );
+
+                yield break;
+            }
+
+            SoundManager.instance.PlayButtonSE(1);
+
+            screenShakeTarget.DOShakePosition(
+                0.3f,
+                0.5f,
+                20,
+                0,
+                false,
+                true
+            );
+
+            int dmg =
+                player.TakePhysical(enemy.at);
+
+            playerUI.UpdateUI(player);
+
+            DialogTextManager.instance.SetScenarios(
+                new string[]
+                {
+                $"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた"
+                }
+            );
 
             yield return new WaitForSeconds(0.5f);
 
             yield break;
         }
 
+        // スキルの対象を決める
         UnitBase target;
 
         if (skill.targetType == TargetType.Self)
@@ -543,12 +578,15 @@ public class BattleManager : MonoBehaviour
             target = player;
         }
 
-       var result = SkillExecutor.Execute(
-            enemy,
-            target,
-            skill,
-            0f
-        );
+        // スキル側の命中判定・Buff・Healなどは
+        // SkillExecutorに任せる
+        var result =
+            SkillExecutor.Execute(
+                enemy,
+                target,
+                skill,
+                0f
+            );
 
         if (result.executed)
         {
@@ -560,11 +598,21 @@ public class BattleManager : MonoBehaviour
 
         enemyUI.UpdateUI(enemy);
 
-        if (result.hit && skill.targetType != TargetType.Self)
-        // 攻撃が命中し、ダメージが0より大きい場合
+        if (
+            result.hit &&
+            skill.targetType != TargetType.Self
+        )
         {
             SoundManager.instance.PlayButtonSE(1);
-            screenShakeTarget.DOShakePosition(0.3f, 0.5f, 20, 0, false, true);
+
+            screenShakeTarget.DOShakePosition(
+                0.3f,
+                0.5f,
+                20,
+                0,
+                false,
+                true
+            );
         }
 
         if (result.crit)
@@ -574,12 +622,14 @@ public class BattleManager : MonoBehaviour
 
         playerUI.UpdateUI(player);
 
-        DialogTextManager.instance.SetScenarios(new string[]
-        {
-        result.message
-        });
+        DialogTextManager.instance.SetScenarios(
+            new string[]
+            {
+            result.message
+            }
+        );
 
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForSeconds(0.5f);
     }
 
 

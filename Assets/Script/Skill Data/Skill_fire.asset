@@ -32,5 +32,7 @@ MonoBehaviour:
   mainDamageRate: 1
   partDamageRate: 1
   statusEffect: {fileID: 11400000, guid: 440da4452168a284d891e5988c1740c1, type: 2}
-  applyChance: 0.05
+  buff: {fileID: 0}
+  debuff: {fileID: 0}
+  applyChance: 1
   overrideDurationTurns: 3

@@ -2,12 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum StatusEffectType      
+public enum StatusEffectType
 {
-    None,
-    Frozen,
-    Burn,
-    Deficiency,
-    DefenseUp,
-    MagicDefenseUp,
+    None = 0,
+    Frozen = 1,
+    Burn = 2
 }

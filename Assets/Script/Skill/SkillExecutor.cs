@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExecutor
@@ -109,9 +108,13 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
                     break;
                 }
             case SkillType.Buff:
+                r.message = $"{skill.skillName}!";
+                ApplyBuff(target, skill, ref r);
+                break;
             case SkillType.Debuff:
                 {
                     r.message = $"{attacker.name}の{skill.skillName}！";
+                    ApplyDebuff(target, skill, ref r);
                     break;
                 }
         }
@@ -122,7 +125,63 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
 
         return r;
     }
+    private static void ApplyBuff(
+    UnitBase target,
+    SkillData skill,
+    ref Result r)
+    {
+        if (skill.buff == null)
+            return;
 
+        if (target is not EnemyManager enemy)
+            return;
+
+        switch (skill.buff.type)
+        {
+            case BuffType.DefenseUp:
+                enemy.ApplyDefenseBuff(
+                    skill.buff,
+                    skill.overrideDurationTurns
+                );
+
+                r.message += "\n防御力が上がった！";
+                break;
+
+            case BuffType.MagicDefenseUp:
+                enemy.ApplyMagicDefenseBuff(
+                    skill.buff,
+                    skill.overrideDurationTurns
+                );
+
+                r.message += "\n魔法防御力が上がった！";
+                break;
+        }
+    }
+
+    private static void ApplyDebuff(
+    UnitBase target,
+    SkillData skill,
+    ref Result r)
+    {
+        if (skill.debuff == null)
+            return;
+
+        if (Random.value > skill.applyChance)
+        {
+            r.message += "\nデバフは効かなかった！";
+            return;
+        }
+
+        if (target is not EnemyManager enemy)
+            return;
+
+        switch (skill.debuff.type)
+        {
+            case DebuffType.Deficiency:
+                r.message += "\n欠損させた！";
+                break;
+        }
+    }
 
     private static void ApplyStatusEffect(UnitBase attacker, UnitBase target, SkillData skill, ref Result r)                                                    
     {
@@ -132,36 +191,25 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
             ? skill.applyChance                                                                                                                                 
             : skill.statusEffect.applyChance;                                                                                                                   
 
-        if (Random.value > chance) return;                                                                                                                      
+        if (Random.value > chance) return;
 
-        if (target is EnemyManager em)                                                                                                                          
+        if (target is EnemyManager enemy)
         {
             if (skill.statusEffect.type == StatusEffectType.Burn)
             {
-                em.ApplyBurn(skill.statusEffect, skill.overrideDurationTurns);                                                                                  
-                r.message += "\n火傷を与えた！";
-            }
-            else if (skill.statusEffect.type == StatusEffectType.DefenseUp)
-            {
-                em.ApplyDefenseBuff(
+                bool applied = enemy.ApplyBurn(
                     skill.statusEffect,
                     skill.overrideDurationTurns
                 );
 
-                r.message += "\n防御力が上がった！";
-            }
-            else if (skill.statusEffect.type == StatusEffectType.MagicDefenseUp)
-            {
-                em.ApplyMagicDefenseBuff(
-                    skill.statusEffect,
-                    skill.overrideDurationTurns
-                );
-
-                r.message += "\n魔法防御力が上がった！";
-            }
-            else if (skill.statusEffect.type == StatusEffectType.Deficiency)
-            {
-                r.message += "\n欠損させた！";
+                if (applied)
+                {
+                    r.message += "\n火傷を与えた！";
+                }
+                else
+                {
+                    r.message += "\n別の状態異常が有効なため、火傷は付与されなかった！";
+                }
             }
         }
     }

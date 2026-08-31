@@ -4,6 +4,27 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    private Dictionary<EnemyRole, IEnemyRoleAction> roleActions;
+    private void Awake()
+    {
+        roleActions =
+            new Dictionary<EnemyRole, IEnemyRoleAction>
+            {
+            {
+                EnemyRole.Attacker,
+                new AttackerRoleAction()
+            },
+            {
+                EnemyRole.Tank,
+                new TankRoleAction()
+            },
+            {
+                EnemyRole.Speed,
+                new SpeedRoleAction()
+            }
+            };
+    }
+
     public SkillData ChooseSkill (EnemyManager enemy)                                  
     {
         if (enemy == null || enemy.data == null) return null;
@@ -27,74 +48,34 @@ public class EnemyAI : MonoBehaviour
 
         pool.RemoveAll(s => s.mpCost > enemy.mp);
 
-        if (pool.Count == 0) return null;
+        SkillCooldowns cooldowns =
+            enemy.GetComponent<SkillCooldowns>();
 
-        // Attackerは使用可能な攻撃スキルを優先する
-        if (enemy.data.role == EnemyRole.Attacker)
+        if (cooldowns != null)
         {
-            List<SkillData> attackSkills =
-                pool.FindAll(s =>
-                    s.skillType == SkillType.Physical ||
-                    s.skillType == SkillType.Magic
-                );
-
-            if (attackSkills.Count > 0)
-            {
-                return attackSkills[
-                    Random.Range(0, attackSkills.Count)
-                ];
-            }
-
-            return null;
+            pool.RemoveAll(s => !cooldowns.IsReady(s));
         }
 
-        if (enemy.data.role == EnemyRole.Tank)
+        if (pool.Count == 0) return null;
+
+        if (
+            roleActions != null &&
+            roleActions.TryGetValue(
+        enemy.data.role,
+        out IEnemyRoleAction roleAction
+    )
+)
         {
-            SkillData healSkill =
-                pool.Find(s =>
-                    s.skillType == SkillType.Heal
+            SkillData selectedSkill =
+                roleAction.ChooseSkill(
+                    enemy,
+                    pool
                 );
 
-            SkillData magicDefenseSkill =
-                pool.Find(s =>
-                    s.skillType == SkillType.Buff &&
-                    s.statusEffect != null &&
-                    s.statusEffect.type == StatusEffectType.MagicDefenseUp
-                );
-
-            SkillData defenseSkill =
-                pool.Find(s =>
-                    s.skillType == SkillType.Buff &&
-                    s.statusEffect != null &&
-                    s.statusEffect.type == StatusEffectType.DefenseUp
-                );
-
-            // HP30%以下なら回復を最優先
-            if (hpRate <= 0.3f && healSkill != null)
+            if (selectedSkill != null)
             {
-                return healSkill;
+                return selectedSkill;
             }
-
-            // 魔法防御バフが切れているなら使用
-            if (
-                magicDefenseSkill != null &&
-                !enemy.isMagicDefenseBuffed
-            )
-            {
-                return magicDefenseSkill;
-            }
-
-            // 防御バフが切れているなら使用
-            if (
-                defenseSkill != null &&
-                !enemy.isDefenseBuffed
-            )
-            {
-                return defenseSkill;
-            }
-
-            // 使用すべきスキルがない
-            return null;
         }
 
         // 使用可能なHealスキルだけ抽出

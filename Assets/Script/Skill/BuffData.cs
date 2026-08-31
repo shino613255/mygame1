@@ -14,6 +14,4 @@ public class BuffData : ScriptableObject
     public int durationTurns = 1;
 
     public int amount = 0;
-
-    public GameObject vfxPrefab;
 }

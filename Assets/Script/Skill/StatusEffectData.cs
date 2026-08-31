@@ -7,33 +7,34 @@ public class StatusEffectData : ScriptableObject
 {
     public StatusEffectType type = StatusEffectType.None;
 
-    [Min(1)] public int durationTurns = 1;      
-    [Range(0f, 1f)] public float applyChance = 0.05f;   
+    [Min(1)] 
+    public int durationTurns = 1; 
+    
+    [Range(0f, 1f)] 
+    public float applyChance = 0.05f;   
 
     // Burn 用
-    [Range(0f, 1f)] public float tickHpRate = 0.05f;    
+    [Range(0f, 1f)] 
+    public float tickHpRate = 0.05f;    
     public int tickDamageFlat = 0;
 
     // frozen 用
-    [Range(0f, 1f)] public float statDownRate = 0.15f;
+    [Range(0f, 1f)] 
+    public float statDownRate = 0.15f;
 
-    // 防御バフ用
-    public int defUpAmount = 10;
-
-    // 魔法防御バフ用
-    public int mdefUpAmount = 10;
-
-    // 状態異常の見た目 
-    [Header("VFX")]
-    public GameObject vfxPrefab;   
     public int CalcTickDamage(int targetMaxHp)
     {
-        if (type != StatusEffectType.Burn) return 0;
+        if (type != StatusEffectType.Burn)
+            return 0;
 
         if (tickDamageFlat > 0)
             return Mathf.Max(1, tickDamageFlat);
 
-        int dmg = Mathf.RoundToInt(targetMaxHp * tickHpRate);
+        int dmg =
+            Mathf.RoundToInt(
+                targetMaxHp * tickHpRate
+            );
+
         return Mathf.Max(1, dmg);
     }
 }

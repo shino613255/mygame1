@@ -44,31 +44,35 @@ public class EnemyManager : UnitBase
 
     // ダメージを受けたときの演出
     [Header("VFX")]
-    public GameObject damageEffect;                                                                             
+    public GameObject damageEffect;
 
-    private bool isBurning;
-    public bool IsBurning => isBurning;
+    [Header("状態異常")]
+    private StatusEffectType currentStatusEffect = StatusEffectType.None;
+
+    public StatusEffectType CurrentStatusEffect => currentStatusEffect;
+    public bool IsBurning => currentStatusEffect == StatusEffectType.Burn;
 
     private int remainingBurnTurns;
 
+    [Header("防御バフ")]
+    private bool isDefenseBuffed;
     private int remainingDefenseBuffTurns;
     private int defenseBuffAmount;
+    public bool IsDefenseBuffed => isDefenseBuffed;
 
+    [Header("魔法防御バフ")]
+    private bool isMagicDefenseBuffed;
     private int remainingMagicDefenseBuffTurns;
     private int magicDefenseBuffAmount;
 
-    private bool isDefenseBuffed;
-    public bool IsDefenseBuffed => isDefenseBuffed;
-
-    private bool isMagicDefenseBuffed;
     public bool IsMagicDefenseBuffed => isMagicDefenseBuffed;
-    public void ApplyMagicDefenseBuff(StatusEffectData effect, int duration)
+    public void ApplyMagicDefenseBuff(BuffData buff, int duration)
     {
-        if (effect == null) return;
+        if (buff == null) return;
 
         if (!isMagicDefenseBuffed)
         {
-            magicDefenseBuffAmount = effect.mdefUpAmount;
+            magicDefenseBuffAmount = buff.amount;
             mdef += magicDefenseBuffAmount;
         }
 
@@ -77,7 +81,7 @@ public class EnemyManager : UnitBase
         remainingMagicDefenseBuffTurns =
             duration > 0
                 ? duration
-                : effect.durationTurns;
+                : buff.durationTurns;
     }
 
     public void TickMagicDefenseBuff()
@@ -103,13 +107,13 @@ public class EnemyManager : UnitBase
         Debug.Log($"魔法防御力アップ終了！ MDEF:{mdef}");
     }
 
-    public void ApplyDefenseBuff(StatusEffectData effect, int duration)
+    public void ApplyDefenseBuff(BuffData buff, int duration)
     {
-        if (effect == null) return;
+        if (buff == null) return;
 
         if (!isDefenseBuffed)
         {
-            defenseBuffAmount = effect.defUpAmount;
+            defenseBuffAmount = buff.amount;
             def += defenseBuffAmount;
         }
 
@@ -118,7 +122,7 @@ public class EnemyManager : UnitBase
         remainingDefenseBuffTurns =
             duration > 0
                 ? duration
-                : effect.durationTurns;
+                : buff.durationTurns;
 
         Debug.Log(
             $"防御力アップ！ DEF:{def} 残り{remainingDefenseBuffTurns}ターン"
@@ -148,28 +152,48 @@ public class EnemyManager : UnitBase
         Debug.Log($"防御力アップ終了！ DEF:{def}");
     }
 
-    public void ApplyBurn(StatusEffectData effect, int duration)                                                
+    public bool ApplyBurn(StatusEffectData effect, int duration)
     {
         if (effect == null)
         {
-            Debug.LogWarning("StatusEffectData が null です。火傷状態を適用できませんわ。");
-            return;
+            Debug.LogWarning(
+                "StatusEffectData が null です。火傷状態を適用できません。"
+            );
+
+            return false;
         }
 
-        isBurning = true;                                                                                       
+        // 別の状態異常が有効ならBurnは付与しない
+        if (
+            currentStatusEffect != StatusEffectType.None &&
+            currentStatusEffect != StatusEffectType.Burn
+        )
+        {
+            Debug.Log(
+                $"{currentStatusEffect}が有効中のため、火傷は付与されませんでした。"
+            );
 
-        // 個別指定があれば、StatusEffectDataのターン数より優先する
-        remainingBurnTurns = 
-            duration > 0                                                                                        
-                ? duration                                                                                      
+            return false;
+        }
+
+        currentStatusEffect = StatusEffectType.Burn;
+
+        // SkillData側に個別指定があればそちらを優先
+        remainingBurnTurns =
+            duration > 0
+                ? duration
                 : effect.durationTurns;
 
-        Debug.Log($"火傷状態になった！ 残りターン: {remainingBurnTurns}");
-    }   
+        Debug.Log(
+            $"火傷状態になった！ 残りターン:{remainingBurnTurns}"
+        );
+
+        return true;
+    }
 
     public int TickBurnDamage()
     {
-        if (!isBurning) return 0;                                                                               
+        if (!IsBurning) return 0;
 
         if (data == null)
         {
@@ -217,12 +241,16 @@ public class EnemyManager : UnitBase
     }
     private void RemoveBurn()
     {
-        isBurning = false;
+        if (currentStatusEffect == StatusEffectType.Burn)
+        {
+            currentStatusEffect = StatusEffectType.None;
+        }
+
         remainingBurnTurns = 0;
 
         Debug.Log("火傷状態が解除されました");
     }
-    
+
     public void Setup(EnemyData enemyData)
     {
         data = enemyData;
