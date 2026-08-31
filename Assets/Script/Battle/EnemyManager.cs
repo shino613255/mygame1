@@ -47,19 +47,21 @@ public class EnemyManager : UnitBase
     public GameObject damageEffect;                                                                             
 
     private bool isBurning;
+    public bool IsBurning => isBurning;
+
     private int remainingBurnTurns;
 
-    private bool isDefenseBuffed;
     private int remainingDefenseBuffTurns;
     private int defenseBuffAmount;
-    private GameObject burnVfxInstance;
 
-    public bool isMagicDefenseBuffed;
     private int remainingMagicDefenseBuffTurns;
     private int magicDefenseBuffAmount;
-    private GameObject magicDefenseVfxInstance;
 
+    private bool isDefenseBuffed;
+    public bool IsDefenseBuffed => isDefenseBuffed;
 
+    private bool isMagicDefenseBuffed;
+    public bool IsMagicDefenseBuffed => isMagicDefenseBuffed;
     public void ApplyMagicDefenseBuff(StatusEffectData effect, int duration)
     {
         if (effect == null) return;
@@ -76,37 +78,6 @@ public class EnemyManager : UnitBase
             duration > 0
                 ? duration
                 : effect.durationTurns;
-
-        if (magicDefenseVfxInstance == null && 
-            effect.vfxPrefab != null)
-        {
-            // 敵本体のRendererを先に取得
-            Renderer enemyRenderer =
-                GetComponentInChildren<Renderer>();
-
-            if (magicDefenseVfxInstance == null && effect.vfxPrefab != null)
-            {
-                magicDefenseVfxInstance = Instantiate(
-                    effect.vfxPrefab,
-                    transform.position,
-                    effect.vfxPrefab.transform.rotation
-                );
-
-                Renderer[] vfxRenderers =
-                    magicDefenseVfxInstance.GetComponentsInChildren<Renderer>(true);
-
-                foreach (Renderer renderer in vfxRenderers)
-                {
-                    renderer.sortingLayerName = "Default";
-                    renderer.sortingOrder = 20;
-                }
-            }
-            
-        }
-
-        Debug.Log(
-            $"魔法防御力アップ！ MDEF:{mdef} 残り{remainingMagicDefenseBuffTurns}ターン"
-        );
     }
 
     public void TickMagicDefenseBuff()
@@ -128,12 +99,6 @@ public class EnemyManager : UnitBase
         magicDefenseBuffAmount = 0;
         remainingMagicDefenseBuffTurns = 0;
         isMagicDefenseBuffed = false;
-
-        if (magicDefenseVfxInstance != null)
-        {
-            Destroy(magicDefenseVfxInstance);
-            magicDefenseVfxInstance = null;
-        }
 
         Debug.Log($"魔法防御力アップ終了！ MDEF:{mdef}");
     }
@@ -197,20 +162,7 @@ public class EnemyManager : UnitBase
         remainingBurnTurns = 
             duration > 0                                                                                        
                 ? duration                                                                                      
-                : effect.durationTurns;                                                                         
-
-        if (burnVfxInstance == null && effect.vfxPrefab != null)                                                
-        {
-            burnVfxInstance = Instantiate(
-                effect.vfxPrefab,                                                                               
-                transform                                                                                       
-            );
-
-            burnVfxInstance.transform.localPosition = Vector3.zero;                                             
-            burnVfxInstance.transform.localRotation = Quaternion.identity;                                      
-            burnVfxInstance.transform.localScale = Vector3.one;                                                 
-            Debug.Log($"火傷VFXを生成しましたわ:{burnVfxInstance.name}");
-        }
+                : effect.durationTurns;
 
         Debug.Log($"火傷状態になった！ 残りターン: {remainingBurnTurns}");
     }   
@@ -267,12 +219,6 @@ public class EnemyManager : UnitBase
     {
         isBurning = false;
         remainingBurnTurns = 0;
-
-        if (burnVfxInstance != null)
-        {
-            Destroy(burnVfxInstance);
-            burnVfxInstance = null;
-        }
 
         Debug.Log("火傷状態が解除されました");
     }

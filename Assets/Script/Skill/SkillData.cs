@@ -59,12 +59,11 @@ public class SkillData : ScriptableObject
 
     [Header("追加効果（状態異常）")]
     public StatusEffectData statusEffect;
+    public BuffData buff;
+    public DebuffData debuff;
 
-    [Tooltip("0ならStatusEffectData側の付与確率を使用")]
     [Range(0f, 1f)]
-    public float applyChance = 0f;
+    public float applyChance = 1f;
 
-    [Tooltip("0ならStatusEffectData側の継続ターンを使用")]
-    [Min(0)]
     public int overrideDurationTurns = 0;
 }

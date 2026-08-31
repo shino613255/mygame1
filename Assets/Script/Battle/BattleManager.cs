@@ -469,6 +469,8 @@ public class BattleManager : MonoBehaviour
         enemy.TickDefenseBuff();
         enemy.TickMagicDefenseBuff();
 
+        enemyUI.UpdateUI(enemy);
+
         int burnDmg = enemy.TickBurnDamage();
         if (burnDmg > 0)
         {

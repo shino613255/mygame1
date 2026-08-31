@@ -18,7 +18,7 @@ MonoBehaviour:
   mpCost: 20
   cooldown: 0
   skillType: 3
-  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
+  effectPrefab: {fileID: 1652143759095011289, guid: 567f5d76812d10545bb802969ecef6fc, type: 3}
   effectDuration: 1.5
   effectOffset: {x: 0, y: 0}
   power: 0

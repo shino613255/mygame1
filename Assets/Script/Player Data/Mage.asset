@@ -16,7 +16,7 @@ MonoBehaviour:
   role: 1
   startMaxHp: 200
   startMaxMp: 200
-  startAt: 10
+  startAt: 30
   startMag: 50
   startDef: 0
   startMdef: 20

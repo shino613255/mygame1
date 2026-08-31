@@ -30,5 +30,6 @@ MonoBehaviour:
   skillList:
   - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
   - {fileID: 11400000, guid: 068e3308c032ddc4aa456c90301f5868, type: 2}
+  - {fileID: 11400000, guid: 0478a73a3bf74904aa5faa57a65ab64c, type: 2}
   enemyType: 0
   role: 1
