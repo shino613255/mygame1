@@ -15,10 +15,10 @@ MonoBehaviour:
   playerName: "\u9B54\u6CD5\u4F7F\u3044"
   role: 1
   startMaxHp: 200
-  startMaxMp: 200
-  startAt: 30
+  startMaxMp: 1200
+  startAt: 0
   startMag: 50
-  startDef: 0
+  startDef: 5
   startMdef: 20
   damageCutRate: 0
   evasionRate: 0

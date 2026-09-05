@@ -1,6 +1,5 @@
 using DG.Tweening;
 using System.Collections;
-// PlayerとEnemyの戦闘を管理するクラスusing System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -16,10 +15,12 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private float elementProcChance = 0.05f;           // 属性攻撃の追加効果が発動する確率                  
     [SerializeField] private SkillData selectedPlayerSkill;
     [SerializeField] private bool useSelectedSkill = false;
+    [SerializeField] private List<SkillSlotUI> skillSlots;
 
     [Header("UI References")]
     [SerializeField] private GameObject skillSelectionPanel;
 
+    public event System.Action BattleEnded;
     public Transform screenShakeTarget;                                 // プレイヤーがダメージを受けたときに揺れすようにするため
     public QuestManager questManager;
     public PlayerUIManager playerUI;
@@ -47,16 +48,15 @@ public class BattleManager : MonoBehaviour
         {
             player.Setup(playerData);
 
-            if (playerData.startSkills != null && playerData.startSkills.Count > 0)
-            {
-                selectedPlayerSkill = playerData.startSkills[0];
-            }
+            SetupSkillSlots();
         }
     }
 
     public void Setup(EnemyManager enemymanager)
     {
         isEndingBattle = false;
+
+        enemyAI.ResetBattleState();
 
         SoundManager.instance.PlayBGM("Battle");
         enemyUI.gameObject.SetActive(true);
@@ -90,6 +90,33 @@ public class BattleManager : MonoBehaviour
             TryPickBodyPart(Input.mousePosition);
         }
 
+    }
+
+    private void SetupSkillSlots()
+    {
+        if (playerData == null)
+            return;
+
+        for (int i = 0; i < skillSlots.Count; i++)
+        {
+            if (
+                playerData.startSkills != null &&
+                i < playerData.startSkills.Count
+            )
+            {
+                skillSlots[i].SetSkill(
+                    playerData.startSkills[i],
+                    player
+                );
+            }
+            else
+            {
+                skillSlots[i].SetSkill(
+                    null,
+                    player
+                );
+            }
+        }
     }
 
     public void OnSkillSelected(SkillData selectedSkill)
@@ -422,10 +449,19 @@ public class BattleManager : MonoBehaviour
 
             yield return StartCoroutine(EnemyActAuto());
 
+            // Player死亡
             if (
                 player == null ||
+                !player.IsAlive
+            )
+            {
+                questManager.QuestFailed();
+                yield break;
+            }
+
+            // Enemy死亡
+            if (
                 enemy == null ||
-                !player.IsAlive ||
                 !enemy.IsAlive
             )
             {
@@ -645,9 +681,6 @@ public class BattleManager : MonoBehaviour
 
         skillSelectionPanel.SetActive(false);
 
-        // 戦闘終了後の2秒間演出を待つ
-        yield return new WaitForSeconds(2f);
-
         DialogTextManager.instance.SetScenarios(new string[]
         {
             "モンスターはやられた。"
@@ -665,7 +698,8 @@ public class BattleManager : MonoBehaviour
 
         SoundManager.instance.PlayBGM("Quest");
 
-        questManager.EndBattle();
+        Debug.Log("BattleManager：戦闘終了通知を送信");
+        BattleEnded?.Invoke();
 
         Debug.Log("戦闘終了");
     }

@@ -660,7 +660,7 @@ GameObject:
   - component: {fileID: 6359292072780196667}
   - component: {fileID: 3328237819014090206}
   m_Layer: 0
-  m_Name: Enemy_Tank
+  m_Name: 02_Enemy Tank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -768,7 +768,7 @@ MonoBehaviour:
   critRate: 0.02
   critMultiplier: 2
   skillMultiplier: 2
-  data: {fileID: 11400000, guid: 7eaf2d2898d963245a4d22c8dd5fc72b, type: 2}
+  data: {fileID: 11400000, guid: c8395baa47ca2c44ebb70e6a50b505ad, type: 2}
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
 --- !u!114 &3328237819014090206
 MonoBehaviour:

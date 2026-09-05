@@ -836,7 +836,7 @@ GameObject:
   - component: {fileID: 5279189720763447617}
   - component: {fileID: 3678951827458509450}
   m_Layer: 0
-  m_Name: Enemy_Speed
+  m_Name: 03_Elite Attacker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -906,7 +906,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: cb5fdd25d1c27b84692dfc4701324d79, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9687b2304a3a68f4a85b8463f1b21be0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -944,7 +944,7 @@ MonoBehaviour:
   critRate: 0.02
   critMultiplier: 2
   skillMultiplier: 2
-  data: {fileID: 11400000, guid: 7eaf2d2898d963245a4d22c8dd5fc72b, type: 2}
+  data: {fileID: 11400000, guid: 999b0e70364b57f408b081497f83e3dd, type: 2}
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
 --- !u!114 &3678951827458509450
 MonoBehaviour:

@@ -62,11 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Body\BodyPart.cs" />
-    <Compile Include="Assets\Script\Enemy Data\SpeedRoleAction.cs" />
     <Compile Include="Assets\Script\Town\TownManager.cs" />
     <Compile Include="Assets\Script\Skill\DebuffType.cs" />
     <Compile Include="Assets\Script\Skill\SkillCooldowns.cs" />
-    <Compile Include="Assets\Script\Enemy Data\AttackerRoleAction.cs" />
     <Compile Include="Assets\Script\Battle\PlayerUIManager.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartsController.cs" />
     <Compile Include="Assets\Script\Skill\SkillSlotUI.cs" />
@@ -77,13 +75,13 @@
     <Compile Include="Assets\Script\Title\TitleManager.cs" />
     <Compile Include="Assets\Script\Enemy Data\EnemyRole.cs" />
     <Compile Include="Assets\Script\Battle\UnitBase.cs" />
+    <Compile Include="Assets\Script\Enemy Action\TankBossRoleAction.cs" />
     <Compile Include="Assets\Script\Skill\DebuffData.cs" />
     <Compile Include="Assets\Script\Enemy Data\EnemyAI.cs" />
     <Compile Include="Assets\Script\Quest\QuestManager.cs" />
     <Compile Include="Assets\Script\Skill\BuffType.cs" />
     <Compile Include="Assets\Script\FadeIOManager.cs" />
     <Compile Include="Assets\Script\Battle\BattleManager.cs" />
-    <Compile Include="Assets\Script\Enemy Data\TankRoleAction.cs" />
     <Compile Include="Assets\Script\Quest\StageUIManager.cs" />
     <Compile Include="Assets\Script\Skill\TargetType.cs" />
     <Compile Include="Assets\Script\Town\PlayerSelectionManager.cs" />
@@ -91,6 +89,7 @@
     <Compile Include="Assets\Script\DialogTextManager.cs" />
     <Compile Include="Assets\Script\Skill\DamageRule.cs" />
     <Compile Include="Assets\Script\Skill\StatusEffectData.cs" />
+    <Compile Include="Assets\Script\Enemy Action\SpeedRoleAction.cs" />
     <Compile Include="Assets\Script\Skill\SkillExecutor.cs" />
     <Compile Include="Assets\Script\Skill\StatusEffectType.cs" />
     <Compile Include="Assets\Script\Town\SceneTransitionManager.cs" />
@@ -98,9 +97,11 @@
     <Compile Include="Assets\Script\Body\AttackContext.cs" />
     <Compile Include="Assets\Script\SoundManager.cs" />
     <Compile Include="Assets\Script\Battle\EnemyManager.cs" />
+    <Compile Include="Assets\Script\Enemy Action\AttackerRoleAction.cs" />
     <Compile Include="Assets\Script\Skill\SkillData.cs" />
     <Compile Include="Assets\Script\Player Data\PlayerData.cs" />
     <Compile Include="Assets\Script\Skill\BuffData.cs" />
+    <Compile Include="Assets\Script\Enemy Action\TankRoleAction.cs" />
     <Compile Include="Assets\Script\Town\PlayerSelectButton.cs" />
     <Compile Include="Assets\Script\Skill\ElementType.cs" />
     <Compile Include="Assets\Script\Battle\PlayerManager.cs" />

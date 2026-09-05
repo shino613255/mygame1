@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
   m_Name: 03_Elite Attacker
   m_EditorClassIdentifier: 
-  enemyName: 
+  enemyName: "\u7ADC\u9A0E\u58EB"
   icon: {fileID: 0}
-  prefab: {fileID: 404539376385089994, guid: 314dedb7927f657408b85298c71324dd, type: 3}
+  prefab: {fileID: 4235716888136053994, guid: bac239bd2bae8254e8a0a1e91791f93c, type: 3}
   maxHp: 250
   maxMp: 40
   at: 40
-  def: 20
+  def: 15
   mag: 0
-  mdef: 20
+  mdef: 15
   evasionRate: 0
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}

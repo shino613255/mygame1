@@ -15,13 +15,14 @@ public class SkillSlotUI : MonoBehaviour
 
         if (skillData != null)
         {
+            gameObject.SetActive(true);
+
             skillNameText.text = skillData.skillName;
             button.interactable = true;
         }
         else
         {
-            skillNameText.text = "‹ó";
-            button.interactable = false;
+            gameObject.SetActive(false);
         }
     }
 

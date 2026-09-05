@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 01_Attacker
   m_EditorClassIdentifier: 
   enemyName: "\u6226\u58EB"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 834f7923735176044b22afc3df9f5e0b, type: 3}
   prefab: {fileID: 4036637313795360933, guid: 5d1bd10cecc95f84f918be41d959b7ec, type: 3}
   maxHp: 150
   maxMp: 20

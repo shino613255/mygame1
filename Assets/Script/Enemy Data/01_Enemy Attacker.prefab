@@ -508,7 +508,7 @@ GameObject:
   - component: {fileID: 6212605331204033689}
   - component: {fileID: 6952719560502118347}
   m_Layer: 0
-  m_Name: Enemy_Attacker
+  m_Name: 01_Enemy Attacker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -616,7 +616,7 @@ MonoBehaviour:
   critRate: 0.02
   critMultiplier: 2
   skillMultiplier: 2
-  data: {fileID: 11400000, guid: 7eaf2d2898d963245a4d22c8dd5fc72b, type: 2}
+  data: {fileID: 11400000, guid: 1114fa510e47db84a96fa1b1a8b24ebc, type: 2}
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
 --- !u!114 &6952719560502118347
 MonoBehaviour:

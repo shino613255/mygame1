@@ -5,8 +5,12 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     private Dictionary<EnemyRole, IEnemyRoleAction> roleActions;
+    private TankBossRoleAction tankBossAction;
+
     private void Awake()
     {
+        tankBossAction = new TankBossRoleAction();
+
         roleActions =
             new Dictionary<EnemyRole, IEnemyRoleAction>
             {
@@ -59,12 +63,28 @@ public class EnemyAI : MonoBehaviour
         if (pool.Count == 0) return null;
 
         if (
+            enemy.data.enemyType == EnemyType.Boss &&
+            enemy.data.role == EnemyRole.Tank
+)
+        {
+            SkillData selectedSkill =
+                tankBossAction.ChooseSkill(
+                    enemy,
+                    pool
+                );
+
+            if (selectedSkill != null)
+            {
+                return selectedSkill;
+            }
+        }
+        else if (
             roleActions != null &&
             roleActions.TryGetValue(
-        enemy.data.role,
-        out IEnemyRoleAction roleAction
-    )
-)
+                enemy.data.role,
+                out IEnemyRoleAction roleAction
+            )
+        )
         {
             SkillData selectedSkill =
                 roleAction.ChooseSkill(
@@ -109,5 +129,10 @@ public class EnemyAI : MonoBehaviour
         if (pool.Count == 0) return null;                                              
 
         return pool[Random.Range(0, pool.Count)];                                      
+    }
+
+    public void ResetBattleState()
+    {
+        tankBossAction?.ResetState();
     }
 }

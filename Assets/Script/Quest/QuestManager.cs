@@ -23,6 +23,7 @@ public class QuestManager : MonoBehaviour
 
     private bool hasActiveEnemy = false;    // 現在戦闘対象の敵が存在しているかどうかのフラグ
     private bool isQuestCleared = false;    // クエストクリア済みかどうかのフラグ
+    private bool isQuestFailed = false;
 
     private void Start()
     {
@@ -50,6 +51,7 @@ public class QuestManager : MonoBehaviour
 
     IEnumerator Searching()
     {
+        if (isQuestCleared || isQuestFailed) yield break;
         DialogTextManager.instance.SetScenarios(new string[]
         {
             "周囲を探索している...",
@@ -70,23 +72,12 @@ public class QuestManager : MonoBehaviour
 
         stageUI.UpdateUI(currentStage);
 
-        if (encountTable.Length <= currentStage)                                                                
-        {
-            Debug.Log("クエストクリア");
-            QuestClear();　
-        }
-        else if (encountTable[currentStage] == 0)
-        {
-            EncountEnemy();
-        }
-        else
-        {
-            stageUI.ShowButtons();                                                                              
-        }
+        EncountEnemy();
     }
 
     public void OnNextButton()
     {
+        if (isQuestCleared || isQuestFailed) return;
         SoundManager.instance.PlayButtonSE(0);                                                                  
         stageUI.HideButtons();                                                                                  
         StartCoroutine(Searching());                                                                            
@@ -99,7 +90,7 @@ public class QuestManager : MonoBehaviour
 
     void EncountEnemy()
     {
-        if (isQuestCleared) return;
+        if (isQuestCleared || isQuestFailed) return;
         if (hasActiveEnemy) return;
 
         if(currentFloorIndex >= floors.Count)                                                                        
@@ -154,8 +145,26 @@ public class QuestManager : MonoBehaviour
         battleManager.Setup(enemy);                                                                             
     }
 
+    private void OnEnable()
+    {
+        if (battleManager != null)
+        {
+            battleManager.BattleEnded += EndBattle;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (battleManager != null)
+        {
+            battleManager.BattleEnded -= EndBattle;
+        }
+    }
+
     public void EndBattle()
     {
+        Debug.Log("QuestManager：戦闘終了通知を受信");
+
         if (isQuestCleared) return;
         if (!hasActiveEnemy) return;
 
@@ -199,5 +208,28 @@ public class QuestManager : MonoBehaviour
         SoundManager.instance.StopBGM();                                                                        
         SoundManager.instance.PlayButtonSE(2);                                                                  
         stageUI.ShowStageClear();                                                                               
+    }
+
+    public void QuestFailed()
+    {
+        if (isQuestCleared || isQuestFailed)
+            return;
+
+        isQuestFailed = true;
+        hasActiveEnemy = false;
+
+        DialogTextManager.instance.SetScenarios(
+            new string[]
+            {
+            "プレイヤーは倒れた。",
+            "クエスト失敗..."
+            }
+        );
+
+        SoundManager.instance.StopBGM();
+
+        stageUI.HideButtons();
+
+        sceneTransitionManager.LoadTo("Town");
     }
 }

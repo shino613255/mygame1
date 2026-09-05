@@ -12,21 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
   m_Name: 05_Tank Boss
   m_EditorClassIdentifier: 
-  enemyName: 
+  enemyName: "\u9A0E\u58EB\u738B"
   icon: {fileID: 0}
-  prefab: {fileID: 0}
-  maxHp: 10
-  maxMp: 0
-  at: 1
-  def: 0
+  prefab: {fileID: 4235716888136053994, guid: 1219513833c21fe4da5a19505f867af0, type: 3}
+  maxHp: 500
+  maxMp: 100
+  at: 25
+  def: 30
   mag: 0
-  mdef: 0
+  mdef: 30
   evasionRate: 0
-  damageEffect: {fileID: 0}
+  damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
-  skillList: []
+  skillList:
+  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
+  - {fileID: 11400000, guid: 0478a73a3bf74904aa5faa57a65ab64c, type: 2}
+  - {fileID: 11400000, guid: 068e3308c032ddc4aa456c90301f5868, type: 2}
   enemyType: 2
   role: 1

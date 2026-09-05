@@ -13,7 +13,7 @@ public class EnemyPartsController : MonoBehaviour
         if (enemy == null)
             enemy = GetComponent<EnemyManager>();
 
-        Debug.Log($"[EnemyPartsController.Awake] enemy={(enemy != null ? enemy.data.enemyName : "null")}");
+        Debug.Log($"[EnemyPartsController.Awake] enemy={(enemy != null ? enemy.data.enemyName : "null")}"); 
     }
 
     public void SetSelectedPart(BodyPart part)
