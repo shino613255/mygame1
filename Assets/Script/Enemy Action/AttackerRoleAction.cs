@@ -9,17 +9,42 @@ public class AttackerRoleAction : IEnemyRoleAction
         List<SkillData> pool
     )
     {
-        List<SkillData> attackSkills =
-            pool.FindAll(s =>
-                s.skillType == SkillType.Physical ||
-                s.skillType == SkillType.Magic
+        float hpRate =
+            (float)enemy.hp / enemy.maxHp;
+
+        SkillData healSkill =
+            pool.Find(
+                s => s.skillType == SkillType.Heal
             );
 
-        if (attackSkills.Count == 0)
-            return null;
+        // HP50%ˆÈ‰º‚È‚ç50%‚Å‰ñ•œ
+        if (
+            hpRate <= 0.5f &&
+            healSkill != null &&
+            Random.value < 0.5f
+        )
+        {
+            return healSkill;
+        }
 
-        return attackSkills[
-            Random.Range(0, attackSkills.Count)
-        ];
+        List<SkillData> attackSkills =
+            pool.FindAll(
+                s =>
+                    s.skillType == SkillType.Physical ||
+                    s.skillType == SkillType.Magic
+            );
+
+        if (attackSkills.Count > 0)
+        {
+            return attackSkills[
+                Random.Range(
+                    0,
+                    attackSkills.Count
+                )
+            ];
+        }
+
+        // ’ÊíUŒ‚
+        return null;
     }
 }

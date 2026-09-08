@@ -35,14 +35,17 @@ public class EnemyAI : MonoBehaviour
 
         List<SkillData> pool = new();                                                  
 
-        if (enemy.data.attackSkill != null)                                             
-            pool.Add(enemy.data.attackSkill);                                           
+        if (enemy.data.attackSkill != null)
+        {
+            pool.Add(enemy.data.attackSkill);
+        }                                                       
 
         if (enemy.data.skillList != null && enemy.data.skillList.Count > 0)             
         {
             foreach (var s in enemy.data.skillList)                                     
             {
-                if (s == null) continue;                                                
+                if (s == null) continue;
+                
                 pool.Add(s);                                                            
             }
         }
@@ -50,7 +53,9 @@ public class EnemyAI : MonoBehaviour
         if (pool.Count == 0) return null;                                               
         float hpRate = (float)enemy.hp / enemy.maxHp;
 
-        pool.RemoveAll(s => s.mpCost > enemy.mp);
+        pool.RemoveAll(
+            s => s.mpCost > enemy.mp
+        );
 
         SkillCooldowns cooldowns =
             enemy.GetComponent<SkillCooldowns>();
@@ -65,20 +70,16 @@ public class EnemyAI : MonoBehaviour
         if (
             enemy.data.enemyType == EnemyType.Boss &&
             enemy.data.role == EnemyRole.Tank
-)
+        )
         {
-            SkillData selectedSkill =
-                tankBossAction.ChooseSkill(
-                    enemy,
-                    pool
-                );
-
-            if (selectedSkill != null)
-            {
-                return selectedSkill;
-            }
+            return tankBossAction.ChooseSkill(
+                enemy,
+                pool
+            );
         }
-        else if (
+
+        // 通常の役割
+        if (
             roleActions != null &&
             roleActions.TryGetValue(
                 enemy.data.role,
@@ -86,49 +87,13 @@ public class EnemyAI : MonoBehaviour
             )
         )
         {
-            SkillData selectedSkill =
-                roleAction.ChooseSkill(
-                    enemy,
-                    pool
-                );
-
-            if (selectedSkill != null)
-            {
-                return selectedSkill;
-            }
+            return roleAction.ChooseSkill(
+                enemy,
+                pool
+            );
         }
 
-        // 使用可能なHealスキルだけ抽出
-        List<SkillData> healSkills =
-           pool.FindAll(s => s.skillType == SkillType.Heal);                            
-
-        float healChance = 0f;                                                         
-
-        if (hpRate <= 0.2f)
-        {
-            healChance = 1f;
-        }
-        else if (hpRate <= 0.5f)
-        {
-            healChance = 0.4f;
-        }
-        else
-        {
-            healChance = 0f;
-        }
-
-        if (healSkills.Count > 0 && 
-            Random.value < healChance &&
-            enemy.mp >= healSkills[0].mpCost)                         
-        {
-            return healSkills[Random.Range(0, healSkills.Count)];
-        }
-
-        pool.RemoveAll(s => s.skillType == SkillType.Heal);                             
-
-        if (pool.Count == 0) return null;                                              
-
-        return pool[Random.Range(0, pool.Count)];                                      
+        return null;
     }
 
     public void ResetBattleState()

@@ -31,7 +31,12 @@ public class BattleManager : MonoBehaviour
     private EnemyAI enemyAI;
     private bool waitingTap;
     private bool isPlayerTurn;
-    private bool isEndingBattle = false;                                // 戦闘終了処理中かどうかのフラグ
+
+    // 現在戦闘中か
+    private bool isBattleRunning = false;
+
+    // 戦闘終了処理中か
+    private bool isEndingBattle = false;
     void Awake()
     {
         enemyAI = GetComponent<EnemyAI>();
@@ -54,18 +59,46 @@ public class BattleManager : MonoBehaviour
 
     public void Setup(EnemyManager enemymanager)
     {
+        // EnemyManagerが渡されていない
+        if (enemymanager == null)
+        {
+            Debug.LogError(
+                "BattleManager.Setup にnullのEnemyManagerが渡されました。"
+            );
+
+            return;
+        }
+
+        // すでに戦闘中なら二重開始しない
+        if (isBattleRunning)
+        {
+            Debug.LogWarning(
+                "すでに戦闘中なのでBattleManager.Setupを無視します。"
+            );
+
+            return;
+        }
+
+
+        isBattleRunning = true;
+
         isEndingBattle = false;
 
         enemyAI.ResetBattleState();
 
         SoundManager.instance.PlayBGM("Battle");
+
         enemyUI.gameObject.SetActive(true);
 
         enemy = enemymanager;
 
-        if (mainCamera == null) mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
 
         enemyUI.SetupUI(enemy);
+
         playerUI.SetupUI(player);
 
         StartCoroutine(BattleLoop());
@@ -121,6 +154,26 @@ public class BattleManager : MonoBehaviour
 
     public void OnSkillSelected(SkillData selectedSkill)
     {
+        // 戦闘中でなければスキルを使用しない
+        if (!isBattleRunning)
+            return;
+
+        // 戦闘終了処理中
+        if (isEndingBattle)
+            return;
+
+        // プレイヤーターン以外
+        if (!isPlayerTurn)
+            return;
+
+        // 敵が存在しない
+        if (enemy == null)
+            return;
+
+        // 敵がすでに死亡している
+        if (!enemy.IsAlive)
+            return;
+
         if (selectedSkill == null)
         {
             Debug.LogWarning
@@ -238,9 +291,29 @@ public class BattleManager : MonoBehaviour
 
     public void OnBodyPartTapped(BodyPart part)
     {
+        // BodyPartが存在しない
+        if (part == null)
+            return;
 
-        if (part == null) return;
-        if (!isPlayerTurn) return;
+        // 戦闘中ではない
+        if (!isBattleRunning)
+            return;
+
+        // 戦闘終了処理中
+        if (isEndingBattle)
+            return;
+
+        // プレイヤーターンではない
+        if (!isPlayerTurn)
+            return;
+
+        // 敵が存在しない
+        if (enemy == null)
+            return;
+
+        // 敵がすでに死亡している
+        if (!enemy.IsAlive)
+            return;
 
         enemyParts = part.GetComponentInParent<EnemyPartsController>();             // クリックされた部位の親にEnemyPartsControllerがあるか確認する
 
@@ -676,7 +749,11 @@ public class BattleManager : MonoBehaviour
 
         isEndingBattle = true;
 
+        // ここから戦闘中ではない
+        isBattleRunning = false;
+
         isPlayerTurn = false;
+
         waitingTap = false;
 
         skillSelectionPanel.SetActive(false);

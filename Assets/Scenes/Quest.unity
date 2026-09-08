@@ -2071,6 +2071,7 @@ MonoBehaviour:
   elementProcChance: 0.05
   selectedPlayerSkill: {fileID: 0}
   useSelectedSkill: 0
+  skillSlots: []
   skillSelectionPanel: {fileID: 2059511733}
   screenShakeTarget: {fileID: 519420032}
   questManager: {fileID: 471562400}

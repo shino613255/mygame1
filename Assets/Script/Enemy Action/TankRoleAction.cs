@@ -9,12 +9,11 @@ public class TankRoleAction : IEnemyRoleAction
         List<SkillData> pool
     )
     {
-        float hpRate =
-            (float)enemy.hp / enemy.maxHp;
-
-        SkillData healSkill =
+        SkillData defenseSkill =
             pool.Find(s =>
-                s.skillType == SkillType.Heal
+                s.skillType == SkillType.Buff &&
+                s.buff != null &&
+                s.buff.type == BuffType.DefenseUp
             );
 
         SkillData magicDefenseSkill =
@@ -24,34 +23,43 @@ public class TankRoleAction : IEnemyRoleAction
                 s.buff.type == BuffType.MagicDefenseUp
             );
 
-        SkillData defenseSkill =
+        SkillData healSkill =
             pool.Find(s =>
-                s.skillType == SkillType.Buff &&
-                s.buff != null &&
-                s.buff.type == BuffType.DefenseUp
+                s.skillType == SkillType.Heal
             );
 
-        if (hpRate <= 0.3f && healSkill != null)
-        {
-            return healSkill;
-        }
-
+        // ‡@ DefenseUp‚ª–³‚¯‚ê‚ÎÅ—Dæ
         if (
-            magicDefenseSkill != null &&
-            !enemy.IsMagicDefenseBuffed
-        )
-        {
-            return magicDefenseSkill;
-        }
-
-        if (
-            defenseSkill != null &&
-            !enemy.IsDefenseBuffed
+            !enemy.IsDefenseBuffed &&
+            defenseSkill != null
         )
         {
             return defenseSkill;
         }
 
+        // ‡A MagicDefenseUp‚ª–³‚¯‚ê‚ÎŽŸ‚ÉŽg—p
+        if (
+            !enemy.IsMagicDefenseBuffed &&
+            magicDefenseSkill != null
+        )
+        {
+            return magicDefenseSkill;
+        }
+
+        // ‡B —¼•ûŽc‚Á‚Ä‚¢‚éê‡
+        // HP‚ª30%ˆÈ‰º‚È‚çHeal
+        float hpRate =
+            (float)enemy.hp / enemy.maxHp;
+
+        if (
+            hpRate <= 0.3f &&
+            healSkill != null
+        )
+        {
+            return healSkill;
+        }
+
+        // ‡C ‰½‚à‚·‚é•K—v‚ª‚È‚¯‚ê‚Î’ÊíUŒ‚
         return null;
     }
 }

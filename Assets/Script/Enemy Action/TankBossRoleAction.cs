@@ -16,16 +16,16 @@ public class TankBossRoleAction : IEnemyRoleAction
         float hpRate =
             (float)enemy.hp / enemy.maxHp;
 
-        // HP50“ˆÈ‰º { ƒMƒ~ƒbƒN–¢g—p
+        // Bossê—pFHP50%ˆÈ‰º‚Å1‰ñ‚¾‚¯
         if (
             hpRate <= 0.5f &&
             !bossGimmickUsed
         )
+
         {
-            // ‡@ ‰ñ•œ‚ğÅ—Dæ
             SkillData healSkill =
-                pool.Find(s =>
-                    s.skillType == SkillType.Heal
+                pool.Find(
+                    s => s.skillType == SkillType.Heal
                 );
 
             if (healSkill != null)
@@ -34,36 +34,40 @@ public class TankBossRoleAction : IEnemyRoleAction
                 return healSkill;
             }
 
-            // ‡A ‰ñ•œ‚Å‚«‚È‚¯‚ê‚Î–hŒäUP
             SkillData defenseSkill =
-                pool.Find(s =>
-                    s.skillType == SkillType.Buff &&
-                    s.buff != null &&
-                    s.buff.type == BuffType.DefenseUp
+                pool.Find(
+                    s =>
+                        s.skillType == SkillType.Buff &&
+                        s.buff != null &&
+                        s.buff.type == BuffType.DefenseUp
                 );
 
-            if (defenseSkill != null)
+            if (defenseSkill != null && !enemy.IsDefenseBuffed)
             {
                 bossGimmickUsed = true;
                 return defenseSkill;
             }
 
-            // ‡B ‚»‚ê‚à‚È‚¯‚ê‚Î–‚–@–hŒäUP
             SkillData magicDefenseSkill =
-                pool.Find(s =>
-                    s.skillType == SkillType.Buff &&
-                    s.buff != null &&
-                    s.buff.type == BuffType.MagicDefenseUp
+                pool.Find(
+                    s =>
+                        s.skillType == SkillType.Buff &&
+                        s.buff != null &&
+                        s.buff.type ==
+                            BuffType.MagicDefenseUp
                 );
 
-            if (magicDefenseSkill != null)
+            if (
+                magicDefenseSkill != null &&
+                !enemy.IsMagicDefenseBuffed
+            )
             {
                 bossGimmickUsed = true;
                 return magicDefenseSkill;
             }
         }
 
-        // ƒMƒ~ƒbƒNˆÈŠO‚Í•’Ê‚ÌTank AI
+        // ’Êí‚Í•’Ê‚ÌTank‚Æ“¯‚¶
         return tankRoleAction.ChooseSkill(
             enemy,
             pool

@@ -10,10 +10,22 @@ public class SpeedRoleAction : IEnemyRoleAction
     )
     {
         if (pool == null || pool.Count == 0)
+        {
             return null;
+        }
 
-        return pool[
-            Random.Range(0, pool.Count)
-        ];
+        // 40%‚ÌŠm—¦‚ÅƒXƒLƒ‹
+        if (Random.value < 0.4f)
+        {
+            return pool[
+                Random.Range(
+                    0,
+                    pool.Count
+                )
+            ];
+        }
+
+        // 60%‚Í’ÊíUŒ‚
+        return null;
     }
 }
