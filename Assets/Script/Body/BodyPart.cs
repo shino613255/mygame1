@@ -4,7 +4,10 @@ using UnityEngine;
 
 public enum PartType
 {
-    Face, Belly, RightHand, LeftHand, RightLeg, LeftLeg
+    Face,
+    Belly,
+    Hand,
+    Leg
 }
 
 public class BodyPart : MonoBehaviour
@@ -39,18 +42,71 @@ public class BodyPart : MonoBehaviour
         {
             case PartType.Face: return "顔";
             case PartType.Belly: return "腹";
-            case PartType.RightHand: return "右手";
-            case PartType.LeftHand: return "左手";
-            case PartType.RightLeg: return "右脚";
-            case PartType.LeftLeg: return "左脚";
-            default: return partType.ToString();                            
+            case PartType.Hand: return "手";
+            case PartType.Leg: return "脚";            
+            default: return partType.ToString();
         }
     }
 
-    public void SetSelectedVisual(bool selected)                            
+    private bool isSelected = false;
+    private bool isPartViewVisible = false;
+
+
+    public void SetSelectedVisual(bool selected)
     {
-        if (highlight == null) return;
-        highlight.enabled = selected;                                       
+        isSelected = selected;
+        RefreshVisual();
+    }
+
+
+    public void SetPartViewVisible(bool visible)
+    {
+        isPartViewVisible = visible;
+        RefreshVisual();
+    }
+
+
+    private void RefreshVisual()
+    {
+        if (highlight == null)
+            return;
+
+        highlight.enabled =
+            isSelected || isPartViewVisible;
+
+        if (!highlight.enabled)
+            return;
+
+        // 選択中は白くする
+        if (isSelected)
+        {
+            highlight.color = new Color(1f, 1f, 1f, 0.7f);
+            return;
+        }
+
+        // 部位確認モード
+        switch (partType)
+        {
+            case PartType.Face:
+                highlight.color =
+                    new Color(1f, 0.2f, 0.2f, 0.45f);
+                break;
+
+            case PartType.Belly:
+                highlight.color =
+                    new Color(1f, 0.85f, 0.2f, 0.45f);
+                break;
+
+            case PartType.Hand:
+                highlight.color =
+                    new Color(0.2f, 0.5f, 1f, 0.45f);
+                break;
+
+            case PartType.Leg:
+                highlight.color =
+                    new Color(0.2f, 1f, 0.4f, 0.45f);
+                break;
+        }
     }
     public int TakePartDamage(int damage)                                   
     {

@@ -19,6 +19,8 @@ public class BattleManager : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private GameObject skillSelectionPanel;
+    [SerializeField] private GameObject playerStatusPanel;
+    [SerializeField] private GameObject skillButton;
 
     public event System.Action BattleEnded;
     public Transform screenShakeTarget;                                 // プレイヤーがダメージを受けたときに揺れすようにするため
@@ -32,6 +34,7 @@ public class BattleManager : MonoBehaviour
     private bool waitingTap;
     private bool isPlayerTurn;
 
+    private bool isPartViewVisible = false;
     // 現在戦闘中か
     private bool isBattleRunning = false;
 
@@ -43,22 +46,10 @@ public class BattleManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
-    {
-        skillSelectionPanel.SetActive(false);
-        enemyUI.gameObject.SetActive(false);
-        playerData = PlayerSelectionManager.Instance.selectedPlayer;
-
-        if (playerData != null && player != null)
-        {
-            player.Setup(playerData);
-
-            SetupSkillSlots();
-        }
-    }
-
     public void Setup(EnemyManager enemymanager)
     {
+        skillButton.SetActive(true);
+        playerStatusPanel.SetActive(true);
         // EnemyManagerが渡されていない
         if (enemymanager == null)
         {
@@ -104,16 +95,57 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(BattleLoop());
     }
 
+    private void Start()
+    {
+        skillButton.SetActive(false);
+        skillSelectionPanel.SetActive(false);
+        playerStatusPanel.SetActive(false);
+        enemyUI.gameObject.SetActive(false);
+        playerData = PlayerSelectionManager.Instance.selectedPlayer;
+
+        if (playerData != null && player != null)
+        {
+            player.Setup(playerData);
+
+            SetupSkillSlots();
+        }
+    }    
+
+    public void ToggleSkillPanel()
+    {
+        // 戦闘中ではない
+        if (!isBattleRunning)
+            return;
+
+        // プレイヤーターンではない
+        if (!isPlayerTurn)
+            return;
+
+        // 戦闘終了処理中
+        if (isEndingBattle)
+            return;
+
+        skillSelectionPanel.SetActive(
+            !skillSelectionPanel.activeSelf
+        );
+    }
+
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            isPartViewVisible =
+                !isPartViewVisible;
+
+            if (enemy != null)
+            {
+                enemy.SetPartViewVisible(
+                    isPartViewVisible
+                );
+            }
+        }
 
         if (!isPlayerTurn) return;
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            skillSelectionPanel.SetActive(!skillSelectionPanel.activeSelf);
-            return;
-        }
 
         if (skillSelectionPanel.activeSelf)
             return;
@@ -122,7 +154,6 @@ public class BattleManager : MonoBehaviour
         {
             TryPickBodyPart(Input.mousePosition);
         }
-
     }
 
     private void SetupSkillSlots()
@@ -181,7 +212,13 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        if (selectedSkill.skillType == SkillType.Heal && selectedSkill.targetType == TargetType.Self)
+        if (
+            (
+                selectedSkill.skillType == SkillType.Heal ||
+                selectedSkill.skillType == SkillType.RecoverMp
+            ) &&
+            selectedSkill.targetType == TargetType.Self
+        )
         {
             var result = SkillExecutor.Execute(player, player, selectedSkill);          // スキルを実行して結果を取得            
             if (!result.executed)
@@ -382,8 +419,14 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        //EnemyPartsControllerで本体・部位へのダメージを計算して適用する
+        // 攻撃前にすでに破壊されていたか記録
+        bool wasBroken = part.IsBroken;
+
+        // EnemyPartsControllerで本体・部位へのダメージを計算して適用する
         var result = enemyParts.ApplyAttack(ctx);
+
+        // 今回の攻撃で壊れたか
+        bool justBroken = !wasBroken && part.IsBroken;
 
         if (
             ctx.sourceSkill != null &&
@@ -446,11 +489,37 @@ public class BattleManager : MonoBehaviour
 
         if (result.partDamage > 0)
         {
-            attackMessage += $"\n部位に{result.partDamage}ダメージ！";
+            attackMessage +=
+                $"\n部位に{result.partDamage}ダメージ！";
         }
-        else if (part.IsBroken)
+
+        if (justBroken)
         {
-            attackMessage += "\nその部位はもう破壊されていますわ！";
+            switch (part.partType)
+            {
+                case PartType.Face:
+                    attackMessage +=
+                        "\n頭を破壊した！" +
+                        "\n敵の防御力が10低下した！";
+                    break;
+
+                case PartType.Hand:
+                    attackMessage +=
+                        "\n手を破壊した！" +
+                        "\n敵の命中率が20%低下した！";
+                    break;
+
+                case PartType.Leg:
+                    attackMessage +=
+                        "\n脚を破壊した！" +
+                        "\n2回行動できるようになった！";
+                    break;
+            }
+        }
+        else if (wasBroken)
+        {
+            attackMessage +=
+                "\nその部位はもう破壊されていますわ！";
         }
 
         DialogTextManager.instance.SetScenarios(new[]
@@ -500,22 +569,35 @@ public class BattleManager : MonoBehaviour
             enemy.IsAlive
         )
         {
-            // 必ずプレイヤーが先に行動
-            yield return StartCoroutine(PlayerActByTap());
+            // 部位破壊状態から行動回数を取得
+            int playerActionCount =
+                enemy.GetPlayerActionCount();
 
-            if (enemy != battleEnemy)
-            {
-                yield break;
-            }
 
-            if (
-                player == null ||
-                enemy == null ||
-                !player.IsAlive ||
-                !enemy.IsAlive
-            )
+            // 行動可能回数ぶんプレイヤーターン
+            for (int i = 0; i < playerActionCount; i++)
             {
-                yield break;
+                yield return StartCoroutine(PlayerActByTap());
+
+                if (enemy != battleEnemy)
+                {
+                    yield break;
+                }
+
+                if (
+                    player == null ||
+                    enemy == null ||
+                    !player.IsAlive ||
+                    !enemy.IsAlive
+                )
+                {
+                    yield break;
+                }
+
+                // 1回目の攻撃で脚を破壊した場合にも、
+                // そのターンから2回目を行えるよう再取得
+                playerActionCount =
+                    enemy.GetPlayerActionCount();
             }
 
             yield return new WaitForSeconds(0.5f);
@@ -757,10 +839,11 @@ public class BattleManager : MonoBehaviour
         waitingTap = false;
 
         skillSelectionPanel.SetActive(false);
+        playerStatusPanel.SetActive(false);
 
         DialogTextManager.instance.SetScenarios(new string[]
         {
-            "モンスターはやられた。"
+            $"{enemy.name}を倒した"
         });
         enemyUI.gameObject.SetActive(false);
 

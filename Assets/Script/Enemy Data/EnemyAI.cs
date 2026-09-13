@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -38,34 +39,26 @@ public class EnemyAI : MonoBehaviour
         if (enemy.data.attackSkill != null)
         {
             pool.Add(enemy.data.attackSkill);
-        }                                                       
-
-        if (enemy.data.skillList != null && enemy.data.skillList.Count > 0)             
-        {
-            foreach (var s in enemy.data.skillList)                                     
-            {
-                if (s == null) continue;
-                
-                pool.Add(s);                                                            
-            }
         }
 
-        if (pool.Count == 0) return null;                                               
-        float hpRate = (float)enemy.hp / enemy.maxHp;
-
-        pool.RemoveAll(
-            s => s.mpCost > enemy.mp
-        );
+        if (enemy.data.skillList != null)
+        {
+            pool.AddRange(enemy.data.skillList);
+        }
 
         SkillCooldowns cooldowns =
             enemy.GetComponent<SkillCooldowns>();
 
-        if (cooldowns != null)
-        {
-            pool.RemoveAll(s => !cooldowns.IsReady(s));
-        }
+        pool = pool
+            .Where(s => s != null)
+            .Where(s => s.mpCost <= enemy.mp)
+            .Where(s => cooldowns == null || cooldowns.IsReady(s))
+            .ToList();
+
 
         if (pool.Count == 0) return null;
+
+        float hpRate = (float)enemy.hp / enemy.maxHp;
 
         if (
             enemy.data.enemyType == EnemyType.Boss &&

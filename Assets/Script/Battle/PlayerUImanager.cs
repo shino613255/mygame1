@@ -8,15 +8,29 @@ public class PlayerUIManager : MonoBehaviour
     public Text hpText;
     public Text mpText;
 
+    public Slider hpSlider;
+    public Slider mpSlider;
+
     public void SetupUI(PlayerManager player)
     {
-        hpText.text = string.Format("HP:{0}", player.hp);
-        mpText.text = string.Format("MP:{0}", player.mp);
+        hpSlider.minValue = 0;
+        hpSlider.maxValue = player.maxHp;
+        hpSlider.value = player.hp;
+        
+        mpSlider.minValue = 0;
+        mpSlider.maxValue = player.maxMp;
+        mpSlider.value = player.mp;
+
+        hpText.text = $"{player.hp} / {player.maxHp}";
+        mpText.text = $"{player.mp} / {player.maxMp}";
     }
 
     public void UpdateUI(PlayerManager player)
     {
-        hpText.text = $"HP:{player.hp}";
-        mpText.text = $"MP:{player.mp}";
+        hpSlider.value = player.hp;
+        mpSlider.value = player.mp;
+
+        hpText.text = $"{player.hp} / {player.maxHp}";
+        mpText.text = $"{player.mp} / {player.maxMp}";
     }
 }

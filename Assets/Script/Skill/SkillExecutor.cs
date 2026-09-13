@@ -107,6 +107,19 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
                     r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}回復！";
                     break;
                 }
+            case SkillType.RecoverMp:
+                {
+                    int beforeMp = target.mp;
+
+                    target.RecoverMp(skill.power);
+
+                    r.value = target.mp - beforeMp;
+
+                    r.message =
+                        $"{attacker.name}の{skill.skillName}！\nMPが{r.value}回復！";
+
+                    break;
+                }
             case SkillType.Buff:
                 r.message = $"{skill.skillName}!";
                 ApplyBuff(target, skill, ref r);

@@ -12,12 +12,15 @@ public class EnemyUIManager : MonoBehaviour
     [SerializeField] private Sprite defenseUpIcon;
     [SerializeField] private Sprite magicDefenseUpIcon;
 
-    public Text hpText;
+    public Slider hpSlider;
     public Text nameText;
 
     public void SetupUI(EnemyManager enemy)
     {
-        hpText.text = $"HP:{enemy.hp}";
+        hpSlider.minValue = 0;
+        hpSlider.maxValue = enemy.maxHp;
+        hpSlider.value = enemy.hp;
+
         nameText.text = enemy.data.enemyName;
 
         RefreshEffectIcons(enemy);
@@ -25,7 +28,8 @@ public class EnemyUIManager : MonoBehaviour
 
     public void UpdateUI(EnemyManager enemy)
     {
-        hpText.text = $"HP:{enemy.hp}";
+        hpSlider.value = enemy.hp;
+
         nameText.text = enemy.data.enemyName;
 
         RefreshEffectIcons(enemy);

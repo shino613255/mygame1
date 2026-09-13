@@ -6,13 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Quest.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/Title.unity
+    guid: 883953d0d034ecd4c8ecda221db041ab
   - enabled: 1
     path: Assets/Scenes/Town.unity
     guid: 84753b084671fa5439092f581e2160a4
   - enabled: 1
-    path: Assets/Scenes/Title.unity
-    guid: 883953d0d034ecd4c8ecda221db041ab
+    path: Assets/Scenes/Quest.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

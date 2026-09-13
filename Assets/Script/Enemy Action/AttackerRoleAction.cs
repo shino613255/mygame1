@@ -19,9 +19,9 @@ public class AttackerRoleAction : IEnemyRoleAction
 
         // HP50%ˆÈ‰º‚È‚ç50%‚Å‰ñ•œ
         if (
-            hpRate <= 0.5f &&
+            hpRate <= 0.5f && 
             healSkill != null &&
-            Random.value < 0.5f
+            Random.value < 0.3f 
         )
         {
             return healSkill;

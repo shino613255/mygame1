@@ -8,5 +8,6 @@ public enum SkillType
     Magic,
     Heal,
     Buff,
-    Debuff
+    Debuff,
+    RecoverMp
 }

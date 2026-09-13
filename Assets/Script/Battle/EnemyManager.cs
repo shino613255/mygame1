@@ -7,35 +7,45 @@ using static EnemyData;
 
 public class EnemyManager : UnitBase
 {
-
-    private float accuracyPenalty = 0f;                                                                         
-
-    public void ApplyAccuracyDown(float value)                                                                  
+    private float accuracyPenalty = 0f;
+    
+    private bool isLegBroken = false;
+    public void ApplyAccuracyDown(float value)
     {
-        accuracyPenalty += value;                                                                               
+        accuracyPenalty += value;
     }
 
     public float GetAccuracyPenalty()
     {
-        return accuracyPenalty;                                                                                
+        return accuracyPenalty;
+    }
+
+    // プレイヤーがこのターン何回行動できるか返す
+    public int GetPlayerActionCount()
+    {
+        return isLegBroken ? 2 : 1;　
     }
 
     public void OnPartBroken(PartType part)
     {
-        switch (part)                                                                                           
+        switch (part)
         {
-            case PartType.RightHand:
-            case PartType.LeftHand:
-                ApplyAccuracyDown(0.2f);                                                                        
+            // 手の破壊:命中率 -20%
+            case PartType.Hand:
+                ApplyAccuracyDown(0.2f);
                 break;
 
-            case PartType.RightLeg:
-            case PartType.LeftLeg:
-                at -= 1;                                                                                        
+
+            // 脚の破壊:行動回数が1回増える
+            case PartType.Leg:                
+                isLegBroken = true;
                 break;
 
+
+            // 顔を壊すと防御力 -10
             case PartType.Face:
-                def -= 1;                                                                                       
+                def -= 10;
+                def = Mathf.Max(0, def);
                 break;
         }
     }
@@ -300,6 +310,17 @@ public class EnemyManager : UnitBase
     public int Attack(PlayerManager player)
     {
         return player.TakePhysical(at);                                                                                 
+    }
+
+    public void SetPartViewVisible(bool visible)
+    {
+        BodyPart[] parts =
+            GetComponentsInChildren<BodyPart>(true);
+
+        foreach (BodyPart part in parts)
+        {
+            part.SetPartViewVisible(visible);
+        }
     }
 
     protected override void OnDamaged(int damage, bool isMagic)

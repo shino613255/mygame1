@@ -25,12 +25,14 @@ MonoBehaviour:
   multiplier: 1.5
   accuracy: 1
   canCrit: 1
-  critBonus: 0
+  critBonus: 0.2
   element: 0
   targetType: 0
   canTargetPart: 1
   mainDamageRate: 20
   partDamageRate: 20
   statusEffect: {fileID: 0}
+  buff: {fileID: 0}
+  debuff: {fileID: 0}
   applyChance: 0
   overrideDurationTurns: 0
