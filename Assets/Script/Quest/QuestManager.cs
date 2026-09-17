@@ -363,7 +363,9 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
-        stageUI.ShowButtons();
+        // 次へボタンを出さず、自動探索へ変更
+        isSearching = true;
+        StartCoroutine(Searching());
     }
 
     void QuestClear()

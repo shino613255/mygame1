@@ -831,11 +831,12 @@ public class BattleManager : MonoBehaviour
 
         isEndingBattle = true;
 
+        string deleteEnemyName =
+            enemy != null ? enemy.name : "“G";
+
         // ‚±‚±‚©‚çí“¬’†‚Å‚Í‚È‚¢
         isBattleRunning = false;
-
         isPlayerTurn = false;
-
         waitingTap = false;
 
         skillSelectionPanel.SetActive(false);
@@ -843,7 +844,7 @@ public class BattleManager : MonoBehaviour
 
         DialogTextManager.instance.SetScenarios(new string[]
         {
-            $"{enemy.name}‚ğ“|‚µ‚½"
+            $"{deleteEnemyName}‚ğ“|‚µ‚½"
         });
         enemyUI.gameObject.SetActive(false);
 
