@@ -112,6 +112,7 @@ MonoBehaviour:
   partType: 1
   canBreak: 0
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &1432914347301905836
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -324,6 +325,7 @@ MonoBehaviour:
   partType: 3
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &5575706981057878151
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -539,9 +541,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highlight: {fileID: 8949943992243536846}
-  partType: 3
+  partType: 2
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &8949943992243536846
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -719,6 +722,7 @@ MonoBehaviour:
   partType: 2
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &1171415017522418611
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1075,6 +1079,7 @@ MonoBehaviour:
   partType: 0
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &2103966691105812521
 SpriteRenderer:
   m_ObjectHideFlags: 0

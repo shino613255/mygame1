@@ -131,6 +131,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FadeCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 6151860999107922829, guid: f2fcf8f9e238b894289e956bd741f5ae, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7093985834363504716, guid: f2fcf8f9e238b894289e956bd741f5ae, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -780,6 +784,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SoundManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4877543764307710612, guid: 8df646c252fca0e48997837cab6f51b3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6208566354394314185, guid: 8df646c252fca0e48997837cab6f51b3, type: 3}
       propertyPath: m_Volume
       value: 0.1
@@ -940,6 +948,10 @@ PrefabInstance:
     - target: {fileID: 8412567720403957140, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
       propertyPath: m_Name
       value: DialogUICanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8412567720403957140, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8987384664415581113, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1976,11 +1988,11 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1768936777}
+  - {fileID: 986318683}
+  - {fileID: 1637686437}
   - {fileID: 1405451169}
   - {fileID: 1807547889}
   - {fileID: 1114060556}
-  - {fileID: 986318683}
-  - {fileID: 1637686437}
   - {fileID: 1437412893}
   - {fileID: 309574145}
   - {fileID: 1627387224}

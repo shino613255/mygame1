@@ -225,8 +225,27 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
                 }
             }
         }
-    }
 
+        if (target is PlayerManager player)
+        {
+            if (
+                skill.statusEffect.type ==
+                StatusEffectType.Poison
+            )
+            {
+                bool applied =
+                    player.ApplyPoison(
+                        skill.statusEffect
+                    );
+
+                if (applied)
+                {
+                    r.message +=
+                        "\n毒状態になった！";
+                }
+            }
+        }
+    }
     private static int Heal(UnitBase target, int amount)
     {
         int before = target.hp;

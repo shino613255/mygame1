@@ -24,11 +24,21 @@ public class StatusEffectData : ScriptableObject
 
     public int CalcTickDamage(int targetMaxHp)
     {
-        if (type != StatusEffectType.Burn)
+        if (
+            type != StatusEffectType.Burn &&
+            type != StatusEffectType.Poison
+        )
+        {
             return 0;
+        }
 
         if (tickDamageFlat > 0)
-            return Mathf.Max(1, tickDamageFlat);
+        {
+            return Mathf.Max(
+                1,
+                tickDamageFlat
+            );
+        }
 
         int dmg =
             Mathf.RoundToInt(

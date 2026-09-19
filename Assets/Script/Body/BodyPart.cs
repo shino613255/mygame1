@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public enum PartType
 {
     Face,
@@ -21,7 +20,13 @@ public class BodyPart : MonoBehaviour
 
     [Header("Part HP")]
     [Min(1)] public int maxPartHp = 30;                                     
-    private int partHp;                                                     
+    private int partHp;
+
+    [Header("Collider View")]
+    [SerializeField] private float colliderLineWidth = 0.03f;
+
+    private LineRenderer colliderLine;
+    private PolygonCollider2D partCollider;
 
     public bool IsBroken => canBreak && partHp <= 0;
 
@@ -33,7 +38,115 @@ public class BodyPart : MonoBehaviour
             highlight = GetComponent<SpriteRenderer>();
 
         if (highlight != null)
-            highlight.enabled = false;                                      
+            highlight.enabled = false;
+
+        partCollider = GetComponent<PolygonCollider2D>();
+
+        CreateColliderLine();
+
+        if (colliderLine != null)
+            colliderLine.enabled = false;
+    }
+
+    private void CreateColliderLine()
+    {
+        if (partCollider == null)
+        {
+            Debug.LogWarning(
+                $"{GetPartNameJP()} に PolygonCollider2D がありません"
+            );
+            return;
+        }
+
+        GameObject lineObject =
+            new GameObject("ColliderView");
+
+        lineObject.transform.SetParent(
+            transform,
+            false
+        );
+
+        colliderLine =
+            lineObject.AddComponent<LineRenderer>();
+
+        colliderLine.useWorldSpace = false;
+
+        colliderLine.loop = true;
+
+        colliderLine.startWidth = colliderLineWidth;
+        colliderLine.endWidth = colliderLineWidth;
+
+        colliderLine.material =
+            new Material(
+                Shader.Find("Sprites/Default")
+            );
+
+        colliderLine.sortingOrder = 100;
+
+        UpdateColliderLine();
+    }
+
+
+    private void UpdateColliderLine()
+    {
+        if (
+            colliderLine == null ||
+            partCollider == null
+        )
+            return;
+
+        Vector2[] points =
+            partCollider.GetPath(0);
+
+        colliderLine.positionCount =
+            points.Length;
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            colliderLine.SetPosition(
+                i,
+                new Vector3(
+                    points[i].x,
+                    points[i].y,
+                    0f
+                )
+            );
+        }
+
+        switch (partType)
+        {
+            case PartType.Face:
+                colliderLine.startColor =
+                    new Color(1f, 0.2f, 0.2f, 1f);
+
+                colliderLine.endColor =
+                    new Color(1f, 0.2f, 0.2f, 1f);
+                break;
+
+            case PartType.Belly:
+                colliderLine.startColor =
+                    new Color(1f, 0.85f, 0.2f, 1f);
+
+                colliderLine.endColor =
+                    new Color(1f, 0.85f, 0.2f, 1f);
+                break;
+
+            case PartType.Hand:
+                colliderLine.startColor =
+                    new Color(0.2f, 0.5f, 1f, 1f);
+
+                colliderLine.endColor =
+                    new Color(0.2f, 0.5f, 1f, 1f);
+                break;
+
+            case PartType.Leg:
+                colliderLine.startColor =
+                    new Color(0.2f, 1f, 0.4f, 1f);
+
+                colliderLine.endColor =
+                    new Color(0.2f, 1f, 0.4f, 1f);
+                break;
+        }
     }
 
     public string GetPartNameJP()                                           
@@ -62,6 +175,12 @@ public class BodyPart : MonoBehaviour
     public void SetPartViewVisible(bool visible)
     {
         isPartViewVisible = visible;
+
+        if (colliderLine != null)
+        {
+            colliderLine.enabled = visible;
+        }
+
         RefreshVisual();
     }
 

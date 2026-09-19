@@ -345,15 +345,19 @@ public class EnemyManager : UnitBase
     {        
         yield break;                                                                                                    
     }
-    public void TakeDamageRaw(int damage)                                                                               
+    public void TakeDamageRaw(int damage)
     {
-        damage = Mathf.Max(1, damage);                                                                                              
-        hp = Mathf.Clamp(hp - damage, 0, maxHp);
+        damage = Mathf.Max(1, damage);
+
+        hp = Mathf.Clamp(
+            hp - damage,
+            0,
+            maxHp
+        );
 
         if (hp <= 0)
         {
             OnDied();
-            Destroy(gameObject);
         }
     }
 }

@@ -182,6 +182,7 @@ MonoBehaviour:
   partType: 1
   canBreak: 0
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &279364769936783689
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -475,6 +476,7 @@ MonoBehaviour:
   partType: 3
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &3381609361509971935
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -732,6 +734,7 @@ MonoBehaviour:
   partType: 2
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &1784419125240024546
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1012,6 +1015,7 @@ MonoBehaviour:
   partType: 0
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &2792565632258802332
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1433,6 +1437,7 @@ MonoBehaviour:
   partType: 2
   canBreak: 1
   maxPartHp: 30
+  colliderLineWidth: 0.03
 --- !u!212 &5919541993646385971
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -631,26 +631,76 @@ public class BattleManager : MonoBehaviour
         isPlayerTurn = true;
         waitingTap = true;
 
-        DialogTextManager.instance.SetScenarios(new string[]
+
+        // 毒ダメージ
+        int poisonDamage =
+            player.TickPoisonDamage();
+
+        if (poisonDamage > 0)
         {
-        "プレイヤーのターン。\n敵をクリック！"
-        });
+            playerUI.UpdateUI(player);
 
+            DialogTextManager.instance.SetScenarios(
+                new string[]
+                {
+                $"毒ダメージ！\n" +
+                $"{poisonDamage}ダメージ受けた！"
+                }
+            );
+
+            yield return new WaitForSeconds(1.0f);
+
+
+            // 毒で死亡
+            if (!player.IsAlive)
+            {
+                waitingTap = false;
+                isPlayerTurn = false;
+
+                questManager.QuestFailed();
+
+                yield break;
+            }
+        }
+
+
+        DialogTextManager.instance.SetScenarios(
+            new string[]
+            {
+            "プレイヤーのターン。\n敵をクリック！"
+            }
+        );
+
+
+        // プレイヤーが攻撃するまで待つ
         while (waitingTap)
+        {
             yield return null;
+        }
 
-        // 攻撃のテキストメッセージを読める時間を作る
+
+        // 攻撃メッセージを見る時間
         yield return new WaitForSeconds(1.5f);
 
+
         isPlayerTurn = false;
+
 
         if (enemy != null)
         {
             enemyUI.UpdateUI(enemy);
         }
 
-        if (!enemy.IsAlive)
-            yield return StartCoroutine(EndBattle());
+
+        if (
+            enemy != null &&
+            !enemy.IsAlive
+        )
+        {
+            yield return StartCoroutine(
+                EndBattle()
+            );
+        }
     }
 
     IEnumerator EnemyActAuto()
@@ -826,6 +876,11 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EndBattle()
     {
+        bool defeatedBoss =
+            enemy != null &&
+            enemy.data != null &&
+            enemy.data.enemyType == EnemyType.Boss;
+
         if (isEndingBattle)
             yield break;
 
@@ -852,6 +907,11 @@ public class BattleManager : MonoBehaviour
         {
             Destroy(enemy.gameObject);
             enemy = null;
+        }
+
+        if (defeatedBoss)
+        {
+            player.RemovePoison();
         }
 
         // Destroyが反映されてから次の敵を生成する

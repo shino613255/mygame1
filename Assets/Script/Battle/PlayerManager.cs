@@ -11,7 +11,12 @@ public class PlayerManager : UnitBase
     private SkillData currentSkill;                                                                         
     private bool acted;                                                                                     
     private EnemyManager targetEnemy;                                                                       
-    public bool useSkill = false;                                                                           
+    public bool useSkill = false;
+
+    [Header("Poison")]
+    private bool isPoisoned = false;
+    private StatusEffectData poisonEffect;
+    public bool IsPoisoned => isPoisoned;
 
     public void Setup(PlayerData data)
     {
@@ -40,7 +45,69 @@ public class PlayerManager : UnitBase
 
         UpdateSkillPanel();                                                                         // UIのスキルパネルを更新
         Debug.Log("初期スキル数: " + currentSkills.Count);
-    }  
+    }
+
+    public bool ApplyPoison(
+    StatusEffectData effect
+)
+    {
+        if (effect == null)
+        {
+            Debug.LogWarning(
+                "PoisonのStatusEffectDataがnullです"
+            );
+
+            return false;
+        }
+
+        if (effect.type != StatusEffectType.Poison)
+        {
+            return false;
+        }
+
+        isPoisoned = true;
+        poisonEffect = effect;
+
+        Debug.Log(
+            $"プレイヤーが毒状態になった！ " +
+            $"ダメージ率:{effect.tickHpRate * 100f}%"
+        );
+
+        return true;
+    }
+
+
+    public int TickPoisonDamage()
+    {
+        if (!isPoisoned)
+            return 0;
+
+        if (poisonEffect == null)
+            return 0;
+
+        int damage =
+            poisonEffect.CalcTickDamage(maxHp);
+
+        hp = Mathf.Clamp(
+            hp - damage,
+            0,
+            maxHp
+        );
+
+        Debug.Log(
+            $"毒ダメージ:{damage} HP:{hp}/{maxHp}"
+        );
+
+        return damage;
+    }
+
+    public void RemovePoison()
+    {
+        isPoisoned = false;
+        poisonEffect = null;
+
+        Debug.Log("毒状態が解除された");
+    }
 
     public void SelectSkill(SkillData skill)
     {

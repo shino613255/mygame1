@@ -21,8 +21,21 @@ public class TankBossRoleAction : IEnemyRoleAction
             hpRate <= 0.5f &&
             !bossGimmickUsed
         )
-
         {
+            SkillData poisonSkill =
+                pool.Find(
+                    s =>
+                        s.statusEffect != null &&
+                        s.statusEffect.type ==
+                            StatusEffectType.Poison
+                );
+
+            if (poisonSkill != null)
+            {
+                bossGimmickUsed = true;
+
+                return poisonSkill;
+            }
             SkillData healSkill =
                 pool.Find(
                     s => s.skillType == SkillType.Heal
