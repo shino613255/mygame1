@@ -53,7 +53,8 @@ public class TankRoleAction : IEnemyRoleAction
 
         if (
             hpRate <= 0.3f &&
-            healSkill != null
+            healSkill != null &&
+            Random.value <= 0.5f
         )
         {
             return healSkill;

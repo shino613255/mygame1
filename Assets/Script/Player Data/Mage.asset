@@ -17,7 +17,7 @@ MonoBehaviour:
   startMaxHp: 150
   startMaxMp: 100
   startAt: 20
-  startMag: 100
+  startMag: 50
   startDef: 0
   startMdef: 10
   damageCutRate: 0

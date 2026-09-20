@@ -72,7 +72,7 @@ public class QuestManager : MonoBehaviour
             )
             .OnComplete(() =>
                 QuestBG.transform.localScale =
-                    new Vector3(0.93f, 0.93f, 1)
+                    new Vector3(1.1f, 1.1f, 1)
             );
 
         SpriteRenderer questBGRenderer =

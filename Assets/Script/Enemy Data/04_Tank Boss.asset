@@ -18,9 +18,9 @@ MonoBehaviour:
   maxHp: 400
   maxMp: 100
   at: 50
-  def: 20
+  def: 40
   mag: 0
-  mdef: 20
+  mdef: 40
   evasionRate: 0
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
