@@ -65,7 +65,6 @@
     <Compile Include="Assets\Script\Town\TownManager.cs" />
     <Compile Include="Assets\Script\Skill\DebuffType.cs" />
     <Compile Include="Assets\Script\Skill\SkillCooldowns.cs" />
-    <Compile Include="Assets\Script\Battle\PlayerUIManager.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartsController.cs" />
     <Compile Include="Assets\Script\Skill\SkillSlotUI.cs" />
     <Compile Include="Assets\Script\Enemy Data\EnemyData.cs" />
@@ -87,6 +86,7 @@
     <Compile Include="Assets\Script\Town\PlayerSelectionManager.cs" />
     <Compile Include="Assets\Script\Body\EnemyPartData.cs" />
     <Compile Include="Assets\Script\DialogTextManager.cs" />
+    <Compile Include="Assets\Script\Battle\PlayerUImanager.cs" />
     <Compile Include="Assets\Script\Skill\DamageRule.cs" />
     <Compile Include="Assets\Script\Skill\StatusEffectData.cs" />
     <Compile Include="Assets\Script\Enemy Action\SpeedRoleAction.cs" />
