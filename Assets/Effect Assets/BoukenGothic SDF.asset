@@ -73,9 +73,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.9
+    - _ScaleRatioB: 0.73125
+    - _ScaleRatioC: 0.73125
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -189,7 +189,31 @@ MonoBehaviour:
     m_Height: 1023
   m_FontFeatureTable:
     m_MultipleSubstitutionRecords: []
-    m_LigatureSubstitutionRecords: []
+    m_LigatureSubstitutionRecords:
+    - m_ComponentGlyphIDs: 640300003d0300004203000065030000
+      m_LigatureGlyphID: 7459
+    - m_ComponentGlyphIDs: 27030000670300005b030000120200004203000065030000
+      m_LigatureGlyphID: 7891
+    - m_ComponentGlyphIDs: 27030000670300002a030000630300005a030000
+      m_LigatureGlyphID: 7893
+    - m_ComponentGlyphIDs: 2703000067030000
+      m_LigatureGlyphID: 7455
+    - m_ComponentGlyphIDs: 420300006d030000
+      m_LigatureGlyphID: 7457
+    - m_ComponentGlyphIDs: 2f00000050000000
+      m_LigatureGlyphID: 7473
+    - m_ComponentGlyphIDs: 35000000260000002d000000
+      m_LigatureGlyphID: 7475
+    - m_ComponentGlyphIDs: 35000000460000004d000000
+      m_LigatureGlyphID: 7906
+    - m_ComponentGlyphIDs: 3500000023000000
+      m_LigatureGlyphID: 8129
+    - m_ComponentGlyphIDs: 4f00000054000000
+      m_LigatureGlyphID: 7881
+    - m_ComponentGlyphIDs: 120000001000000013000000
+      m_LigatureGlyphID: 162
+    - m_ComponentGlyphIDs: 120000001000000015000000
+      m_LigatureGlyphID: 161
     m_GlyphPairAdjustmentRecords: []
     m_MarkToBaseAdjustmentRecords: []
     m_MarkToMarkAdjustmentRecords: []

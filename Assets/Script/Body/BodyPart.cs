@@ -208,7 +208,7 @@ public class BodyPart : MonoBehaviour
         {
             case PartType.Face:
                 highlight.color =
-                    new Color(1f, 0.2f, 0.2f, 0.45f);
+                    new Color(1f, 0.2f, 0.2f, 1f);
                 break;
 
             case PartType.Belly:

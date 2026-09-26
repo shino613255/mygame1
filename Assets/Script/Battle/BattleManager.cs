@@ -34,6 +34,8 @@ public class BattleManager : MonoBehaviour
     private bool waitingTap;
     private bool isPlayerTurn;
 
+    [SerializeField] private PlayerData defaultMageData;
+
     private bool isPartViewVisible = false;
     // åªç›êÌì¨íÜÇ©
     private bool isBattleRunning = false;
@@ -102,6 +104,11 @@ public class BattleManager : MonoBehaviour
         playerStatusPanel.SetActive(false);
         enemyUI.gameObject.SetActive(false);
         playerData = PlayerSelectionManager.Instance.selectedPlayer;
+
+        if (playerData == null)
+        {
+            playerData = defaultMageData;
+        }
 
         if (playerData != null && player != null)
         {
