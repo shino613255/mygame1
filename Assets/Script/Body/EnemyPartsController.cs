@@ -33,13 +33,13 @@ public class EnemyPartsController : MonoBehaviour
         if (ctx.baseDamage <= 0) return result;                                                                             
 
         result.mainDamage = Mathf.RoundToInt(ctx.baseDamage * ctx.mainDamageRate);                                              
-        enemy.TakeDamageRaw(result.mainDamage);                                                                             
+        enemy.TakeDamageRaw(result.mainDamage);
 
         if (selectedPart != null)
         {
-            result.partDamage = Mathf.RoundToInt(ctx.baseDamage * ctx.partDamageRate);                                      
-            selectedPart.TakePartDamage(result.partDamage);                                                                 
+            int calculatedPartDamage = Mathf.RoundToInt(ctx.baseDamage * ctx.partDamageRate);
 
+            result.partDamage = selectedPart.TakePartDamage(calculatedPartDamage);
         }
 
         Debug.Log(

@@ -103,7 +103,12 @@ public class BattleManager : MonoBehaviour
         skillSelectionPanel.SetActive(false);
         playerStatusPanel.SetActive(false);
         enemyUI.gameObject.SetActive(false);
-        playerData = PlayerSelectionManager.Instance.selectedPlayer;
+
+        if (PlayerSelectionManager.Instance != null)
+        {
+            playerData =
+                PlayerSelectionManager.Instance.selectedPlayer;
+        }
 
         if (playerData == null)
         {
@@ -219,6 +224,17 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
+        SkillCooldowns cooldowns =
+            player.GetComponent<SkillCooldowns>();
+        if (cooldowns != null && !cooldowns.IsReady(selectedSkill))
+        {
+            DialogTextManager.instance.SetScenarios(new string[]                 
+            {
+                $"スキル「{selectedSkill.skillName}」はクールダウン中ですわ！"
+            });
+            return;
+        }
+
         if (
             (
                 selectedSkill.skillType == SkillType.Heal ||
@@ -285,6 +301,7 @@ public class BattleManager : MonoBehaviour
                 1f,
                 1
             );
+
         }
 
         // 魔法スキル
@@ -453,15 +470,9 @@ public class BattleManager : MonoBehaviour
 
             if (Random.value <= chance)
             {
-                // スキルの状態異常効果ターンに関する設定
-                int duration =
-                    ctx.sourceSkill.overrideDurationTurns > 0
-                        ? ctx.sourceSkill.overrideDurationTurns
-                        : effect.durationTurns;
-
                 if (effect.type == StatusEffectType.Burn)
                 {
-                    enemy.ApplyBurn(effect, duration);
+                    enemy.ApplyBurn(effect);
                 }
             }
         }
@@ -930,5 +941,6 @@ public class BattleManager : MonoBehaviour
         BattleEnded?.Invoke();
 
         Debug.Log("戦闘終了");
+        skillButton.SetActive(false);
     }
 }

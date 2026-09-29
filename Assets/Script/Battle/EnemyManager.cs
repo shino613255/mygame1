@@ -44,8 +44,10 @@ public class EnemyManager : UnitBase
 
             // 顔を壊すと防御力 -10
             case PartType.Face:
-                def -= 10;
+                def -= 20;
+                mdef -= 20;
                 def = Mathf.Max(0, def);
+                mdef = Mathf.Max(0, mdef);
                 break;
         }
     }
@@ -76,7 +78,7 @@ public class EnemyManager : UnitBase
     private int magicDefenseBuffAmount;
 
     public bool IsMagicDefenseBuffed => isMagicDefenseBuffed;
-    public void ApplyMagicDefenseBuff(BuffData buff, int duration)
+    public void ApplyMagicDefenseBuff(BuffData buff)
     {
         if (buff == null) return;
 
@@ -88,10 +90,7 @@ public class EnemyManager : UnitBase
 
         isMagicDefenseBuffed = true;
 
-        remainingMagicDefenseBuffTurns =
-            duration > 0
-                ? duration
-                : buff.durationTurns;
+        remainingMagicDefenseBuffTurns = buff.durationTurns;
     }
 
     public void TickMagicDefenseBuff()
@@ -117,7 +116,7 @@ public class EnemyManager : UnitBase
         Debug.Log($"魔法防御力アップ終了！ MDEF:{mdef}");
     }
 
-    public void ApplyDefenseBuff(BuffData buff, int duration)
+    public void ApplyDefenseBuff(BuffData buff)
     {
         if (buff == null) return;
 
@@ -129,10 +128,7 @@ public class EnemyManager : UnitBase
 
         isDefenseBuffed = true;
 
-        remainingDefenseBuffTurns =
-            duration > 0
-                ? duration
-                : buff.durationTurns;
+        remainingDefenseBuffTurns = buff.durationTurns;
 
         Debug.Log(
             $"防御力アップ！ DEF:{def} 残り{remainingDefenseBuffTurns}ターン"
@@ -162,7 +158,7 @@ public class EnemyManager : UnitBase
         Debug.Log($"防御力アップ終了！ DEF:{def}");
     }
 
-    public bool ApplyBurn(StatusEffectData effect, int duration)
+    public bool ApplyBurn(StatusEffectData effect)
     {
         if (effect == null)
         {
@@ -189,10 +185,7 @@ public class EnemyManager : UnitBase
         currentStatusEffect = StatusEffectType.Burn;
 
         // SkillData側に個別指定があればそちらを優先
-        remainingBurnTurns =
-            duration > 0
-                ? duration
-                : effect.durationTurns;
+        remainingBurnTurns = effect.durationTurns;
 
         Debug.Log(
             $"火傷状態になった！ 残りターン:{remainingBurnTurns}"

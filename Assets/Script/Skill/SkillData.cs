@@ -64,6 +64,4 @@ public class SkillData : ScriptableObject
 
     [Range(0f, 1f)]
     public float applyChance = 1f;
-
-    public int overrideDurationTurns = 0;
 }

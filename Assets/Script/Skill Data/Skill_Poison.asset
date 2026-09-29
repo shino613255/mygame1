@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
   m_Name: Skill_Poison
   m_EditorClassIdentifier: 
-  skillName: "\u731B\u6BD2"
+  skillName: "\u30DD\u30A4\u30BA\u30F3"
   description: 
   icon: {fileID: 0}
   mpCost: 0
   cooldown: 0
   skillType: 4
-  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
+  effectPrefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
   effectDuration: 1.5
   effectOffset: {x: 0, y: 0}
   power: 0

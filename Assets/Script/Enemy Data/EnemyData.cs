@@ -15,9 +15,9 @@ public class EnemyData : ScriptableObject
     public int maxMp = 0;
 
     public int at = 1;
-    public int def = 0;
-
     public int mag = 0;
+
+    public int def = 0;
     public int mdef = 0;
 
     [Range(0f, 1f)]

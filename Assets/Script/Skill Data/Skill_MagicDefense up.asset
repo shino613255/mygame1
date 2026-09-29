@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
   m_Name: Skill_MagicDefense up
   m_EditorClassIdentifier: 
-  skillName: MGD
+  skillName: "\u30DE\u30B8\u30C3\u30AF\u30AC\u30FC\u30C9"
   description: 
   icon: {fileID: 0}
   mpCost: 20
@@ -35,4 +35,4 @@ MonoBehaviour:
   buff: {fileID: 11400000, guid: 06cda5cf22edcc1439becf08247dc7de, type: 2}
   debuff: {fileID: 0}
   applyChance: 1
-  overrideDurationTurns: 0
+  overrideDurationTurns: 3

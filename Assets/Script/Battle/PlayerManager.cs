@@ -128,6 +128,27 @@ public class PlayerManager : UnitBase
 
         Debug.Log("スキル「" + skill.skillName + "」を習得しました");
     }
+
+    public void EnhanceMagicAttackRate(float rate)
+    {
+        mag = Mathf.RoundToInt(mag * rate);
+    }
+
+    public void EnhanceDefenseRate(float rate)
+    {
+        def = Mathf.RoundToInt(def * rate);
+    }
+
+    public void EnhanceMaxHpRate(float rate)
+    {
+        int oldMaxHp = maxHp;
+
+        maxHp = Mathf.RoundToInt(maxHp * rate);
+
+        int increase = maxHp - oldMaxHp;
+        hp += increase;
+    }
+
     private void UpdateSkillPanel()                                                                           
     {
         Debug.Log(skillSlots == null);
@@ -182,7 +203,6 @@ public class PlayerManager : UnitBase
 
         yield break;
     }
-    
     void Update()
     {
            

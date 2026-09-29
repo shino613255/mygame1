@@ -28,9 +28,21 @@ public class QuestManager : MonoBehaviour
     // 「次へ」ボタン連打によるSearching()の二重実行を防ぐ
     private bool isSearching = false;
 
+    // 成長報酬の選択待ちか
+    private bool isWaitingGrowthSelection = false;
+
+    [SerializeField]
+    private GrowthSelectionManager growthSelectionManager;
+
     private void Start()
     {
-        PlayerData data = PlayerSelectionManager.Instance.selectedPlayer;
+        PlayerData data = null;
+
+        if (PlayerSelectionManager.Instance != null)
+        {
+            data =
+                PlayerSelectionManager.Instance.selectedPlayer;
+        }
 
         if (data != null)
         {
@@ -339,33 +351,78 @@ public class QuestManager : MonoBehaviour
     {
         Debug.Log("QuestManager：戦闘終了通知を受信");
 
-        if (isQuestCleared) return;
-        if (!hasActiveEnemy) return;
+        if (isQuestCleared)
+            return;
+
+        if (!hasActiveEnemy)
+            return;
 
         hasActiveEnemy = false;
 
-        FloorData currentFloor = floors[currentFloorIndex];                 // 現在の階層のデータを取得
+        isWaitingGrowthSelection = true;
 
+        Debug.Log(
+            "敵を倒したので、成長報酬の選択を待ちます"
+        );
+
+        growthSelectionManager.Open();
+    }
+
+    public void ContinueAfterGrowthSelection()
+    {
+        // 報酬選択待ちでなければ何もしない
+        if (!isWaitingGrowthSelection)
+            return;
+
+        isWaitingGrowthSelection = false;
+
+        Debug.Log(
+            "成長報酬を選択したのでクエストを再開します"
+        );
+
+
+        FloorData currentFloor =
+            floors[currentFloorIndex];
+
+
+        // 今倒した敵の次へ
         currentEnemyIndex++;
 
-        if (currentEnemyIndex < currentFloor.enemyDatas.Count)              // その階層の敵が無くなるまで戦闘
+
+        // 同じFloorにまだ敵がいる
+        if (
+            currentEnemyIndex <
+            currentFloor.enemyDatas.Count
+        )
         {
             EncountEnemy();
             return;
         }
 
-        currentEnemyIndex = 0;                                              // 次の階層に進むために敵インデックスをリセット
+
+        // このFloorの敵を全部倒した
+        currentEnemyIndex = 0;
+
         currentFloorIndex++;
 
-        if (currentFloorIndex >= floors.Count)
+
+        // 全Floor終了
+        if (
+            currentFloorIndex >=
+            floors.Count
+        )
         {
             QuestClear();
             return;
         }
 
-        // 次へボタンを出さず、自動探索へ変更
+
+        // 次のFloorへ探索
         isSearching = true;
-        StartCoroutine(Searching());
+
+        StartCoroutine(
+            Searching()
+        );
     }
 
     void QuestClear()

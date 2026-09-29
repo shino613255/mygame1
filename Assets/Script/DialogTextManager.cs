@@ -18,7 +18,7 @@ public class DialogTextManager : MonoBehaviour
     [SerializeField] Text uiText;
     [SerializeField]
     [Range(0.001f, 0.3f)]
-    float intervalForCharacterDisplay = 0.05f;
+    float intervalForCharacterDisplay = 0.1f;
 
     private string currentText = string.Empty;
     private float timeUntilDisplay = 0;

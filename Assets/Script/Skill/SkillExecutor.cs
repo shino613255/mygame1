@@ -153,8 +153,7 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
         {
             case BuffType.DefenseUp:
                 enemy.ApplyDefenseBuff(
-                    skill.buff,
-                    skill.overrideDurationTurns
+                    skill.buff
                 );
 
                 r.message += "\n防御力が上がった！";
@@ -162,8 +161,7 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
 
             case BuffType.MagicDefenseUp:
                 enemy.ApplyMagicDefenseBuff(
-                    skill.buff,
-                    skill.overrideDurationTurns
+                    skill.buff
                 );
 
                 r.message += "\n魔法防御力が上がった！";
@@ -211,8 +209,7 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
             if (skill.statusEffect.type == StatusEffectType.Burn)
             {
                 bool applied = enemy.ApplyBurn(
-                    skill.statusEffect,
-                    skill.overrideDurationTurns
+                    skill.statusEffect
                 );
 
                 if (applied)

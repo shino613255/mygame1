@@ -147,6 +147,66 @@ MonoBehaviour:
       m_LigatureGlyphID: 7922
     - m_ComponentGlyphIDs: 3500000023000000
       m_LigatureGlyphID: 8146
+    - m_ComponentGlyphIDs: 4e0000004a0000004f000000
+      m_LigatureGlyphID: 8047
+    - m_ComponentGlyphIDs: 4e0000004e00000014000000
+      m_LigatureGlyphID: 8044
+    - m_ComponentGlyphIDs: 4e0000004e00000013000000
+      m_LigatureGlyphID: 8043
+    - m_ComponentGlyphIDs: 4e00000043000000
+      m_LigatureGlyphID: 7904
+    - m_ComponentGlyphIDs: 4e00000048000000
+      m_LigatureGlyphID: 7484
+    - m_ComponentGlyphIDs: 4e0000004d000000
+      m_LigatureGlyphID: 7905
+    - m_ComponentGlyphIDs: 4e0000004e000000
+      m_LigatureGlyphID: 7481
+    - m_ComponentGlyphIDs: 4e00000054000000
+      m_LigatureGlyphID: 7895
+    - m_ComponentGlyphIDs: 4e00000014000000
+      m_LigatureGlyphID: 7891
+    - m_ComponentGlyphIDs: 4e00000013000000
+      m_LigatureGlyphID: 7487
+    - m_ComponentGlyphIDs: 670e0000a7080000
+      m_LigatureGlyphID: 7501
+    - m_ComponentGlyphIDs: d7030000ec030000b0030000e0030000ec030000
+      m_LigatureGlyphID: 7918
+    - m_ComponentGlyphIDs: 540000004600000044000000
+      m_LigatureGlyphID: 8046
+    - m_ComponentGlyphIDs: 470000004a000000
+      m_LigatureGlyphID: 112
+    - m_ComponentGlyphIDs: 470000004d000000
+      m_LigatureGlyphID: 113
+    - m_ComponentGlyphIDs: 4f00000054000000
+      m_LigatureGlyphID: 7897
+    - m_ComponentGlyphIDs: 44000000420000004d000000
+      m_LigatureGlyphID: 8049
+    - m_ComponentGlyphIDs: 440000004e00000014000000
+      m_LigatureGlyphID: 7890
+    - m_ComponentGlyphIDs: 440000004e00000013000000
+      m_LigatureGlyphID: 7888
+    - m_ComponentGlyphIDs: 4400000044000000
+      m_LigatureGlyphID: 7486
+    - m_ComponentGlyphIDs: 440000004e000000
+      m_LigatureGlyphID: 7482
+    - m_ComponentGlyphIDs: 5100000054000000
+      m_LigatureGlyphID: 7898
+    - m_ComponentGlyphIDs: 2900000031000000
+      m_LigatureGlyphID: 7902
+    - m_ComponentGlyphIDs: 290000005b000000
+      m_LigatureGlyphID: 7903
+    - m_ComponentGlyphIDs: 4c00000044000000420000004d000000
+      m_LigatureGlyphID: 8050
+    - m_ComponentGlyphIDs: 4c0000004e00000014000000
+      m_LigatureGlyphID: 8045
+    - m_ComponentGlyphIDs: 4c0000004e00000013000000
+      m_LigatureGlyphID: 7889
+    - m_ComponentGlyphIDs: 4c00000048000000
+      m_LigatureGlyphID: 7485
+    - m_ComponentGlyphIDs: 4c0000004d000000
+      m_LigatureGlyphID: 7894
+    - m_ComponentGlyphIDs: 4c0000004e000000
+      m_LigatureGlyphID: 7483
     m_GlyphPairAdjustmentRecords: []
     m_MarkToBaseAdjustmentRecords: []
     m_MarkToMarkAdjustmentRecords: []
