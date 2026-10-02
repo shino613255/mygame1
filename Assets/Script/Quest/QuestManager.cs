@@ -221,10 +221,24 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
+        EnemyData selectedData;
 
-        EnemyData selectedData =
-            currentFloor.enemyDatas[currentEnemyIndex];
+        if (currentFloor.isBossFloor)
+        {
+            selectedData =
+                currentFloor.enemyDatas[0];
+        }
+        else
+        {
+            int randomIndex =
+                Random.Range(
+                    0,
+                    currentFloor.enemyDatas.Count
+                );
 
+            selectedData =
+                currentFloor.enemyDatas[randomIndex];
+        }
 
         // EnemyData‚ªnull
         if (selectedData == null)
@@ -383,25 +397,6 @@ public class QuestManager : MonoBehaviour
 
         FloorData currentFloor =
             floors[currentFloorIndex];
-
-
-        // ¡“|‚µ‚½“G‚ÌŸ‚Ö
-        currentEnemyIndex++;
-
-
-        // “¯‚¶Floor‚É‚Ü‚¾“G‚ª‚¢‚é
-        if (
-            currentEnemyIndex <
-            currentFloor.enemyDatas.Count
-        )
-        {
-            EncountEnemy();
-            return;
-        }
-
-
-        // ‚±‚ÌFloor‚Ì“G‚ğ‘S•”“|‚µ‚½
-        currentEnemyIndex = 0;
 
         currentFloorIndex++;
 

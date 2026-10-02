@@ -69,6 +69,7 @@
     <Compile Include="Assets\Script\Body\EnemyPartsController.cs" />
     <Compile Include="Assets\Script\Quest\GrowthSelectionManager.cs" />
     <Compile Include="Assets\Script\Skill\SkillSlotUI.cs" />
+    <Compile Include="Assets\Script\Player Data\PlayerStatusDetailUI.cs" />
     <Compile Include="Assets\Script\Enemy Data\EnemyData.cs" />
     <Compile Include="Assets\Script\Enemy Data\IEnemyRoleAction.cs" />
     <Compile Include="Assets\Script\Skill\SkillType.cs" />

@@ -943,4 +943,23 @@ public class BattleManager : MonoBehaviour
         Debug.Log("戦闘終了");
         skillButton.SetActive(false);
     }
+
+    public void DebugKillEnemy()
+    {
+        if (enemy == null)
+            return;
+
+        if (!isBattleRunning)
+            return;
+
+        // 敵を倒す
+        enemy.TakeDamageRaw(enemy.hp);
+
+        // プレイヤー入力待ちを解除
+        waitingTap = false;
+        isPlayerTurn = false;
+
+        // 通常の戦闘終了処理へ
+        StartCoroutine(EndBattle());
+    }
 }
