@@ -1,18 +1,13 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class BattleManager : MonoBehaviour
 {
-    [SerializeField] private EnemyPartsController enemyParts;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float playerBaseAccuracy = 1f;
-    [SerializeField] private float enemyBaseAccuracy = 1f;
-    [SerializeField] private float elementProcChance = 0.05f;           // 属性攻撃の追加効果が発動する確率                  
+    [SerializeField] private float enemyBaseAccuracy = 1f;             
     [SerializeField] private SkillData selectedPlayerSkill;
     [SerializeField] private bool useSelectedSkill = false;
     [SerializeField] private List<SkillSlotUI> skillSlots;
@@ -42,6 +37,8 @@ public class BattleManager : MonoBehaviour
 
     // 戦闘終了処理中か
     private bool isEndingBattle = false;
+
+    public static BattleManager Instance;
     void Awake()
     {
         enemyAI = GetComponent<EnemyAI>();
@@ -50,28 +47,25 @@ public class BattleManager : MonoBehaviour
 
     public void Setup(EnemyManager enemymanager)
     {
-        skillButton.SetActive(true);
-        playerStatusPanel.SetActive(true);
-        // EnemyManagerが渡されていない
         if (enemymanager == null)
         {
             Debug.LogError(
                 "BattleManager.Setup にnullのEnemyManagerが渡されました。"
             );
-
             return;
         }
 
-        // すでに戦闘中なら二重開始しない
         if (isBattleRunning)
         {
             Debug.LogWarning(
                 "すでに戦闘中なのでBattleManager.Setupを無視します。"
             );
-
             return;
         }
 
+        skillButton.SetActive(true);
+        playerStatusPanel.SetActive(true);
+        
 
         isBattleRunning = true;
 
@@ -226,7 +220,9 @@ public class BattleManager : MonoBehaviour
 
         SkillCooldowns cooldowns =
             player.GetComponent<SkillCooldowns>();
-        if (cooldowns != null && !cooldowns.IsReady(selectedSkill))
+
+        if (cooldowns != null &&
+            !cooldowns.IsReady(selectedSkill))
         {
             DialogTextManager.instance.SetScenarios(new string[]                 
             {
@@ -252,7 +248,7 @@ public class BattleManager : MonoBehaviour
                 });
                 return;
             }
-            PlaySkillEffect(selectedSkill, Vector3.zero);                                // プレイヤーの位置にスキルのエフェクトを再生
+            PlaySkillEffect(selectedSkill, player.transform.position);                                // プレイヤーの位置にスキルのエフェクトを再生
 
             playerUI.UpdateUI(player);
 
@@ -295,13 +291,10 @@ public class BattleManager : MonoBehaviour
         // 通常攻撃
         if (skill == null)
         {
-            return DamageRule.CalcPhysical(
+            return DamageRule.CalcNormalAttack(
                 player.at,
-                enemy.def,
-                1f,
-                1
+                enemy.def
             );
-
         }
 
         // 魔法スキル
@@ -310,18 +303,16 @@ public class BattleManager : MonoBehaviour
             return DamageRule.CalcMagic(
                 player.mag,
                 enemy.mdef,
-                skill.multiplier,
-                1
-            ) + skill.power;
+                skill.power
+            );
         }
 
         // 物理スキル
         return DamageRule.CalcPhysical(
             player.at,
             enemy.def,
-            skill.multiplier,
-            1
-        ) + skill.power;
+            skill.power
+        );
     }
 
     private AttackContext CreateNormalAttackContext()
@@ -376,7 +367,7 @@ public class BattleManager : MonoBehaviour
         if (!enemy.IsAlive)
             return;
 
-        enemyParts = part.GetComponentInParent<EnemyPartsController>();             // クリックされた部位の親にEnemyPartsControllerがあるか確認する
+        EnemyPartsController enemyParts = part.GetComponentInParent<EnemyPartsController>();             // クリックされた部位の親にEnemyPartsControllerがあるか確認する
 
         if (enemyParts == null)
         {
@@ -410,7 +401,7 @@ public class BattleManager : MonoBehaviour
 
         if (ctx.sourceSkill != null)
         {
-            Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 clickPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             clickPos.z = 0f;
 
             PlaySkillEffect(ctx.sourceSkill, clickPos);
@@ -547,9 +538,6 @@ public class BattleManager : MonoBehaviour
 
         Debug.Log(attackMessage);
     }
-
-    public static BattleManager Instance;
-
 
     public void PlaySkillEffect(SkillData skill, Vector3 worldPos)
     {
@@ -807,9 +795,8 @@ public class BattleManager : MonoBehaviour
                 false,
                 true
             );
-
-            int dmg =
-                player.TakePhysical(enemy.at);
+            
+            int dmg = player.TakePhysical(enemy.at);
 
             playerUI.UpdateUI(player);
 

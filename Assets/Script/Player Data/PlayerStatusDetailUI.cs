@@ -19,16 +19,6 @@ public class PlayerStatusDetailUI : MonoBehaviour
     {
         statusPanel.SetActive(false);
     }
-    public void OpenStatusPanel()
-    {
-        statusPanel.SetActive(true);
-        UpdateUI(player);
-    }
-
-    public void CloseStatusPanel()
-    {
-        statusPanel.SetActive(false);
-    }
 
     public void ToggleStatusPanel()
     {

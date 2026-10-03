@@ -66,8 +66,12 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
         {
             case SkillType.Physical:
                 {
-                    // 基礎ダメージにスキル固有の固定値を加算
-                    int baseDmg = DamageRule.CalcPhysical(attacker.at, target.def, skill.multiplier, 1) + skill.power;                                      
+                    int baseDmg =
+                        DamageRule.CalcPhysical(
+                            attacker.at,
+                            target.def,
+                            skill.power
+                        );                                  
 
                     if (skill.canCrit)
                     {
@@ -79,13 +83,18 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
                         baseDmg = after;
                     }
 
-                    r.value = target.TakePhysical(baseDmg);                                                                                                 
+                    r.value = target.TakeDamageRaw(baseDmg, false);                                                                                                 
                     r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}ダメージ！";
                     break;
                 }
             case SkillType.Magic:
                 {
-                    int baseDmg = DamageRule.CalcMagic(attacker.mag, target.mdef, skill.multiplier, 1) + skill.power;                                      
+                    int baseDmg =
+                        DamageRule.CalcMagic(
+                            attacker.mag,
+                            target.mdef,
+                            skill.power
+                        );
 
                     if (skill.canCrit)
                     {
@@ -95,7 +104,7 @@ public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExe
                         baseDmg = after;
                     }
 
-                    r.value = target.TakeMagic(baseDmg);                                                                                                   
+                    r.value = target.TakeDamageRaw(baseDmg, true);                                                                                                   
                     r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}ダメージ！";
                     break;
                 }

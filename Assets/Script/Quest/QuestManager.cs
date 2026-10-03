@@ -31,14 +31,16 @@ public class QuestManager : MonoBehaviour
     // ê¨í∑ïÒèVÇÃëIëë“ÇøÇ©
     private bool isWaitingGrowthSelection = false;
 
-    [SerializeField]
-    private GrowthSelectionManager growthSelectionManager;
+    [SerializeField]private GrowthSelectionManager growthSelectionManager;
+
+    [SerializeField]private PlayerData defaultMageData;
 
     private void Start()
     {
-        PlayerData data = null;
+        PlayerData data = defaultMageData;
 
-        if (PlayerSelectionManager.Instance != null)
+        if (PlayerSelectionManager.Instance != null &&
+            PlayerSelectionManager.Instance.selectedPlayer != null)
         {
             data =
                 PlayerSelectionManager.Instance.selectedPlayer;

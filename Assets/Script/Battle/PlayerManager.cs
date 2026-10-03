@@ -165,21 +165,6 @@ public class PlayerManager : UnitBase
         }
     }
 
-    public bool TrySkillAttack(EnemyManager enemy)
-    {
-        if (enemy == null) return false;                                                                        
-
-        if (!TryUseMp(currentSkill.mpCost))                                                                     
-        {
-            Debug.Log("MPが足りない！");
-            return false;
-        }
-
-        int dmg = MakeMagicDamage();                                                                           
-        enemy.TakeMagic(dmg);                                                                                   
-        return true;
-    }
-
     // プレイヤーの行動を処理する
     public override IEnumerator Act()                                                                           
     {  

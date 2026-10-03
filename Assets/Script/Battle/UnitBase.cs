@@ -93,7 +93,7 @@ public abstract class UnitBase : MonoBehaviour
     
     public virtual int TakePhysical(int attackerAtk)
     {
-        int damage = DamageRule.CalcPhysical(attackerAtk, def);             // ダメージ計算(AT − DEF)
+        int damage = DamageRule.CalcNormalAttack(attackerAtk, def);             // ダメージ計算(AT − DEF)
         hp = Mathf.Clamp(hp - damage, 0, maxHp);
 
         OnDamaged(damage, false);                                           // ダメージ演出の呼び出し（物理攻撃の場合はisMagicをfalseに設定）
@@ -106,9 +106,9 @@ public abstract class UnitBase : MonoBehaviour
         return damage;
     }
 
-    public virtual int TakeMagic(int attackerMag)
+    public virtual int TakeMagic(int attackerMag, int skillPower)
     {
-        int damage = DamageRule.CalcMagic(attackerMag, mdef);               
+        int damage = DamageRule.CalcMagic(attackerMag, mdef, skillPower);               
         hp = Mathf.Clamp(hp - damage, 0, maxHp);
 
         OnDamaged(damage, true);                                            
@@ -118,6 +118,30 @@ public abstract class UnitBase : MonoBehaviour
             OnDied();
             Destroy(gameObject);
         }
+        return damage;
+    }
+
+    public virtual int TakeDamageRaw(
+    int damage,
+    bool isMagic = false
+)
+    {
+        damage = Mathf.Max(1, damage);
+
+        hp = Mathf.Clamp(
+            hp - damage,
+            0,
+            maxHp
+        );
+
+        OnDamaged(damage, isMagic);
+
+        if (hp <= 0)
+        {
+            OnDied();
+            Destroy(gameObject);
+        }
+
         return damage;
     }
 
