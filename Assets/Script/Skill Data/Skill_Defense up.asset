@@ -23,7 +23,7 @@ MonoBehaviour:
   effectOffset: {x: 0, y: 0}
   power: 0
   multiplier: 1
-  accuracy: 1
+  accuracy: 0.5
   canCrit: 1
   critBonus: 0
   element: 0
@@ -35,4 +35,3 @@ MonoBehaviour:
   buff: {fileID: 11400000, guid: 58b525dc703f311488bdb003e0126297, type: 2}
   debuff: {fileID: 0}
   applyChance: 1
-  overrideDurationTurns: 3

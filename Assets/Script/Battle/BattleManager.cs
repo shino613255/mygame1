@@ -1,7 +1,9 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
+using static EnemyPartsController;
 
 public class BattleManager : MonoBehaviour
 {
@@ -224,7 +226,8 @@ public class BattleManager : MonoBehaviour
         if (cooldowns != null &&
             !cooldowns.IsReady(selectedSkill))
         {
-            DialogTextManager.instance.SetScenarios(new string[]                 
+            DialogTextManager.instance.SetScenarios(
+                new string[]                 
             {
                 $"スキル「{selectedSkill.skillName}」はクールダウン中ですわ！"
             });
@@ -317,156 +320,116 @@ public class BattleManager : MonoBehaviour
 
     private AttackContext CreateNormalAttackContext()
     {
+        int normalDamage = CalculateDamage(null);
+
+        int finalDamage = DamageRule.RollCrit(
+            normalDamage,
+            player.critRate,
+            player.critMultiplier
+        );
+
+        bool isCritical = finalDamage > normalDamage;
+
         return new AttackContext
         {
-            baseDamage = CalculateDamage(null),
+            baseDamage = finalDamage,
 
             mainDamageRate = 1f,
             partDamageRate = 1f,
             canApplyStatus = false,
-            sourceSkill = null
+            sourceSkill = null,
+
+            isCritical = isCritical
         };
     }
     private AttackContext CreateSkillAttackContext(SkillData skill)
     {
+        int skillDamage = CalculateDamage(skill);
+
+        int finalDamage = skillDamage;
+        bool isCritical = false;
+
+        if (skill.canCrit)
+        {
+            finalDamage = DamageRule.RollCrit(
+                skillDamage,
+                player.critRate,
+                player.critMultiplier
+            );
+
+            isCritical = finalDamage > skillDamage;
+        }
+
         return new AttackContext
         {
-            baseDamage = CalculateDamage(skill),
+            baseDamage = finalDamage,
 
             mainDamageRate = skill.mainDamageRate,
             partDamageRate = skill.partDamageRate,
 
             canApplyStatus = skill.statusEffect != null,
-            sourceSkill = skill
+            sourceSkill = skill,
+
+            isCritical = isCritical
         };
     }
-
     public void OnBodyPartTapped(BodyPart part)
     {
-        // BodyPartが存在しない
-        if (part == null)
+        // ① 攻撃可能か確認
+        if (!CanAttackPart(part))
             return;
 
-        // 戦闘中ではない
-        if (!isBattleRunning)
-            return;
-
-        // 戦闘終了処理中
-        if (isEndingBattle)
-            return;
-
-        // プレイヤーターンではない
-        if (!isPlayerTurn)
-            return;
-
-        // 敵が存在しない
-        if (enemy == null)
-            return;
-
-        // 敵がすでに死亡している
-        if (!enemy.IsAlive)
-            return;
-
-        EnemyPartsController enemyParts = part.GetComponentInParent<EnemyPartsController>();             // クリックされた部位の親にEnemyPartsControllerがあるか確認する
+        EnemyPartsController enemyParts =
+            part.GetComponentInParent<EnemyPartsController>();
 
         if (enemyParts == null)
         {
             Debug.LogWarning(
-                $"部位「{part.GetPartNameJP()}」の親にEnemyPartsControllerが見つかりませんでしたわ！");
+                $"部位「{part.GetPartNameJP()}」の親にEnemyPartsControllerが見つかりませんでしたわ！"
+            );
             return;
         }
 
         enemyParts.SetSelectedPart(part);
 
-        // 攻撃の情報を作る
-        AttackContext ctx;
 
-        if (useSelectedSkill && selectedPlayerSkill != null)
-        {
-            if (!player.TryUseMp(selectedPlayerSkill.mpCost))
-            {
-                Debug.Log("MPが足りませんわ！");
-                return;
-            }
-
-            ctx = CreateSkillAttackContext(selectedPlayerSkill);
-        }
-        else
-        {
-            ctx = CreateNormalAttackContext();
-        }
+        if (!TryCreateAttackContext(out AttackContext ctx))
+            return;
 
         waitingTap = false;
         isPlayerTurn = false;
 
-        if (ctx.sourceSkill != null)
-        {
-            Vector3 clickPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            clickPos.z = 0f;
+        PlayAttackEffect(ctx);
 
-            PlaySkillEffect(ctx.sourceSkill, clickPos);
-        }
-
-        float accuracy =
-            ctx.sourceSkill != null
-                ? ctx.sourceSkill.accuracy
-                : playerBaseAccuracy;
-
-        bool hit = DamageRule.RollHit(
-            accuracy,
-            enemy.evasionRate
-        );
-
-        if (!hit)
+        if (!RollPlayerAttackHit(ctx))
         {
             if (useSelectedSkill)
             {
                 useSelectedSkill = false;
                 selectedPlayerSkill = null;
             }
+
             playerUI.UpdateUI(player);
 
-            DialogTextManager.instance.SetScenarios(new string[]
-            {
-        $"{player.name}の攻撃！\nしかし{enemy.name}に当たらなかった！"
-            });
+            DialogTextManager.instance.SetScenarios(
+                new string[]
+                {
+                    $"{player.name}の攻撃！\nしかし{enemy.name}に当たらなかった！"
+                }
+            );
 
             return;
         }
 
-        // 攻撃前にすでに破壊されていたか記録
         bool wasBroken = part.IsBroken;
 
-        // EnemyPartsControllerで本体・部位へのダメージを計算して適用する
-        var result = enemyParts.ApplyAttack(ctx);
+        var result =
+            enemyParts.ApplyAttack(ctx);
 
-        // 今回の攻撃で壊れたか
-        bool justBroken = !wasBroken && part.IsBroken;
+        bool justBroken =
+            !wasBroken && part.IsBroken;
 
-        if (
-            ctx.sourceSkill != null &&
-            ctx.sourceSkill.statusEffect != null &&
-            enemy != null &&
-            enemy.IsAlive
-)
-        {
-            StatusEffectData effect =
-                ctx.sourceSkill.statusEffect;
-
-            // SkillData側に個別設定があれば、StatusEffectDataより優先する
-            float chance =
-                ctx.sourceSkill.applyChance > 0f
-                    ? ctx.sourceSkill.applyChance
-                    : effect.applyChance;
-
-            if (Random.value <= chance)
-            {
-                if (effect.type == StatusEffectType.Burn)
-                {
-                    enemy.ApplyBurn(effect);
-                }
-            }
-        }
+        TryApplyStatusEffect(ctx);
 
         if (useSelectedSkill)
         {
@@ -478,27 +441,182 @@ public class BattleManager : MonoBehaviour
         {
             enemyUI.UpdateUI(enemy);
         }
+
         playerUI.UpdateUI(player);
 
-        string attackMessage;
+        string attackMessage =
+            CreateAttackMessage(
+                part,
+                ctx,
+                result,
+                wasBroken,
+                justBroken
+            );
 
-        if (ctx.sourceSkill != null)
+        DialogTextManager.instance.SetScenarios(
+            new[]
+            {
+            attackMessage
+            }
+        );
+
+        Debug.Log(attackMessage);
+    }
+
+    private bool CanAttackPart(BodyPart part)
+    {
+        if (part == null)
+            return false;
+
+        if (!isBattleRunning)
+            return false;
+
+        if (isEndingBattle)
+            return false;
+
+        if (!isPlayerTurn)
+            return false;
+
+        if (enemy == null)
+            return false;
+
+        if (!enemy.IsAlive)
+            return false;
+
+        return true;
+    }
+
+    private bool TryCreateAttackContext(out AttackContext ctx)
+    {
+        if (useSelectedSkill && selectedPlayerSkill != null)
         {
-            attackMessage = $"{ctx.sourceSkill.skillName}！\n{part.GetPartNameJP()}に攻撃！";
+            if (!player.TryUseMp(selectedPlayerSkill.mpCost))
+            {
+                Debug.Log("MPが足りませんわ！");
+
+                ctx = default;
+                return false;
+            }
+
+            ctx =
+                CreateSkillAttackContext(
+                    selectedPlayerSkill
+                );
+
+            return true;
+        }
+
+        ctx = CreateNormalAttackContext();
+
+        return true;
+    }
+
+    private void PlayAttackEffect(AttackContext ctx)
+    {
+        if (ctx.sourceSkill == null)
+            return;
+
+        Vector3 clickPos =
+            mainCamera.ScreenToWorldPoint(
+                Input.mousePosition
+            );
+
+        clickPos.z = 0f;
+
+        PlaySkillEffect(
+            ctx.sourceSkill,
+            clickPos
+        );
+    }
+    private bool RollPlayerAttackHit(
+    AttackContext ctx
+)
+    {
+        float accuracy =
+            ctx.sourceSkill != null
+                ? ctx.sourceSkill.accuracy
+                : playerBaseAccuracy;
+
+        return DamageRule.RollHit(
+            accuracy,
+            enemy.evasionRate
+        );
+    }
+
+    private void TryApplyStatusEffect(
+    AttackContext ctx
+)
+    {
+        if (ctx.sourceSkill == null)
+            return;
+
+        StatusEffectData effect =
+            ctx.sourceSkill.statusEffect;
+
+        if (effect == null)
+            return;
+
+        if (enemy == null || !enemy.IsAlive)
+            return;
+
+        float chance =
+            ctx.sourceSkill.applyChance > 0f
+                ? ctx.sourceSkill.applyChance
+                : effect.applyChance;
+
+        if (Random.value > chance)
+            return;
+
+        switch (effect.type)
+        {
+            case StatusEffectType.Burn:
+                enemy.ApplyBurn(effect);
+                break;
+
+            case StatusEffectType.Frozen:
+                enemy.ApplyFrozen(effect);
+                break;
+        }
+    }
+    private string CreateAttackMessage(
+    BodyPart part,
+    AttackContext ctx,
+    AttackResult result,
+    bool wasBroken,
+    bool justBroken
+)
+    {
+        string message;
+        if(ctx.isCritical)
+        {
+            message = "クリティカル！\n";
         }
         else
         {
-            attackMessage = $"{part.GetPartNameJP()}を攻撃！";
+            message = string.Empty;
+        }
+
+        if (ctx.sourceSkill != null)
+        {
+            message +=
+                $"{ctx.sourceSkill.skillName}！\n" +
+                $"{part.GetPartNameJP()}に攻撃！";
+        }
+        else
+        {
+            message +=
+                $"{part.GetPartNameJP()}を攻撃！";
         }
 
         if (result.mainDamage > 0)
         {
-            attackMessage += $"\n本体に{result.mainDamage}ダメージ！";
+            message +=
+                $"\n本体に{result.mainDamage}ダメージ！";
         }
 
         if (result.partDamage > 0)
         {
-            attackMessage +=
+            message +=
                 $"\n部位に{result.partDamage}ダメージ！";
         }
 
@@ -507,19 +625,19 @@ public class BattleManager : MonoBehaviour
             switch (part.partType)
             {
                 case PartType.Face:
-                    attackMessage +=
+                    message +=
                         "\n頭を破壊した！" +
                         "\n敵の防御力が10低下した！";
                     break;
 
                 case PartType.Hand:
-                    attackMessage +=
+                    message +=
                         "\n手を破壊した！" +
                         "\n敵の命中率が20%低下した！";
                     break;
 
                 case PartType.Leg:
-                    attackMessage +=
+                    message +=
                         "\n脚を破壊した！" +
                         "\n2回行動できるようになった！";
                     break;
@@ -527,18 +645,12 @@ public class BattleManager : MonoBehaviour
         }
         else if (wasBroken)
         {
-            attackMessage +=
+            message +=
                 "\nその部位はもう破壊されていますわ！";
         }
 
-        DialogTextManager.instance.SetScenarios(new[]
-        {
-            attackMessage
-        });
-
-        Debug.Log(attackMessage);
+        return message;
     }
-
     public void PlaySkillEffect(SkillData skill, Vector3 worldPos)
     {
         if (skill == null) return;
@@ -579,6 +691,13 @@ public class BattleManager : MonoBehaviour
             int playerActionCount =
                 enemy.GetPlayerActionCount();
 
+            SkillCooldowns playerCooldowns =
+                player.GetComponent<SkillCooldowns>();
+
+            if (playerCooldowns != null)
+            {
+                playerCooldowns.Tick();
+            }
 
             // 行動可能回数ぶんプレイヤーターン
             for (int i = 0; i < playerActionCount; i++)
@@ -717,6 +836,7 @@ public class BattleManager : MonoBehaviour
         // Buffの残りターンを進める
         enemy.TickDefenseBuff();
         enemy.TickMagicDefenseBuff();
+        enemy.TickFrozen();
 
         // Cooldownは火傷の有無に関係なく毎ターン進める
         SkillCooldowns cooldowns =
@@ -743,20 +863,30 @@ public class BattleManager : MonoBehaviour
 
             enemyUI.UpdateUI(enemy);
 
-            DialogTextManager.instance.SetScenarios(
-                new string[]
-                {
-                $"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた"
-                }
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(
+                    $"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた",
+                    0.5f
+                )
             );
-
-            yield return new WaitForSeconds(0.5f);
         }
 
         yield return new WaitForSeconds(0.5f);
 
-        // まず敵が使うスキルを決める
-        SkillData skill = enemyAI.ChooseSkill(enemy);
+        // 待っている間に戦闘が終了していたら処理を終了
+        if (
+            enemy == null ||
+            player == null ||
+            !isBattleRunning ||
+            isEndingBattle
+        )
+        {
+            yield break;
+        }
+
+        // 敵が使うスキルを決める
+        SkillData skill =
+            enemyAI.ChooseSkill(enemy);
 
         // nullなら通常攻撃
         if (skill == null)

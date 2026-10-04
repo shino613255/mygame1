@@ -23,7 +23,6 @@ public class StageUIManager : MonoBehaviour
     public void HideButtons()       
     {
         nextButton.SetActive(false);
-        toTownButton.SetActive(false);
     }
     public void ShowButtons()       
     {

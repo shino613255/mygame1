@@ -91,7 +91,6 @@ public class DialogTextManager : MonoBehaviour
 
     }
 
-    // 1/16 追加:終了したか調べて終了していれば登録関数を実装する
     void CheckCompletedText()
     {
         if (isEnd == false && IsCompleteDisplayText && scenarios.Length == currentLine)
@@ -101,7 +100,7 @@ public class DialogTextManager : MonoBehaviour
             Invoke("EventFunction", eventDelayTime);
         }
     }
-    // 1/16 追加:登録関数の実行
+
     void EventFunction()
     {
         onCompletedEvents.Invoke();
@@ -127,5 +126,23 @@ public class DialogTextManager : MonoBehaviour
         scenarios = sc;
         currentLine = 0;
         SetNextLine();
+    }
+    public IEnumerator ShowAndWait(
+    string message,
+    float waitSeconds
+    )
+    {
+        SetScenarios(new string[]
+        {
+        message
+        });
+
+        // 文字送りが終わるまで待つ
+        yield return new WaitUntil(
+            () => IsCompleteDisplayText
+        );
+
+        // 全文表示後、指定時間だけ待つ
+        yield return new WaitForSeconds(waitSeconds);
     }
 }

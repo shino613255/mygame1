@@ -30,9 +30,9 @@ public class EnemyManager : UnitBase
     {
         switch (part)
         {
-            // 手の破壊:命中率 -20%
+            // 手の破壊:命中率 -10%
             case PartType.Hand:
-                ApplyAccuracyDown(0.2f);
+                ApplyAccuracyDown(0.1f);
                 break;
 
 
@@ -63,8 +63,13 @@ public class EnemyManager : UnitBase
 
     public StatusEffectType CurrentStatusEffect => currentStatusEffect;
     public bool IsBurning => currentStatusEffect == StatusEffectType.Burn;
+    public bool IsFrozen => currentStatusEffect == StatusEffectType.Frozen;
 
     private int remainingBurnTurns;
+    private int remainingFrozenTurns;
+
+    private int frozenAtDown;
+    private int frozenMagDown;
 
     [Header("防御バフ")]
     private bool isDefenseBuffed;
@@ -194,6 +199,66 @@ public class EnemyManager : UnitBase
         return true;
     }
 
+    public bool ApplyFrozen(StatusEffectData effect)
+    {
+        if (effect == null)
+        {
+            Debug.LogWarning(
+                "StatusEffectData が null です。凍結状態を適用できません。"
+            );
+
+            return false;
+        }
+
+        if (effect.type != StatusEffectType.Frozen)
+        {
+            return false;
+        }
+
+        // 他の状態異常がある場合は付与しない
+        if (
+            currentStatusEffect != StatusEffectType.None &&
+            currentStatusEffect != StatusEffectType.Frozen
+        )
+        {
+            Debug.Log(
+                $"{currentStatusEffect}が有効中のため、凍結は付与されませんでした。"
+            );
+
+            return false;
+        }
+
+        // 初めて凍結したときだけ能力値を下げる
+        if (!IsFrozen)
+        {
+            frozenAtDown =
+                Mathf.RoundToInt(
+                    at * effect.statDownRate
+                );
+
+            frozenMagDown =
+                Mathf.RoundToInt(
+                    mag * effect.statDownRate
+                );
+
+            at -= frozenAtDown;
+            mag -= frozenMagDown;
+        }
+
+        currentStatusEffect =
+            StatusEffectType.Frozen;
+
+        remainingFrozenTurns =
+            effect.durationTurns;
+
+        Debug.Log(
+            $"凍結状態になった！ AT:{at} MAG:{mag} " +
+            $"残り{remainingFrozenTurns}ターン"
+        );
+
+        return true;
+    }
+
     public int TickBurnDamage()
     {
         if (!IsBurning) return 0;
@@ -242,6 +307,19 @@ public class EnemyManager : UnitBase
 
         return damage;                                                                                         
     }
+
+    public void TickFrozen()
+    {
+        if (!IsFrozen)
+            return;
+
+        remainingFrozenTurns--;
+
+        if (remainingFrozenTurns <= 0)
+        {
+            RemoveFrozen();
+        }
+    }
     private void RemoveBurn()
     {
         if (currentStatusEffect == StatusEffectType.Burn)
@@ -252,6 +330,26 @@ public class EnemyManager : UnitBase
         remainingBurnTurns = 0;
 
         Debug.Log("火傷状態が解除されました");
+    }
+
+    private void RemoveFrozen()
+    {
+        at += frozenAtDown;
+        mag += frozenMagDown;
+
+        frozenAtDown = 0;
+        frozenMagDown = 0;
+        remainingFrozenTurns = 0;
+
+        if (currentStatusEffect == StatusEffectType.Frozen)
+        {
+            currentStatusEffect =
+                StatusEffectType.None;
+        }
+
+        Debug.Log(
+            $"凍結状態が解除された！ AT:{at} MAG:{mag}"
+        );
     }
 
     public void Setup(EnemyData enemyData)

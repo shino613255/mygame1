@@ -21,7 +21,7 @@ MonoBehaviour:
   effectPrefab: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
   effectDuration: 1
   effectOffset: {x: 0, y: 0}
-  power: 30
+  power: 182
   multiplier: 0.5
   accuracy: 1
   canCrit: 1

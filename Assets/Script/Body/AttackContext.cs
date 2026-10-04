@@ -9,4 +9,5 @@ public struct AttackContext
     public float partDamageRate;
     public bool canApplyStatus;
     public SkillData sourceSkill;   // 攻撃の元となるスキルデータ
+    public bool isCritical;            // クリティカルかどうか
 }

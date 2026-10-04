@@ -15,12 +15,12 @@ MonoBehaviour:
   enemyName: "\u9A0E\u58EB\u738B"
   icon: {fileID: 0}
   prefab: {fileID: 4235716888136053994, guid: 1219513833c21fe4da5a19505f867af0, type: 3}
-  maxHp: 400
+  maxHp: 4000
   maxMp: 100
   at: 40
   mag: 0
-  def: 40
-  mdef: 40
+  def: 60
+  mdef: 60
   evasionRate: 0
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}

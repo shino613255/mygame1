@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 46c7d8a4ac9c07b4d976adfb8192d07e, type: 3}
-  m_Name: Status_Burn
+  m_Name: Status_Frozen
   m_EditorClassIdentifier: 
-  type: 2
-  durationTurns: 3
+  type: 1
+  durationTurns: 2
   applyChance: 0.2
-  tickHpRate: 0.05
+  tickHpRate: 0
   tickDamageFlat: 0
-  statDownRate: 0
+  statDownRate: 0.2

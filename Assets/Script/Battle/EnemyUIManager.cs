@@ -9,6 +9,7 @@ public class EnemyUIManager : MonoBehaviour
     [SerializeField] private Image effectIconPrefab;
 
     [SerializeField] private Sprite burnIcon;
+    [SerializeField] private Sprite frozenIcon;
     [SerializeField] private Sprite defenseUpIcon;
     [SerializeField] private Sprite magicDefenseUpIcon;
 
@@ -52,6 +53,11 @@ public class EnemyUIManager : MonoBehaviour
         if (enemy.IsBurning)
         {
             CreateEffectIcon(burnIcon);
+        }
+
+        if (enemy.IsFrozen)
+        {
+            CreateEffectIcon(frozenIcon);
         }
 
         if (enemy.IsDefenseBuffed)

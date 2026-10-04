@@ -33,7 +33,7 @@ public abstract class UnitBase : MonoBehaviour
 
     [Header("Critical")]
     [Range(0f, 1f)]
-    public float critRate = 0.02f;                           
+    public float critRate = 0.03f;                           
     public float critMultiplier = 2f;                         
 
     public float skillMultiplier = 2f;                          

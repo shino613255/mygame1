@@ -20,7 +20,7 @@ public class GrowthSelectionManager : MonoBehaviour
 
     public void SelectMaxHpUp()
     {
-        player.EnhanceMaxHpRate(1.8f);      
+        player.EnhanceMaxHpRate(1.2f);      
 
         FinishSelection();
     }
@@ -33,7 +33,7 @@ public class GrowthSelectionManager : MonoBehaviour
 
     public void SelectDefenseUp()
     {
-        player.EnhanceDefenseRate(1.5f);
+        player.EnhanceDefenseRate(1.2f);
         FinishSelection();
     }
 
