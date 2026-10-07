@@ -14,11 +14,8 @@ public class QuestManager : MonoBehaviour
     [SerializeField] private List<FloorData> floors = new();
     public GameObject QuestBG;
 
-    // 1なら遭遇しない、0なら遭遇
-    int[] encountTable = { 0, 0, 0, 0, 1};
-
-    private int currentFloorIndex = 0;      // 今何層目か
-    private int currentEnemyIndex = 0;      // その階層の何体目の敵か
+    private int currentFloorIndex = 0;      
+    private int currentEnemyIndex = 0;      
     int currentStage = 0;
 
     private bool hasActiveEnemy = false;
@@ -28,7 +25,6 @@ public class QuestManager : MonoBehaviour
     // 「次へ」ボタン連打によるSearching()の二重実行を防ぐ
     private bool isSearching = false;
 
-    // 成長報酬の選択待ちか
     private bool isWaitingGrowthSelection = false;
 
     [SerializeField]private GrowthSelectionManager growthSelectionManager;
@@ -106,21 +102,17 @@ public class QuestManager : MonoBehaviour
 
         EncountEnemy();
 
-        // 探索終了
         isSearching = false;
     }
 
     public void OnNextButton()
     {
-        // クエスト終了後は操作不可
         if (isQuestCleared || isQuestFailed)
             return;
 
-        // Searching中にもう一度押されても何もしない
         if (isSearching)
             return;
 
-        // 敵が存在している間は次の探索を開始しない
         if (hasActiveEnemy)
             return;
 
@@ -140,16 +132,12 @@ public class QuestManager : MonoBehaviour
 
     void EncountEnemy()
     {
-        // クエスト終了後は敵を生成しない
         if (isQuestCleared || isQuestFailed)
             return;
 
-        // すでに敵が存在する場合は二重生成しない
         if (hasActiveEnemy)
             return;
 
-
-        // floors自体がnull、または0件
         if (floors == null || floors.Count == 0)
         {
             Debug.LogWarning(
@@ -160,8 +148,6 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
-
-        // Floorのindexが範囲外
         if (
             currentFloorIndex < 0 ||
             currentFloorIndex >= floors.Count
@@ -179,8 +165,6 @@ public class QuestManager : MonoBehaviour
         FloorData currentFloor =
             floors[currentFloorIndex];
 
-
-        // FloorData自体がnull
         if (currentFloor == null)
         {
             Debug.LogWarning(
@@ -191,8 +175,6 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
-
-        // Enemy Listがnullまたは空
         if (
             currentFloor.enemyDatas == null ||
             currentFloor.enemyDatas.Count == 0
@@ -206,8 +188,6 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
-
-        // Enemyのindexが範囲外
         if (
             currentEnemyIndex < 0 ||
             currentEnemyIndex >= currentFloor.enemyDatas.Count
@@ -242,7 +222,6 @@ public class QuestManager : MonoBehaviour
                 currentFloor.enemyDatas[randomIndex];
         }
 
-        // EnemyDataがnull
         if (selectedData == null)
         {
             Debug.LogWarning(
@@ -253,8 +232,6 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
-
-        // EnemyDataのPrefabがnull
         if (selectedData.prefab == null)
         {
             Debug.LogWarning(
@@ -281,8 +258,6 @@ public class QuestManager : MonoBehaviour
         EnemyManager enemy =
             enemyObj.GetComponent<EnemyManager>();
 
-
-        // PrefabにEnemyManagerが付いていない
         if (enemy == null)
         {
             Debug.LogError(
@@ -310,7 +285,6 @@ public class QuestManager : MonoBehaviour
 
         currentFloorIndex++;
 
-        // 最後のFloorまで終わった
         if (currentFloorIndex >= floors.Count)
         {
             QuestClear();
@@ -325,19 +299,16 @@ public class QuestManager : MonoBehaviour
         // 問題のあるEnemyDataだけ飛ばす
         currentEnemyIndex++;
 
-        // 同じFloorに次の敵がいる
         if (currentEnemyIndex < currentFloor.enemyDatas.Count)
         {
             EncountEnemy();
             return;
         }
 
-        // このFloorの敵を全部確認した
         currentEnemyIndex = 0;
 
         currentFloorIndex++;
 
-        // 最後まで終了
         if (currentFloorIndex >= floors.Count)
         {
             QuestClear();
@@ -386,7 +357,6 @@ public class QuestManager : MonoBehaviour
 
     public void ContinueAfterGrowthSelection()
     {
-        // 報酬選択待ちでなければ何もしない
         if (!isWaitingGrowthSelection)
             return;
 
@@ -394,16 +364,10 @@ public class QuestManager : MonoBehaviour
 
         Debug.Log(
             "成長報酬を選択したのでクエストを再開します"
-        );
-
-
-        FloorData currentFloor =
-            floors[currentFloorIndex];
+        );        
 
         currentFloorIndex++;
 
-
-        // 全Floor終了
         if (
             currentFloorIndex >=
             floors.Count
@@ -413,8 +377,6 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
-
-        // 次のFloorへ探索
         isSearching = true;
 
         StartCoroutine(

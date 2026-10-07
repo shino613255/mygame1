@@ -12,7 +12,6 @@ public class PlayerStatusDetailUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI mdefText;
 
     [SerializeField] private GameObject statusPanel;
-    [SerializeField] private PlayerStatusDetailUI statusUI;
     [SerializeField] private PlayerManager player;
 
     private void Start()
@@ -28,7 +27,7 @@ public class PlayerStatusDetailUI : MonoBehaviour
 
         if (isOpen)
         {
-            statusUI.UpdateUI(player);
+            UpdateUI(player);
         }
     }
 

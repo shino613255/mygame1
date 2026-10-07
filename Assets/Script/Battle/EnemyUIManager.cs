@@ -41,7 +41,7 @@ public class EnemyUIManager : MonoBehaviour
         if (effectIconContainer == null || effectIconPrefab == null)
             return;
 
-        // 前回表示したアイコンを消す
+        // 状態異常・バフの変化を反映するため、既存アイコンを作り直す
         for (int i = effectIconContainer.childCount - 1; i >= 0; i--)
         {
             Destroy(effectIconContainer.GetChild(i).gameObject);

@@ -8,8 +8,8 @@ public class SkillData : ScriptableObject
 {
     [Header("基本")]
     public string skillName;
-    [TextArea] public string description;                                   
-    public Sprite icon;                                                     
+    [TextArea] public string description;
+    public Sprite icon;
 
     [Header("コスト（任意）")]
     [Min(0)] public int mpCost = 0;
@@ -27,7 +27,7 @@ public class SkillData : ScriptableObject
     [Tooltip("固定加算ダメージ/回復（使わないなら0でOK）")]
     public int power = 0;
 
-    [Tooltip("atk/magに掛ける倍率（通常攻撃なら1.0）")]
+    [Tooltip("AT/MAGなどのステータスに掛けるスキル倍率")]
     public float multiplier = 1f;
 
     [Header("命中率（0〜1）")]
@@ -49,7 +49,7 @@ public class SkillData : ScriptableObject
 
     [Header("部位攻撃設定")]
     [Tooltip("このスキルで部位を選んで攻撃できるか")]
-    public bool canTargetPart = true;                                      
+    public bool canTargetPart = true;
 
     [Tooltip("本体に入るダメージ倍率")]
     public float mainDamageRate = 1f;

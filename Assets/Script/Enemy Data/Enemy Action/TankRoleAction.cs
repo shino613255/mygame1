@@ -28,16 +28,9 @@ public class TankRoleAction : IEnemyRoleAction
                 s.skillType == SkillType.Heal
             );
 
-        // ① DefenseUpが無ければ最優先
-        //if (
-        //    !enemy.IsDefenseBuffed &&
-        //    defenseSkill != null
-        //)
-        //{
-        //    return defenseSkill;
-        //}
+        // 現在のプレイヤーは魔法攻撃主体のためDefenseUpは優先しない。
+        // 物理攻撃主体のプレイヤー追加後に再導入予定。
 
-        // ② MagicDefenseUpが無ければ次に使用
         if (
             !enemy.IsMagicDefenseBuffed &&
             magicDefenseSkill != null
@@ -46,8 +39,7 @@ public class TankRoleAction : IEnemyRoleAction
             return magicDefenseSkill;
         }
 
-        // ③ 両方残っている場合
-        // HPが30%以下ならHeal
+        // Tank型は低HP時のみ回復を選択肢に入れる
         float hpRate =
             (float)enemy.hp / enemy.maxHp;
 
@@ -60,7 +52,7 @@ public class TankRoleAction : IEnemyRoleAction
             return healSkill;
         }
 
-        // ④ 何もする必要がなければ通常攻撃
+        // 何もする必要がなければ通常攻撃
         return null;
     }
 }

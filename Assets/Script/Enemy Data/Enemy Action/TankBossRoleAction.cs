@@ -16,19 +16,19 @@ public class TankBossRoleAction : IEnemyRoleAction
         float hpRate =
             (float)enemy.hp / enemy.maxHp;
 
-        // Boss専用：HP50%以下で1回だけ
+        // Boss専用ギミックはHP50%以下で1度だけ発動する
         if (
             hpRate <= 0.5f &&
             !bossGimmickUsed
         )
         {
             SkillData poisonSkill =
-                pool.Find(
-                    s =>
-                        s.statusEffect != null &&
-                        s.statusEffect.type ==
-                            StatusEffectType.Poison
-                );
+               pool.Find(
+                   s =>
+                       s.statusEffect != null &&
+                       s.statusEffect.type ==
+                           StatusEffectType.Poison
+               );
 
             if (poisonSkill != null)
             {
@@ -80,7 +80,7 @@ public class TankBossRoleAction : IEnemyRoleAction
             }
         }
 
-        // 通常時は普通のTankと同じ
+        // Boss専用ギミックを使わない場合は通常のTank AIに委譲する
         return tankRoleAction.ChooseSkill(
             enemy,
             pool

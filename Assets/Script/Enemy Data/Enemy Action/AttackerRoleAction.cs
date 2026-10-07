@@ -17,7 +17,7 @@ public class AttackerRoleAction : IEnemyRoleAction
                 s => s.skillType == SkillType.Heal
             );
 
-        // HP50%ˆÈ‰º‚È‚ç50%‚Å‰ñ•œ
+        // HP50%ˆÈ‰º‚È‚çˆê’èŠm—¦‚Å‰ñ•œ
         if (
             hpRate <= 0.5f && 
             healSkill != null &&
@@ -44,7 +44,7 @@ public class AttackerRoleAction : IEnemyRoleAction
             ];
         }
 
-        // ’ÊíUŒ‚
+        // Žg—p‚Å‚«‚éUŒ‚ƒXƒLƒ‹‚ª‚È‚¢ê‡‚Í’ÊíUŒ‚
         return null;
     }
 }

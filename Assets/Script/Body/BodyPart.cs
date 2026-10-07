@@ -48,6 +48,7 @@ public class BodyPart : MonoBehaviour
             colliderLine.enabled = false;
     }
 
+    // PolygonCollider2Dの形状をLineRendererで可視化する
     private void CreateColliderLine()
     {
         if (partCollider == null)
@@ -196,7 +197,7 @@ public class BodyPart : MonoBehaviour
         if (!highlight.enabled)
             return;
 
-        // 選択中は白くする
+        // 選択中は部位種別に関係なく白く表示する
         if (isSelected)
         {
             highlight.color = new Color(1f, 1f, 1f, 0.7f);
@@ -233,8 +234,9 @@ public class BodyPart : MonoBehaviour
         if (IsBroken) return 0;                                             
 
         int before = partHp;                                                
-        partHp -= damage;                                                   
+        partHp -= damage;
 
+        // 破壊不可部位はHPが0にならないよう最低1を維持する
         if (!canBreak)
         {
             if (partHp <= 0) partHp = 1;
@@ -263,7 +265,7 @@ public class BodyPart : MonoBehaviour
     {
         if (maxPartHp < 1) maxPartHp = 1;
 
-        // 腹部の場合は破壊不可能に設定する
+        // 腹部は破壊対象ではない仕様のため、Inspector上でも破壊不可に固定する
         if (partType == PartType.Belly) canBreak = false;                   
     }
 }

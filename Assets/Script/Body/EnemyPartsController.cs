@@ -12,14 +12,14 @@ public class EnemyPartsController : MonoBehaviour
     {
         if (enemy == null)
             enemy = GetComponent<EnemyManager>();
-
-        Debug.Log($"[EnemyPartsController.Awake] enemy={(enemy != null ? enemy.data.enemyName : "null")}"); 
     }
 
     public void SetSelectedPart(BodyPart part)
     {
         selectedPart = part;                                                                                               
     }
+
+    // 1回の攻撃で本体と部位に与えたダメージ結果
     public struct AttackResult                                                                                              
     {
         public int mainDamage;
@@ -41,12 +41,6 @@ public class EnemyPartsController : MonoBehaviour
 
             result.partDamage = selectedPart.TakePartDamage(calculatedPartDamage);
         }
-
-        Debug.Log(
-            $"[ApplyAttack] 本体ダメージ={result.mainDamage}, " +
-            $"部位ダメージ={result.partDamage}, " +
-            $"selectedPart={(selectedPart != null ? selectedPart.GetPartNameJP() : "なし")}");
-
         return result;
     }    
 }

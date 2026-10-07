@@ -7,7 +7,7 @@ public class SceneTransitionManager : MonoBehaviour
 {
     public void LoadTo(string sceneName)
     {
-        FadeIOManager.Instance.FadeOutToIn(() => Lioad(sceneName));     // フェードイン→フェードアウト 
+        FadeIOManager.Instance.FadeOutToIn(() => Lioad(sceneName));     
     }
     void Lioad(string sceneName)       
     {

@@ -20,7 +20,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private GameObject skillButton;
 
     public event System.Action BattleEnded;
-    public Transform screenShakeTarget;                                 // プレイヤーがダメージを受けたときに揺れすようにするため
+    public Transform screenShakeTarget;                                 
     public QuestManager questManager;
     public PlayerUIManager playerUI;
     public EnemyUIManager enemyUI;
@@ -34,10 +34,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private PlayerData defaultMageData;
 
     private bool isPartViewVisible = false;
-    // 現在戦闘中か
     private bool isBattleRunning = false;
-
-    // 戦闘終了処理中か
     private bool isEndingBattle = false;
 
     public static BattleManager Instance;
@@ -121,15 +118,12 @@ public class BattleManager : MonoBehaviour
 
     public void ToggleSkillPanel()
     {
-        // 戦闘中ではない
         if (!isBattleRunning)
             return;
 
-        // プレイヤーターンではない
         if (!isPlayerTurn)
             return;
 
-        // 戦闘終了処理中
         if (isEndingBattle)
             return;
 
@@ -193,23 +187,18 @@ public class BattleManager : MonoBehaviour
 
     public void OnSkillSelected(SkillData selectedSkill)
     {
-        // 戦闘中でなければスキルを使用しない
         if (!isBattleRunning)
             return;
 
-        // 戦闘終了処理中
         if (isEndingBattle)
             return;
 
-        // プレイヤーターン以外
         if (!isPlayerTurn)
             return;
 
-        // 敵が存在しない
         if (enemy == null)
             return;
 
-        // 敵がすでに死亡している
         if (!enemy.IsAlive)
             return;
 
@@ -242,7 +231,7 @@ public class BattleManager : MonoBehaviour
             selectedSkill.targetType == TargetType.Self
         )
         {
-            var result = SkillExecutor.Execute(player, player, selectedSkill);          // スキルを実行して結果を取得            
+            var result = SkillExecutor.Execute(player, player, selectedSkill);          
             if (!result.executed)
             {
                 DialogTextManager.instance.SetScenarios(new string[]                    // スキルが実行できなかった場合のメッセージを表示
@@ -251,7 +240,7 @@ public class BattleManager : MonoBehaviour
                 });
                 return;
             }
-            PlaySkillEffect(selectedSkill, player.transform.position);                                // プレイヤーの位置にスキルのエフェクトを再生
+            PlaySkillEffect(selectedSkill, player.transform.position);                  
 
             playerUI.UpdateUI(player);
 
@@ -260,7 +249,7 @@ public class BattleManager : MonoBehaviour
             waitingTap = false;
             isPlayerTurn = false;
 
-            DialogTextManager.instance.SetScenarios(new string[]                        // スキルの結果を表示
+            DialogTextManager.instance.SetScenarios(new string[]                        
                 {
                     result.message
                 });
@@ -278,12 +267,12 @@ public class BattleManager : MonoBehaviour
 
     private void TryPickBodyPart(Vector2 screenPos)
     {
-        Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);                    // 画面上の座標をゲーム内の座標に変換
+        Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);                    
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);                   // クリックした一点にColliderがあるか確認する
 
         if (!hit.collider) return;
 
-        var part = hit.collider.GetComponentInParent<BodyPart>();                       // Colliderの親にBodyPartがあるか確認する
+        var part = hit.collider.GetComponentInParent<BodyPart>();                       
         if (part == null) return;
 
         OnBodyPartTapped(part);
@@ -300,7 +289,6 @@ public class BattleManager : MonoBehaviour
             );
         }
 
-        // 魔法スキル
         if (skill.skillType == SkillType.Magic)
         {
             return DamageRule.CalcMagic(
@@ -310,7 +298,6 @@ public class BattleManager : MonoBehaviour
             );
         }
 
-        // 物理スキル
         return DamageRule.CalcPhysical(
             player.at,
             enemy.def,
@@ -375,7 +362,6 @@ public class BattleManager : MonoBehaviour
     }
     public void OnBodyPartTapped(BodyPart part)
     {
-        // ① 攻撃可能か確認
         if (!CanAttackPart(part))
             return;
 
@@ -656,7 +642,7 @@ public class BattleManager : MonoBehaviour
         if (skill == null) return;
         if (skill.effectPrefab == null) return;
 
-        Vector3 pos = worldPos + (Vector3)skill.effectOffset;                           // エフェクトの表示位置をworldPosにeffectOffsetを加えた位置に設定
+        Vector3 pos = worldPos + (Vector3)skill.effectOffset;                          
         pos.z = 0f;
 
         GameObject effect = Instantiate(
@@ -665,12 +651,13 @@ public class BattleManager : MonoBehaviour
             Quaternion.identity
         );
 
-        Renderer[] renderers = effect.GetComponentsInChildren<Renderer>(true);          // エフェクトのRendererを取得
+        Renderer[] renderers = effect.GetComponentsInChildren<Renderer>(true);          
 
         foreach (var r in renderers)
         {
             r.sortingLayerName = "Default";
-            r.sortingOrder = 10;
+            // 戦闘キャラクターより手前にエフェクトを表示する
+            r.sortingOrder = 10;        
         }
 
         Destroy(effect, skill.effectDuration);
@@ -687,7 +674,7 @@ public class BattleManager : MonoBehaviour
             enemy.IsAlive
         )
         {
-            // 部位破壊状態から行動回数を取得
+            // 脚の破壊状態によってプレイヤーの行動回数が変化する
             int playerActionCount =
                 enemy.GetPlayerActionCount();
 
@@ -1024,7 +1011,7 @@ public class BattleManager : MonoBehaviour
         string deleteEnemyName =
             enemy != null ? enemy.name : "敵";
 
-        // ここから戦闘中ではない
+        // 戦闘終了中の入力を防ぐため、先に戦闘状態を解除する
         isBattleRunning = false;
         isPlayerTurn = false;
         waitingTap = false;
@@ -1069,10 +1056,9 @@ public class BattleManager : MonoBehaviour
         if (!isBattleRunning)
             return;
 
-        // 敵を倒す
         enemy.TakeDamageRaw(enemy.hp);
 
-        // プレイヤー入力待ちを解除
+        // PlayerActByTapの入力待ちを解除して終了処理へ進める
         waitingTap = false;
         isPlayerTurn = false;
 

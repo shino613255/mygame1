@@ -49,6 +49,7 @@ public class EnemyAI : MonoBehaviour
         SkillCooldowns cooldowns =
             enemy.GetComponent<SkillCooldowns>();
 
+        // 使用可能なスキルだけをAIの選択候補に残す
         pool = pool
             .Where(s => s != null)
             .Where(s => s.mpCost <= enemy.mp)
@@ -58,8 +59,7 @@ public class EnemyAI : MonoBehaviour
 
         if (pool.Count == 0) return null;
 
-        float hpRate = (float)enemy.hp / enemy.maxHp;
-
+        // Tank Bossは通常のTank AIではなく、専用の行動ロジックを使う
         if (
             enemy.data.enemyType == EnemyType.Boss &&
             enemy.data.role == EnemyRole.Tank
@@ -71,7 +71,6 @@ public class EnemyAI : MonoBehaviour
             );
         }
 
-        // 通常の役割
         if (
             roleActions != null &&
             roleActions.TryGetValue(

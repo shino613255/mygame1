@@ -22,7 +22,7 @@ public class PlayerUIManager : MonoBehaviour
         hpSlider.minValue = 0;
         hpSlider.maxValue = player.maxHp;
         hpSlider.value = player.hp;
-        
+
         mpSlider.minValue = 0;
         mpSlider.maxValue = player.maxMp;
         mpSlider.value = player.mp;
@@ -54,7 +54,7 @@ public class PlayerUIManager : MonoBehaviour
             return;
         }
 
-        // 前回のアイコンを全部消す
+        // 状態変化を反映するため、既存のアイコンを作り直す
         for (
             int i = effectIconContainer.childCount - 1;
             i >= 0;
@@ -69,14 +69,12 @@ public class PlayerUIManager : MonoBehaviour
         if (player == null)
             return;
 
-
-        // 毒状態なら毒アイコンを表示
         if (player.IsPoisoned)
         {
             CreateEffectIcon(poisonIcon);
         }
     }
-        private void CreateEffectIcon(Sprite sprite)
+    private void CreateEffectIcon(Sprite sprite)
     {
         if (sprite == null)
             return;

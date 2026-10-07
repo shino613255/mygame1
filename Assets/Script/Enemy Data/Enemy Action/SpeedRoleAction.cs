@@ -14,7 +14,7 @@ public class SpeedRoleAction : IEnemyRoleAction
             return null;
         }
 
-        // 40%の確率でスキル
+        // 40%の確率でスキルを使用
         if (Random.value < 0.4f)
         {
             return pool[
@@ -25,7 +25,7 @@ public class SpeedRoleAction : IEnemyRoleAction
             ];
         }
 
-        // 60%は通常攻撃
+        // スキルを使用しない場合は通常攻撃
         return null;
     }
 }

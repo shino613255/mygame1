@@ -36,7 +36,7 @@ public class EnemyData : ScriptableObject
     public List<SkillData> skillList = new();       
 
     [Header("敵の種類（強さランク）")]
-    // 火傷ダメージの倍率計算などに使用中。
+    // 敵の強さ区分やBoss判定など、種類ごとの処理分岐に使用する
     public EnemyType enemyType = EnemyType.Normal;  
 
     [Header("敵の役割（戦い方のタイプ）")]

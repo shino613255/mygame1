@@ -7,7 +7,7 @@ public class PlayerManager : UnitBase
     [Header("Skill Panel")]
     [SerializeField] private SkillSlotUI[] skillSlots;
 
-    private List<SkillData> currentSkills = new List<SkillData>();                                          // スキルスロットの中身を保持するリスト
+    private List<SkillData> currentSkills = new List<SkillData>();                                      
     private SkillData currentSkill;                                                                         
     private bool acted;                                                                                     
     private EnemyManager targetEnemy;                                                                       
@@ -40,10 +40,10 @@ public class PlayerManager : UnitBase
 
         if (data.startSkills != null)                                                                         
         {
-            currentSkills.AddRange(data.startSkills);                                               // スタートスキルを現在のスキルリストに追加
+            currentSkills.AddRange(data.startSkills);                                               
         }
 
-        UpdateSkillPanel();                                                                         // UIのスキルパネルを更新
+        UpdateSkillPanel();                                                                         
         Debug.Log("初期スキル数: " + currentSkills.Count);
     }
 
@@ -123,7 +123,7 @@ public class PlayerManager : UnitBase
     {
         if (skill == null) return;                                                                                  
 
-        currentSkills.Add(skill);                                                                   // スキルリストに追加
+        currentSkills.Add(skill);                                                                   
         UpdateSkillPanel();                                                                                     
 
         Debug.Log("スキル「" + skill.skillName + "」を習得しました");
@@ -156,7 +156,7 @@ public class PlayerManager : UnitBase
         {
             if (i < currentSkills.Count)
             {
-                skillSlots[i].SetSkill(currentSkills[i], this);                                     // スキルスロットにスキルをセット
+                skillSlots[i].SetSkill(currentSkills[i], this);                                    
             }
             else
             {
@@ -165,7 +165,6 @@ public class PlayerManager : UnitBase
         }
     }
 
-    // プレイヤーの行動を処理する
     public override IEnumerator Act()                                                                           
     {  
         Debug.Log("プレイヤーの行動（入力待ち）");
@@ -180,7 +179,7 @@ public class PlayerManager : UnitBase
             yield break;
         }
 
-        // プレイヤー入力で行動が確定するまで待機
+        // プレイヤーがスキルや攻撃対象を選択して行動を確定するまで待機
         while (!acted)                                                                                         
         {
             yield return null;                                                                               

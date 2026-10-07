@@ -20,29 +20,26 @@ public class EnemyManager : UnitBase
         return accuracyPenalty;
     }
 
-    // プレイヤーがこのターン何回行動できるか返す
     public int GetPlayerActionCount()
     {
         return isLegBroken ? 2 : 1;　
     }
 
+    // 部位破壊に応じて戦闘中の能力・行動ルールを変化させる
     public void OnPartBroken(PartType part)
     {
         switch (part)
         {
-            // 手の破壊:命中率 -10%
             case PartType.Hand:
                 ApplyAccuracyDown(0.1f);
                 break;
 
 
-            // 脚の破壊:行動回数が1回増える
             case PartType.Leg:                
                 isLegBroken = true;
                 break;
 
 
-            // 顔を壊すと防御力 -10
             case PartType.Face:
                 def -= 20;
                 mdef -= 20;
@@ -54,7 +51,6 @@ public class EnemyManager : UnitBase
 
     public EnemyData data;
 
-    // ダメージを受けたときの演出
     [Header("VFX")]
     public GameObject damageEffect;
 
@@ -174,7 +170,7 @@ public class EnemyManager : UnitBase
             return false;
         }
 
-        // 別の状態異常が有効ならBurnは付与しない
+        // 状態異常は同時に1種類だけ保持する
         if (
             currentStatusEffect != StatusEffectType.None &&
             currentStatusEffect != StatusEffectType.Burn
@@ -189,7 +185,7 @@ public class EnemyManager : UnitBase
 
         currentStatusEffect = StatusEffectType.Burn;
 
-        // SkillData側に個別指定があればそちらを優先
+        // 火傷を再付与した場合は持続ターンを更新する
         remainingBurnTurns = effect.durationTurns;
 
         Debug.Log(
@@ -215,7 +211,7 @@ public class EnemyManager : UnitBase
             return false;
         }
 
-        // 他の状態異常がある場合は付与しない
+        // 状態異常は同時に1種類だけ保持する
         if (
             currentStatusEffect != StatusEffectType.None &&
             currentStatusEffect != StatusEffectType.Frozen
@@ -228,7 +224,7 @@ public class EnemyManager : UnitBase
             return false;
         }
 
-        // 初めて凍結したときだけ能力値を下げる
+        // 再付与で能力低下が重複しないよう、初回だけ減少させる
         if (!IsFrozen)
         {
             frozenAtDown =
@@ -269,8 +265,9 @@ public class EnemyManager : UnitBase
             return 0;
         }
 
-        float burnRate;                                                                                         
+        float burnRate;
 
+        // 高耐久の敵ほど火傷による最大HP割合ダメージを抑える
         switch (data.enemyType)
         {
             case EnemyType.Boss:
@@ -421,7 +418,7 @@ public class EnemyManager : UnitBase
             Instantiate(damageEffect, this.transform, false);                                                           
         }
 
-        transform.DOShakePosition(0.3f, 0.5f, 20, 0, false, true);                                                      // 敵を0.3秒間、強さ0.5で揺らす。細かさは20、ランダムシードは0、スナップ0, フェードアウトあり。
+        transform.DOShakePosition(0.3f, 0.5f, 20, 0, false, true);                                                      
         Debug.Log(name + "は" + damage + "のダメージを受けた" + (isMagic ? "(魔法)" : "(物理)"));
     }
 

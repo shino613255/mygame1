@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static/*ヒエラルキービューでオブジェクトを作らなくてよい*/ class SkillExecutor
+public static class SkillExecutor
 {
     public struct Result
     {
