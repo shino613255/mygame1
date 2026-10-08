@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class SkillExecutor
@@ -9,7 +7,7 @@ public static class SkillExecutor
         public bool executed;       
         public bool hit;            
         public bool crit;           
-        public int value;           // ダメージ量や回復量などの値
+        public int value;   // ダメージ量や回復量などの値
         public string message;      
     }
 
@@ -75,7 +73,6 @@ public static class SkillExecutor
 
                     if (skill.canCrit)
                     {
-                        // 基礎クリティカル率3%にスキル固有の補正を加える
                         float rate = Mathf.Clamp01(0.03f + skill.critBonus);
                         // クリティカル時は1.5倍
                         int after = DamageRule.RollCrit(baseDmg, rate, 1.5f, 1);                                                                           
@@ -110,7 +107,6 @@ public static class SkillExecutor
                 }
             case SkillType.Heal:
                 {
-                    // 回復量 = 固定値 + MAG × スキル倍率（最低1）
                     int heal = Mathf.Max(1, skill.power + Mathf.RoundToInt(attacker.mag * skill.multiplier));                                               
                     r.value = Heal(target, heal);                                                                                                           
                     r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}回復！";
@@ -207,11 +203,7 @@ public static class SkillExecutor
     {
         if (skill.statusEffect == null) return;
 
-        float chance = (skill.applyChance > 0f) 
-            ? skill.applyChance                                                                                                                                 
-            : skill.statusEffect.applyChance;                                                                                                                   
-
-        if (Random.value > chance) return;
+        if (Random.value > skill.applyChance) return;
 
         if (target is EnemyManager enemy)
         {
@@ -255,7 +247,6 @@ public static class SkillExecutor
     private static int Heal(UnitBase target, int amount)
     {
         int before = target.hp;
-        // 最大HPを超えない範囲で、実際に回復した量を返す
         target.hp = Mathf.Min(target.maxHp, target.hp + amount);                                                                                                
         return target.hp - before;                                                                                                                             
     }

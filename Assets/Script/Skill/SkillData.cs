@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-//using UnityEditor.Experimental.GraphView;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/Skill/Skill Data", fileName = "Skill_")]
 public class SkillData : ScriptableObject
@@ -31,7 +28,6 @@ public class SkillData : ScriptableObject
     public float multiplier = 1f;
 
     [Header("命中率（0〜1）")]
-    [Range(0f, 1f)]
     public float accuracy = 1f;
 
     [Header("クリティカル（任意）")]

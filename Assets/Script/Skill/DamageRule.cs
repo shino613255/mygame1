@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public static class DamageRule
 {
@@ -64,7 +62,6 @@ public static class DamageRule
         );
     }
 
-    // 命中：accuracy/evasion は 0〜1
     public static bool RollHit(float accuracy, float evasion)
     {
         accuracy = Mathf.Clamp01(accuracy);

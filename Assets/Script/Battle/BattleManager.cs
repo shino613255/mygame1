@@ -545,10 +545,8 @@ public class BattleManager : MonoBehaviour
         if (enemy == null || !enemy.IsAlive)
             return;
 
-        float chance =
-            ctx.sourceSkill.applyChance > 0f
-                ? ctx.sourceSkill.applyChance
-                : effect.applyChance;
+        float chance = ctx.sourceSkill.applyChance;
+              
 
         if (Random.value > chance)
             return;

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/Status/StatusEffectData", fileName = "Status_")]
 public class StatusEffectData : ScriptableObject
@@ -9,16 +7,11 @@ public class StatusEffectData : ScriptableObject
 
     [Min(1)] 
     public int durationTurns = 1; 
-    
-    [Range(0f, 1f)] 
-    public float applyChance = 0.05f;   
 
-    // Burn 用
     [Range(0f, 1f)] 
     public float tickHpRate = 0.05f;    
     public int tickDamageFlat = 0;
 
-    // frozen 用
     [Range(0f, 1f)] 
     public float statDownRate = 0.15f;
 
@@ -32,6 +25,7 @@ public class StatusEffectData : ScriptableObject
             return 0;
         }
 
+        // 固定ダメージが設定されている場合は割合ダメージより優先する
         if (tickDamageFlat > 0)
         {
             return Mathf.Max(

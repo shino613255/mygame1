@@ -15,7 +15,7 @@ MonoBehaviour:
   skillName: "\u30A2\u30A4\u30B9"
   description: 
   icon: {fileID: 0}
-  mpCost: 100
+  mpCost: 10
   cooldown: 0
   skillType: 1
   effectPrefab: {fileID: 5112403345868107898, guid: 6f34ef0d986e9db4199cf75805f79753, type: 3}
