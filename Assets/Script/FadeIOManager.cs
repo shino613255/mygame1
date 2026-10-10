@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
 public class FadeIOManager : MonoBehaviour
 {
     public float fadeDuration = 1;
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‰»
     public static FadeIOManager Instance { get; private set; }
     private void Awake()
     {

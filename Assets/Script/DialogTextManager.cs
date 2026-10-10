@@ -6,16 +6,13 @@ using UnityEngine.Events;
 
 public class DialogTextManager : MonoBehaviour
 {
-    //1/16 追加:登録関数の窓口作成（ボタンのOnClickと同じ仕組み）
-    [SerializeField] private UnityEvent onCompletedEvents = new UnityEngine.Events.UnityEvent();
-    //1/16 追加:テキスト送り終了後から関数を実行するまでの時間
-    [SerializeField] float eventDelayTime;
-    //1/16 終了したかどうかのフラグ(これがないと終了後繰り返し関数を実行してしまう)
-    bool isEnd;
+    [SerializeField] private UnityEvent onCompletedEvents = new UnityEvent();
+    [SerializeField] float eventDelayTime;    
 
     public UnityAction onClickText;
     public string[] scenarios;
     [SerializeField] Text uiText;
+
     [SerializeField]
     [Range(0.001f, 0.3f)]
     float intervalForCharacterDisplay = 0.1f;
@@ -40,8 +37,7 @@ public class DialogTextManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
-    // 文字の表示が完了しているかどうか
+    
     public bool IsCompleteDisplayText
     {
         get { return Time.time > timeElapsed + timeUntilDisplay; }
@@ -49,7 +45,6 @@ public class DialogTextManager : MonoBehaviour
 
     void Update()
     {
-        // 文字の表示が完了してるならクリック時に次の行を表示する
         if (IsCompleteDisplayText)
         {
             if (currentLine < scenarios.Length && Input.GetMouseButtonDown(0))
@@ -59,7 +54,6 @@ public class DialogTextManager : MonoBehaviour
         }
         else
         {
-            // 完了してないなら文字をすべて表示する
             if (Input.GetMouseButtonDown(0))
             {
                 timeUntilDisplay = 0;
@@ -68,9 +62,9 @@ public class DialogTextManager : MonoBehaviour
 
         int displayCharacterCount;
 
+        // クリックによる全文表示後は表示文字数を固定する
         if (timeUntilDisplay <= 0f)
         {
-            // クリックで全文表示したとき
             displayCharacterCount = currentText.Length;
         }
         else
@@ -80,69 +74,51 @@ public class DialogTextManager : MonoBehaviour
                 * currentText.Length);
         }
 
-        // 安全対策（マイナス・はみ出し防止）
         displayCharacterCount = Mathf.Clamp(displayCharacterCount, 0, currentText.Length);
 
+        // 表示文字数が変わったときだけUIを更新する
         if (displayCharacterCount != lastUpdateCharacter)
         {
             uiText.text = currentText.Substring(0, displayCharacterCount);
             lastUpdateCharacter = displayCharacterCount;
         }
-
     }
-
-    void CheckCompletedText()
-    {
-        if (isEnd == false && IsCompleteDisplayText && scenarios.Length == currentLine)
-        {
-            isEnd = true;
-            // 登録関数をeventDelayTime秒後に実行
-            Invoke("EventFunction", eventDelayTime);
-        }
-    }
-
-    void EventFunction()
-    {
-        onCompletedEvents.Invoke();
-    }
-
 
     public void SetNextLine()
     {
-        isEnd = false;
         if (scenarios.Length - 1 < currentLine)
         {
             return;
         }
+
         currentText = scenarios[currentLine];
         timeUntilDisplay = currentText.Length * intervalForCharacterDisplay;
         timeElapsed = Time.time;
         currentLine++;
         lastUpdateCharacter = -1;
     }
-    // 基本的に使うのはこれだけ
+
     public void SetScenarios(string[] sc)
     {
         scenarios = sc;
         currentLine = 0;
         SetNextLine();
     }
+
     public IEnumerator ShowAndWait(
-    string message,
-    float waitSeconds
+        string message,
+        float waitSeconds
     )
     {
         SetScenarios(new string[]
         {
-        message
+            message
         });
 
-        // 文字送りが終わるまで待つ
         yield return new WaitUntil(
             () => IsCompleteDisplayText
         );
 
-        // 全文表示後、指定時間だけ待つ
         yield return new WaitForSeconds(waitSeconds);
     }
 }

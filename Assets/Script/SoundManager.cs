@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    // シングルトン
-    // 利用場所：シーン間でのデータ共有
     public static SoundManager instance;
 
     private void Awake()
@@ -13,19 +11,20 @@ public class SoundManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this.gameObject); // シーンが変わっても破棄しない
+            DontDestroyOnLoad(this.gameObject); 
         }
         else
         {
-            Destroy(this.gameObject); // 既に存在する場合は破棄
+            Destroy(this.gameObject); 
         }
     }
 
-    public AudioSource AudioSourceBGM; // BGM用のスピーカー
-    public AudioClip[] AudioClipsBGM; // BGMリスト(0:タイトル, 1:タウン, 2:クエスト, 3:バトル)
+    public AudioSource AudioSourceBGM;
+    // BGMリスト(0:タイトル, 1:タウン, 2:クエスト, 3:バトル)
+    public AudioClip[] AudioClipsBGM; 
 
-    public AudioSource AudioSourceSE; // SE用のスピーカー
-    public AudioClip[] ButtonSE; // ボタンSE
+    public AudioSource AudioSourceSE; 
+    public AudioClip[] ButtonSE; 
     
     public void StopBGM() 
     {
@@ -54,6 +53,6 @@ public class SoundManager : MonoBehaviour
     }
     public void PlayButtonSE(int index)
     {
-        AudioSourceSE.PlayOneShot(ButtonSE[index]); // ボタンSEを一度だけ再生
+        AudioSourceSE.PlayOneShot(ButtonSE[index]); 
     }
 }
