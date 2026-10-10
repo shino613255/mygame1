@@ -17,7 +17,7 @@ MonoBehaviour:
   prefab: {fileID: 4235716888136053994, guid: 788a2c5c10c6b3a4b8132ecc609a117e, type: 3}
   maxHp: 1200
   maxMp: 40
-  at: 50
+  at: 25
   mag: 0
   def: 0
   mdef: 0

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: "\u9B54\u6CD5\u4F7F\u3044"
   role: 1
-  startMaxHp: 1500
-  startMaxMp: 150
+  startMaxHp: 1000
+  startMaxMp: 100
   startAt: 40
   startMag: 80
   startDef: 0
