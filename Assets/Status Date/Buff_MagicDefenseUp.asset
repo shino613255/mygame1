@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Buff_MagicDefenseUp
   m_EditorClassIdentifier: 
   type: 2
-  durationTurns: 3
+  durationTurns: 4
   amount: 20

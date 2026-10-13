@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Status_Frozen
   m_EditorClassIdentifier: 
   type: 1
-  durationTurns: 2
+  durationTurns: 3
   applyChance: 0.2
   tickHpRate: 0
   tickDamageFlat: 0
-  statDownRate: 0.2
+  statDownRate: 0.5

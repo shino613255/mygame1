@@ -138,7 +138,7 @@ MonoBehaviour:
   highlight: {fileID: 279364769936783689}
   partType: 1
   canBreak: 0
-  maxPartHp: 200
+  maxPartHp: 120
   colliderLineWidth: 0.03
 --- !u!212 &279364769936783689
 SpriteRenderer:
@@ -368,7 +368,7 @@ MonoBehaviour:
   highlight: {fileID: 3381609361509971935}
   partType: 3
   canBreak: 1
-  maxPartHp: 80
+  maxPartHp: 120
   colliderLineWidth: 0.03
 --- !u!212 &3381609361509971935
 SpriteRenderer:
@@ -536,7 +536,7 @@ MonoBehaviour:
   highlight: {fileID: 1784419125240024546}
   partType: 2
   canBreak: 1
-  maxPartHp: 80
+  maxPartHp: 120
   colliderLineWidth: 0.03
 --- !u!212 &1784419125240024546
 SpriteRenderer:
@@ -763,7 +763,7 @@ MonoBehaviour:
   highlight: {fileID: 2792565632258802332}
   partType: 0
   canBreak: 1
-  maxPartHp: 80
+  maxPartHp: 120
   colliderLineWidth: 0.03
 --- !u!212 &2792565632258802332
 SpriteRenderer:
@@ -832,7 +832,7 @@ GameObject:
   - component: {fileID: 5279189720763447617}
   - component: {fileID: 3678951827458509450}
   m_Layer: 0
-  m_Name: 03_Enemy Ninja
+  m_Name: 02_Enemy Ninja
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1071,7 +1071,7 @@ MonoBehaviour:
   highlight: {fileID: 5919541993646385971}
   partType: 2
   canBreak: 1
-  maxPartHp: 80
+  maxPartHp: 120
   colliderLineWidth: 0.03
 --- !u!212 &5919541993646385971
 SpriteRenderer:

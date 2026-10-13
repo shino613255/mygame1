@@ -15,6 +15,6 @@ MonoBehaviour:
   type: 3
   durationTurns: 1
   applyChance: 0.05
-  tickHpRate: 0.05
+  tickHpRate: 0.04
   tickDamageFlat: 0
   statDownRate: 0.15

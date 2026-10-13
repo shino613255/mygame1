@@ -15,12 +15,18 @@ MonoBehaviour:
   enemyName: "\u6226\u58EB"
   icon: {fileID: 21300000, guid: 834f7923735176044b22afc3df9f5e0b, type: 3}
   prefab: {fileID: 4036637313795360933, guid: 5d1bd10cecc95f84f918be41d959b7ec, type: 3}
+<<<<<<< HEAD:Assets/Script/Enemy/EnemyAI/Enemy Action/00_Attacker.asset
   maxHp: 1500
   maxMp: 20
   at: 15
+=======
+  maxHp: 800
+  maxMp: 30
+  at: 20
+>>>>>>> c677360 (updategamesystem):Assets/Script/Enemy Data/Enemy Action/00_Attacker.asset
   mag: 0
-  def: 10
-  mdef: 10
+  def: 18
+  mdef: 28
   evasionRate: 0
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}

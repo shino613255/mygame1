@@ -15,9 +15,15 @@ MonoBehaviour:
   enemyName: "\u9A0E\u58EB"
   icon: {fileID: 0}
   prefab: {fileID: 7039346821692218117, guid: 56ad366403e2c0a4ba5b138bfc0d947e, type: 3}
+<<<<<<< HEAD:Assets/Script/Enemy/EnemyAI/Enemy Action/01_Tank.asset
   maxHp: 2000
   maxMp: 120
   at: 10
+=======
+  maxHp: 850
+  maxMp: 80
+  at: 15
+>>>>>>> c677360 (updategamesystem):Assets/Script/Enemy Data/Enemy Action/01_Tank.asset
   mag: 0
   def: 40
   mdef: 40
