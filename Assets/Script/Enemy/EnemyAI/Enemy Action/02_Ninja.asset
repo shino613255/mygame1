@@ -10,25 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d36da0d7caa2ec4ebf0fe0a29640db7, type: 3}
-  m_Name: 02_Elite Attacker
+  m_Name: 02_Ninja
   m_EditorClassIdentifier: 
-  enemyName: "\u7ADC\u9A0E\u58EB"
+  enemyName: "\u5FCD\u8005"
   icon: {fileID: 0}
-  prefab: {fileID: 4235716888136053994, guid: bac239bd2bae8254e8a0a1e91791f93c, type: 3}
-  maxHp: 580
-  maxMp: 50
-  at: 12
-  mag: 25
-  def: 25
-  mdef: 22
-  evasionRate: 0.05
+  prefab: {fileID: 4235716888136053994, guid: 0d1c3bdec8f2bc24688809d89983ab43, type: 3}
+  maxHp: 300
+  maxMp: 0
+  at: 14
+  mag: 8
+  def: 8
+  mdef: 10
+  evasionRate: 0.33
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
-  skillList:
-  - {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}
-  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
-  enemyType: 1
-  role: 0
+  skillList: []
+  enemyType: 0
+  role: 2
