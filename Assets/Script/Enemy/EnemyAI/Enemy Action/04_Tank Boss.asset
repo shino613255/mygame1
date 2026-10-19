@@ -18,7 +18,7 @@ MonoBehaviour:
   maxHp: 900
   maxMp: 100
   at: 16
-  mag: 0
+  mag: 8
   def: 50
   mdef: 32
   evasionRate: 0
@@ -31,5 +31,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
   - {fileID: 11400000, guid: 068e3308c032ddc4aa456c90301f5868, type: 2}
   - {fileID: 11400000, guid: cdec6708bedcbfa478639df68e26a21d, type: 2}
+  - {fileID: 11400000, guid: ab64df12025b4ec4bbaebd4c7032c357, type: 2}
+  telegraphedSkill: {fileID: 11400000, guid: ab64df12025b4ec4bbaebd4c7032c357, type: 2}
   enemyType: 2
   role: 1

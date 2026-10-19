@@ -8,6 +8,9 @@ public class EnemyAI : MonoBehaviour
     private Dictionary<EnemyRole, IEnemyRoleAction> roleActions;
     private TankBossRoleAction tankBossAction;
 
+    public bool IsBossHeavyAttackUnlocked => tankBossAction?.IsHeavyAttackUnlocked ?? false;
+    public SkillData PendingBossHeavyAttack => tankBossAction?.PendingHeavyAttack;
+
     private void Awake()
     {
         tankBossAction = new TankBossRoleAction();
@@ -32,6 +35,17 @@ public class EnemyAI : MonoBehaviour
 
     public SkillData ChooseSkill (EnemyManager enemy)                                  
     {
+        return ChooseSkill(enemy, 0);
+    }
+
+    public SkillData ChooseSkill(EnemyManager enemy, int cooldownTicksBeforeAction)
+    {
+        return ChooseSkill(enemy, cooldownTicksBeforeAction, null);
+    }
+
+    public SkillData ChooseSkill(EnemyManager enemy, int cooldownTicksBeforeAction, PlayerManager player,
+        bool allowBossHeavyAttackStance = false)
+    {
         if (enemy == null || enemy.data == null) return null;
 
         List<SkillData> pool = new();                                                  
@@ -53,11 +67,9 @@ public class EnemyAI : MonoBehaviour
         pool = pool
             .Where(s => s != null)
             .Where(s => s.mpCost <= enemy.mp)
-            .Where(s => cooldowns == null || cooldowns.IsReady(s))
+            .Where(s => cooldowns == null || cooldowns.IsReadyAfterTicks(s, cooldownTicksBeforeAction))
             .ToList();
 
-
-        if (pool.Count == 0) return null;
 
         // Tank Bossは通常のTank AIではなく、専用の行動ロジックを使う
         if (
@@ -67,9 +79,13 @@ public class EnemyAI : MonoBehaviour
         {
             return tankBossAction.ChooseSkill(
                 enemy,
-                pool
+                pool,
+                player,
+                allowBossHeavyAttackStance
             );
         }
+
+        if (pool.Count == 0) return null;
 
         if (
             roleActions != null &&
@@ -86,6 +102,11 @@ public class EnemyAI : MonoBehaviour
         }
 
         return null;
+    }
+
+    public SkillData TakePendingBossHeavyAttack(EnemyManager enemy)
+    {
+        return tankBossAction?.TakePendingHeavyAttack(enemy);
     }
 
     public void ResetBattleState()

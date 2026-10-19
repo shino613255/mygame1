@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 
   icon: {fileID: 0}
   mpCost: 0
-  cooldown: 0
+  cooldown: 4
   skillType: 4
   effectPrefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
   effectDuration: 1.5

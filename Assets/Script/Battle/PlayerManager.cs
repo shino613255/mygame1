@@ -16,11 +16,14 @@ public class PlayerManager : UnitBase
     [Header("Poison")]
     private bool isPoisoned = false;
     private StatusEffectData poisonEffect;
+    private int remainingPoisonTurns;
     public bool IsPoisoned => isPoisoned;
 
     public void Setup(PlayerData data)
     {
         if (data == null) return;                                                                          
+
+        RemovePoison();
 
         name = data.playerName;                                                                            
 
@@ -65,8 +68,12 @@ public class PlayerManager : UnitBase
             return false;
         }
 
+        if (isPoisoned)
+            return false;
+
         isPoisoned = true;
         poisonEffect = effect;
+        remainingPoisonTurns = Mathf.Max(1, effect.durationTurns);
 
         Debug.Log(
             $"プレイヤーが毒状態になった！ " +
@@ -98,6 +105,10 @@ public class PlayerManager : UnitBase
             $"毒ダメージ:{damage} HP:{hp}/{maxHp}"
         );
 
+        remainingPoisonTurns--;
+        if (remainingPoisonTurns <= 0)
+            RemovePoison();
+
         return damage;
     }
 
@@ -105,6 +116,7 @@ public class PlayerManager : UnitBase
     {
         isPoisoned = false;
         poisonEffect = null;
+        remainingPoisonTurns = 0;
 
         Debug.Log("毒状態が解除された");
     }

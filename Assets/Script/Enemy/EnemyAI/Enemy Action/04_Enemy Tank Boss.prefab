@@ -733,7 +733,7 @@ MonoBehaviour:
   highlight: {fileID: 1784419125240024546}
   partType: 2
   canBreak: 1
-  maxPartHp: 180
+  maxPartHp: 240
   colliderLineWidth: 0.03
 --- !u!212 &1784419125240024546
 SpriteRenderer:
@@ -1189,7 +1189,6 @@ MonoBehaviour:
   evasionRate: 0
   critRate: 0.02
   critMultiplier: 2
-  skillMultiplier: 2
   data: {fileID: 11400000, guid: d527589564408ab45b785a9eb9b56a1d, type: 2}
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
 --- !u!114 &3678951827458509450
@@ -1436,7 +1435,7 @@ MonoBehaviour:
   highlight: {fileID: 5919541993646385971}
   partType: 2
   canBreak: 1
-  maxPartHp: 180
+  maxPartHp: 240
   colliderLineWidth: 0.03
 --- !u!212 &5919541993646385971
 SpriteRenderer:

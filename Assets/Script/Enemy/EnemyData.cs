@@ -35,6 +35,9 @@ public class EnemyData : ScriptableObject
     public SkillData attackSkill;                  
     public List<SkillData> skillList = new();       
 
+    [Header("Attack Telegraph")]
+    public SkillData telegraphedSkill;
+
     [Header("敵の種類（強さランク）")]
     // 敵の強さ区分やBoss判定など、種類ごとの処理分岐に使用する
     public EnemyType enemyType = EnemyType.Normal;  

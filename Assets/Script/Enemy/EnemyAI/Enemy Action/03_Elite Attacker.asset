@@ -32,3 +32,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
   enemyType: 1
   role: 0
+  telegraphedSkill: {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}

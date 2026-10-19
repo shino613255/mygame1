@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Status_Poison
   m_EditorClassIdentifier: 
   type: 3
-  durationTurns: 1
-  applyChance: 0.05
-  tickHpRate: 0.04
+  durationTurns: 3
+  tickHpRate: 0.05
   tickDamageFlat: 0
   statDownRate: 0.15

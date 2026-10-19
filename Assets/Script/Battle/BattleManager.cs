@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static EnemyPartsController;
 
 public class BattleManager : MonoBehaviour
@@ -37,6 +38,20 @@ public class BattleManager : MonoBehaviour
     private bool isBattleRunning = false;
     private bool isEndingBattle = false;
 
+    private struct EnemyActionPlan
+    {
+        public EnemyManager enemy;
+        public SkillData skill;
+        public bool isReady;
+        public bool isInterrupted;
+        public bool isTelegraphed;
+    }
+
+    private EnemyActionPlan enemyActionPlan;
+    private bool isShowingEnemyTelegraph;
+    private string[] playerActionMessages;
+    private int playerInputBlockedThroughFrame = -1;
+
     public static BattleManager Instance;
     void Awake()
     {
@@ -69,6 +84,16 @@ public class BattleManager : MonoBehaviour
         isBattleRunning = true;
 
         isEndingBattle = false;
+
+        ClearEnemyActionPlan();
+        ClearPlayerSkillSelection();
+        if (player != null)
+            player.RemovePoison();
+        isShowingEnemyTelegraph = false;
+        isPlayerTurn = false;
+        waitingTap = false;
+        playerActionMessages = null;
+        playerInputBlockedThroughFrame = Time.frameCount;
 
         enemyAI.ResetBattleState();
 
@@ -118,15 +143,10 @@ public class BattleManager : MonoBehaviour
 
     public void ToggleSkillPanel()
     {
-        if (!isBattleRunning)
+        if (!CanReceivePlayerInput())
             return;
 
-        if (!isPlayerTurn)
-            return;
-
-        if (isEndingBattle)
-            return;
-
+        playerInputBlockedThroughFrame = Time.frameCount;
         skillSelectionPanel.SetActive(
             !skillSelectionPanel.activeSelf
         );
@@ -147,7 +167,7 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        if (!isPlayerTurn) return;
+        if (!CanReceivePlayerInput()) return;
 
         if (skillSelectionPanel.activeSelf)
             return;
@@ -187,13 +207,7 @@ public class BattleManager : MonoBehaviour
 
     public void OnSkillSelected(SkillData selectedSkill)
     {
-        if (!isBattleRunning)
-            return;
-
-        if (isEndingBattle)
-            return;
-
-        if (!isPlayerTurn)
+        if (!CanReceivePlayerInput())
             return;
 
         if (enemy == null)
@@ -209,17 +223,15 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
+        playerInputBlockedThroughFrame = Time.frameCount;
+
         SkillCooldowns cooldowns =
             player.GetComponent<SkillCooldowns>();
 
         if (cooldowns != null &&
             !cooldowns.IsReady(selectedSkill))
         {
-            DialogTextManager.instance.SetScenarios(
-                new string[]                 
-            {
-                $"スキル「{selectedSkill.skillName}」はクールダウン中ですわ！"
-            });
+            ShowPlayerChoiceMessage($"{selectedSkill.skillName}はクールダウン中！");
             return;
         }
 
@@ -234,12 +246,10 @@ public class BattleManager : MonoBehaviour
             var result = SkillExecutor.Execute(player, player, selectedSkill);          
             if (!result.executed)
             {
-                DialogTextManager.instance.SetScenarios(new string[]                    // スキルが実行できなかった場合のメッセージを表示
-                {
-                    result.message
-                });
+                ShowPlayerChoiceMessage(result.message);
                 return;
             }
+            ClearPlayerSkillSelection();
             PlaySkillEffect(selectedSkill, player.transform.position);                  
 
             playerUI.UpdateUI(player);
@@ -249,10 +259,7 @@ public class BattleManager : MonoBehaviour
             waitingTap = false;
             isPlayerTurn = false;
 
-            DialogTextManager.instance.SetScenarios(new string[]                        
-                {
-                    result.message
-                });
+            playerActionMessages = new[] { result.message };
 
             return;
         }
@@ -262,11 +269,23 @@ public class BattleManager : MonoBehaviour
 
         skillSelectionPanel.SetActive(false);
 
+        ShowPlayerChoiceMessage($"{selectedSkill.skillName}：部位を選択！");
+
         Debug.Log($"スキル「{selectedSkill.skillName}」を選択しましたわ！");
     }
 
     private void TryPickBodyPart(Vector2 screenPos)
     {
+        if (EventSystem.current != null)
+        {
+            var pointer = new PointerEventData(EventSystem.current) { position = screenPos };
+            var hits = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointer, hits);
+
+            if (hits.Exists(result => result.module is UnityEngine.UI.GraphicRaycaster))
+                return;
+        }
+
         Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);                    
         RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);                   // クリックした一点にColliderがあるか確認する
 
@@ -397,23 +416,24 @@ public class BattleManager : MonoBehaviour
 
             playerUI.UpdateUI(player);
 
-            DialogTextManager.instance.SetScenarios(
-                new string[]
-                {
-                    $"{player.name}の攻撃！\nしかし{enemy.name}に当たらなかった！"
-                }
-            );
+            playerActionMessages = new[] { $"{player.name}の攻撃！\nしかし{enemy.name}に当たらなかった！" };
 
             return;
         }
 
         bool wasBroken = part.IsBroken;
+        int defenseBefore = enemy.def;
+        int magicDefenseBefore = enemy.mdef;
+        float accuracyPenaltyBefore = enemy.GetAccuracyPenalty();
+        var sealedBossSkillsBefore = TankBossRoleAction.GetSealedSkills(enemy);
 
         var result =
             enemyParts.ApplyAttack(ctx);
 
         bool justBroken =
             !wasBroken && part.IsBroken;
+
+        bool interrupted = TryInterruptEnemyAction(part, justBroken);
 
         TryApplyStatusEffect(ctx);
 
@@ -430,23 +450,38 @@ public class BattleManager : MonoBehaviour
 
         playerUI.UpdateUI(player);
 
-        string attackMessage =
-            CreateAttackMessage(
-                part,
-                ctx,
-                result,
-                wasBroken,
-                justBroken
-            );
+        var messages = new List<string>();
 
-        DialogTextManager.instance.SetScenarios(
-            new[]
-            {
-            attackMessage
-            }
+        if (interrupted)
+        {
+            messages.Add(UsesBossHeavyAttack(enemy)
+                ? $"{enemyActionPlan.skill.skillName}を中断した！\n敵はこのターン行動しない。"
+                : $"妨害成功！{enemyActionPlan.skill.skillName}を中断！\n敵はこのターン行動しない。");
+        }
+
+        messages.Add(CreateAttackMessage(part, ctx, result));
+
+        string breakMessage = CreatePartBreakMessage(
+            part, wasBroken, justBroken,
+            Mathf.Max(0, defenseBefore - enemy.def),
+            Mathf.Max(0, magicDefenseBefore - enemy.mdef),
+            enemy.GetAccuracyPenalty() - accuracyPenaltyBefore
         );
 
-        Debug.Log(attackMessage);
+        if (!string.IsNullOrEmpty(breakMessage))
+            messages.Add(breakMessage);
+
+        if (justBroken && enemy.IsAlive)
+        {
+            foreach (SkillData skill in TankBossRoleAction.GetSealedSkills(enemy))
+            {
+                if (!sealedBossSkillsBefore.Contains(skill))
+                    messages.Add($"{skill.skillName}を封印！\n敵は以後このスキルを使えない。");
+            }
+        }
+
+        playerActionMessages = messages.ToArray();
+        Debug.Log(string.Join("\n", playerActionMessages));
     }
 
     private bool CanAttackPart(BodyPart part)
@@ -454,13 +489,7 @@ public class BattleManager : MonoBehaviour
         if (part == null)
             return false;
 
-        if (!isBattleRunning)
-            return false;
-
-        if (isEndingBattle)
-            return false;
-
-        if (!isPlayerTurn)
+        if (!CanReceivePlayerInput())
             return false;
 
         if (enemy == null)
@@ -479,6 +508,7 @@ public class BattleManager : MonoBehaviour
             if (!player.TryUseMp(selectedPlayerSkill.mpCost))
             {
                 Debug.Log("MPが足りませんわ！");
+                ShowPlayerChoiceMessage("MPが足りない！スキルを選び直そう。");
 
                 ctx = default;
                 return false;
@@ -488,6 +518,8 @@ public class BattleManager : MonoBehaviour
                 CreateSkillAttackContext(
                     selectedPlayerSkill
                 );
+
+            player.GetComponent<SkillCooldowns>()?.StartCooldown(selectedPlayerSkill);
 
             return true;
         }
@@ -565,9 +597,7 @@ public class BattleManager : MonoBehaviour
     private string CreateAttackMessage(
     BodyPart part,
     AttackContext ctx,
-    AttackResult result,
-    bool wasBroken,
-    bool justBroken
+    AttackResult result
 )
     {
         string message;
@@ -583,8 +613,7 @@ public class BattleManager : MonoBehaviour
         if (ctx.sourceSkill != null)
         {
             message +=
-                $"{ctx.sourceSkill.skillName}！\n" +
-                $"{part.GetPartNameJP()}に攻撃！";
+                $"{ctx.sourceSkill.skillName}で{part.GetPartNameJP()}に攻撃！";
         }
         else
         {
@@ -592,48 +621,30 @@ public class BattleManager : MonoBehaviour
                 $"{part.GetPartNameJP()}を攻撃！";
         }
 
-        if (result.mainDamage > 0)
-        {
-            message +=
-                $"\n本体に{result.mainDamage}ダメージ！";
-        }
+        message += $"\nダメージ：本体{result.mainDamage}／部位{result.partDamage}";
 
-        if (result.partDamage > 0)
-        {
-            message +=
-                $"\n部位に{result.partDamage}ダメージ！";
-        }
+        return message;
+    }
 
+    private string CreatePartBreakMessage(
+        BodyPart part, bool wasBroken, bool justBroken,
+        int defenseDown, int magicDefenseDown, float accuracyDown)
+    {
         if (justBroken)
         {
             switch (part.partType)
             {
                 case PartType.Face:
-                    message +=
-                        "\n頭を破壊した！" +
-                        "\n敵の防御力が10低下した！";
-                    break;
+                    return $"顔を破壊！\n防御-{defenseDown}／魔法防御-{magicDefenseDown}";
 
                 case PartType.Hand:
-                    message +=
-                        "\n手を破壊した！" +
-                        "\n敵の命中率が20%低下した！";
-                    break;
+                    return $"手を破壊！\n通常攻撃の命中率-{Mathf.RoundToInt(accuracyDown * 100f)}ポイント";
 
                 case PartType.Leg:
-                    message +=
-                        "\n脚を破壊した！" +
-                        "\n2回行動できるようになった！";
-                    break;
+                    return "脚を破壊！\nこのターンからプレイヤーは2回行動！";
             }
         }
-        else if (wasBroken)
-        {
-            message +=
-                "\nその部位はもう破壊されていますわ！";
-        }
-
-        return message;
+        return wasBroken ? "この部位は破壊済み。\n再攻撃では妨害できない。" : string.Empty;
     }
     public void PlaySkillEffect(SkillData skill, Vector3 worldPos)
     {
@@ -661,6 +672,161 @@ public class BattleManager : MonoBehaviour
         Destroy(effect, skill.effectDuration);
     }
 
+    private bool CanReceivePlayerInput()
+    {
+        var dialog = DialogTextManager.instance;
+        return isBattleRunning && !isEndingBattle && isPlayerTurn &&
+            !isShowingEnemyTelegraph && Time.frameCount > playerInputBlockedThroughFrame &&
+            (dialog == null || (dialog.IsCompleteDisplayText && !dialog.HasPendingLines &&
+                !dialog.ConsumedClickThisFrame));
+    }
+
+    private string GetEnemyTelegraphMessage()
+    {
+        if (!HasPlannedTelegraph())
+            return string.Empty;
+
+        string skillName = enemyActionPlan.skill.skillName;
+        string announcementName = UsesBossHeavyAttack(enemy) ? skillName + "！" : skillName;
+
+        if (enemyActionPlan.isInterrupted)
+            return $"{skillName}は中断済み！\n敵はこのターン行動しない。";
+
+        bool hasHands = false;
+        foreach (BodyPart part in enemy.GetComponentsInChildren<BodyPart>(true))
+        {
+            if (part.partType != PartType.Hand || !part.canBreak)
+                continue;
+
+            hasHands = true;
+            if (!part.IsBroken)
+                return $"次の敵行動：{announcementName}\n壊れていない手を破壊すると中断！";
+        }
+
+        return $"次の敵行動：{announcementName}\n" +
+            (hasHands ? "両手は破壊済み。今回は妨害不可。" : "破壊できる手がなく、今回は妨害不可。");
+    }
+
+    private void ShowPlayerChoiceMessage(string message)
+    {
+        DialogTextManager.instance.SetScenarios(new[] { message });
+        playerInputBlockedThroughFrame = Time.frameCount;
+    }
+
+    private bool UsesEnemyActionPlan(EnemyManager target)
+    {
+        return target != null &&
+            target.data != null &&
+            (target.data.enemyType == EnemyType.Normal ||
+             target.data.enemyType == EnemyType.Reinforced) &&
+            target.data.role == EnemyRole.Attacker &&
+            target.data.telegraphedSkill != null;
+    }
+
+    private void PrepareEnemyAction()
+    {
+        ClearEnemyActionPlan();
+
+        if (UsesBossHeavyAttack(enemy))
+        {
+            SkillData heavyAttack = enemyAI.TakePendingBossHeavyAttack(enemy);
+            if (heavyAttack != null)
+            {
+                enemyActionPlan = new EnemyActionPlan
+                {
+                    enemy = enemy,
+                    skill = heavyAttack,
+                    isReady = true
+                };
+            }
+            return;
+        }
+
+        if (!UsesEnemyActionPlan(enemy))
+            return;
+
+        enemyActionPlan = new EnemyActionPlan
+        {
+            enemy = enemy,
+            skill = enemyAI.ChooseSkill(enemy, 1),
+            isReady = true
+        };
+    }
+
+    private bool HasPlannedTelegraph()
+    {
+        return enemyActionPlan.isReady &&
+            enemyActionPlan.enemy == enemy &&
+            enemy != null &&
+            enemy.data != null &&
+            enemyActionPlan.skill != null &&
+            enemyActionPlan.skill == enemy.data.telegraphedSkill;
+    }
+
+    private bool TryInterruptEnemyAction(BodyPart part, bool justBroken)
+    {
+        if (!justBroken || part == null || part.partType != PartType.Hand ||
+            !(UsesEnemyActionPlan(enemy) ||
+                (UsesBossHeavyAttack(enemy) && enemyActionPlan.isTelegraphed)) ||
+            !HasPlannedTelegraph() ||
+            !enemy.IsAlive || enemyActionPlan.isInterrupted ||
+            part.GetComponentInParent<EnemyManager>() != enemy)
+        {
+            return false;
+        }
+
+        enemyActionPlan.isInterrupted = true;
+        return true;
+    }
+
+    private bool TryConsumeEnemyAction(out SkillData skill, out bool isInterrupted)
+    {
+        skill = null;
+        isInterrupted = false;
+
+        if (!enemyActionPlan.isReady || enemyActionPlan.enemy != enemy)
+            return false;
+
+        skill = enemyActionPlan.skill;
+        isInterrupted = enemyActionPlan.isInterrupted;
+        ClearEnemyActionPlan();
+        return true;
+    }
+
+    private void ClearEnemyActionPlan()
+    {
+        enemyActionPlan = default;
+    }
+
+    private bool UsesBossHeavyAttack(EnemyManager target)
+    {
+        return target != null && target.data != null &&
+            target.data.enemyType == EnemyType.Boss && target.data.role == EnemyRole.Tank &&
+            target.data.telegraphedSkill != null &&
+            target.data.telegraphedSkill.skillType == SkillType.Physical;
+    }
+
+    private void ClearPlayerSkillSelection()
+    {
+        selectedPlayerSkill = null;
+        useSelectedSkill = false;
+    }
+
+    private void OnDisable()
+    {
+        ClearEnemyActionPlan();
+        ClearPlayerSkillSelection();
+        enemyAI?.ResetBattleState();
+        if (player != null)
+            player.RemovePoison();
+        isShowingEnemyTelegraph = false;
+        isPlayerTurn = false;
+        waitingTap = false;
+        isBattleRunning = false;
+        playerActionMessages = null;
+        StopAllCoroutines();
+    }
+
     IEnumerator BattleLoop()
     {
         EnemyManager battleEnemy = enemy;
@@ -684,10 +850,12 @@ public class BattleManager : MonoBehaviour
                 playerCooldowns.Tick();
             }
 
+            PrepareEnemyAction();
+
             // 行動可能回数ぶんプレイヤーターン
             for (int i = 0; i < playerActionCount; i++)
             {
-                yield return StartCoroutine(PlayerActByTap());
+                yield return StartCoroutine(PlayerActByTap(i == 0));
 
                 if (enemy != battleEnemy)
                 {
@@ -701,6 +869,7 @@ public class BattleManager : MonoBehaviour
                     !enemy.IsAlive
                 )
                 {
+                    ClearEnemyActionPlan();
                     yield break;
                 }
 
@@ -714,12 +883,20 @@ public class BattleManager : MonoBehaviour
 
             yield return StartCoroutine(EnemyActAuto());
 
+            if (enemy != battleEnemy)
+                yield break;
+
             // Player死亡
             if (
                 player == null ||
                 !player.IsAlive
             )
             {
+                ClearEnemyActionPlan();
+                ClearPlayerSkillSelection();
+                enemyAI?.ResetBattleState();
+                if (player != null)
+                    player.RemovePoison();
                 questManager.QuestFailed();
                 yield break;
             }
@@ -730,43 +907,58 @@ public class BattleManager : MonoBehaviour
                 !enemy.IsAlive
             )
             {
+                ClearEnemyActionPlan();
                 yield break;
             }
 
             yield return new WaitForSeconds(0.5f);
         }
+
+        ClearEnemyActionPlan();
     }
-    IEnumerator PlayerActByTap()
+    IEnumerator PlayerActByTap(bool isFirstActionOfTurn = false)
     {
-        isPlayerTurn = true;
+        EnemyManager battleEnemy = enemy;
+        isPlayerTurn = false;
         waitingTap = true;
+        playerActionMessages = null;
 
 
         // 毒ダメージ
         int poisonDamage =
-            player.TickPoisonDamage();
+            isFirstActionOfTurn ? player.TickPoisonDamage() : 0;
 
         if (poisonDamage > 0)
         {
             playerUI.UpdateUI(player);
 
-            DialogTextManager.instance.SetScenarios(
-                new string[]
-                {
-                $"毒ダメージ！\n" +
-                $"{poisonDamage}ダメージ受けた！"
-                }
-            );
+            var poisonMessages = new List<string>
+            {
+                $"毒ダメージ！\n{poisonDamage}ダメージ受けた！"
+            };
+            if (player.IsAlive && !player.IsPoisoned)
+                poisonMessages.Add("毒が自然に解除された！");
 
-            yield return new WaitForSeconds(1.0f);
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(
+                    poisonMessages.ToArray(),
+                    0.5f
+                )
+            );
 
 
             // 毒で死亡
-            if (!player.IsAlive)
+            if (player == null || !player.IsAlive)
             {
                 waitingTap = false;
                 isPlayerTurn = false;
 
+                ClearEnemyActionPlan();
+                ClearPlayerSkillSelection();
+                enemyAI?.ResetBattleState();
+
+                if (player != null)
+                    player.RemovePoison();
                 questManager.QuestFailed();
 
                 yield break;
@@ -774,12 +966,41 @@ public class BattleManager : MonoBehaviour
         }
 
 
-        DialogTextManager.instance.SetScenarios(
-            new string[]
+        if (!isBattleRunning || isEndingBattle || enemy != battleEnemy)
+            yield break;
+
+        if (isFirstActionOfTurn && HasPlannedTelegraph())
+        {
+            isShowingEnemyTelegraph = true;
+            skillSelectionPanel.SetActive(false);
+
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(GetEnemyTelegraphMessage(), 0.5f)
+            );
+
+            yield return null;
+
+            if (enemy != battleEnemy)
+                yield break;
+
+            isShowingEnemyTelegraph = false;
+
+            if (!isBattleRunning || isEndingBattle ||
+                player == null || !player.IsAlive ||
+                enemy == null || !enemy.IsAlive)
             {
-            "プレイヤーのターン。\n敵をクリック！"
+                ClearEnemyActionPlan();
+                yield break;
             }
-        );
+
+            enemyActionPlan.isTelegraphed = true;
+        }
+        else
+        {
+            ShowPlayerChoiceMessage("攻撃する部位を選択！");
+        }
+
+        isPlayerTurn = true;
 
 
         // プレイヤーが攻撃するまで待つ
@@ -789,12 +1010,23 @@ public class BattleManager : MonoBehaviour
         }
 
 
-        // 攻撃メッセージを見る時間
-        yield return new WaitForSeconds(1.5f);
-
-
         isPlayerTurn = false;
 
+        if (!isBattleRunning || isEndingBattle || enemy != battleEnemy)
+            yield break;
+
+        string[] messages = playerActionMessages;
+        playerActionMessages = null;
+
+        if (messages != null)
+        {
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(messages, 0.5f)
+            );
+        }
+
+        if (!isBattleRunning || isEndingBattle || enemy != battleEnemy)
+            yield break;
 
         if (enemy != null)
         {
@@ -816,7 +1048,17 @@ public class BattleManager : MonoBehaviour
     IEnumerator EnemyActAuto()
     {
         if (enemy == null || player == null)
+        {
+            ClearEnemyActionPlan();
             yield break;
+        }
+
+        EnemyManager actingEnemy = enemy;
+        if (!enemy.IsAlive)
+        {
+            yield return StartCoroutine(EndBattle());
+            yield break;
+        }
 
         // Buffの残りターンを進める
         enemy.TickDefenseBuff();
@@ -861,7 +1103,9 @@ public class BattleManager : MonoBehaviour
         // 待っている間に戦闘が終了していたら処理を終了
         if (
             enemy == null ||
+            enemy != actingEnemy ||
             player == null ||
+            !player.IsAlive ||
             !isBattleRunning ||
             isEndingBattle
         )
@@ -869,9 +1113,57 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
+        if (!enemy.IsAlive)
+        {
+            yield return StartCoroutine(EndBattle());
+            yield break;
+        }
+
+        bool isBossHeavyAction = UsesBossHeavyAttack(enemy) &&
+            enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
+            enemyActionPlan.skill == enemy.data.telegraphedSkill;
+        if (isBossHeavyAction && !enemyActionPlan.isTelegraphed)
+        {
+            ClearEnemyActionPlan();
+            Debug.LogWarning("予告されていない王の重撃は実行しません。", this);
+            yield break;
+        }
+
         // 敵が使うスキルを決める
-        SkillData skill =
-            enemyAI.ChooseSkill(enemy);
+        SkillData skill;
+
+        if (!TryConsumeEnemyAction(out skill, out bool isInterrupted))
+        {
+            if (UsesEnemyActionPlan(enemy))
+            {
+                Debug.LogWarning("確定済みの敵行動がないため、敵の行動を終了します。", this);
+                yield break;
+            }
+
+            skill = enemyAI.ChooseSkill(enemy, 0, player, UsesBossHeavyAttack(enemy));
+            if (UsesBossHeavyAttack(enemy) && enemyAI.PendingBossHeavyAttack != null)
+            {
+                yield return StartCoroutine(
+                    DialogTextManager.instance.ShowAndWait(
+                        $"{enemy.name}は強力な一撃を構えた！", 0.5f)
+                );
+                yield break;
+            }
+        }
+
+        if (isBossHeavyAction && TankBossRoleAction.GetSealedSkills(enemy).Contains(skill))
+            isInterrupted = true;
+
+        if (isInterrupted)
+        {
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(
+                    $"{skill.skillName}は中断された！\n{enemy.name}は行動できない！",
+                    0.5f
+                )
+            );
+            yield break;
+        }
 
         // nullなら通常攻撃
         if (skill == null)
@@ -890,11 +1182,10 @@ public class BattleManager : MonoBehaviour
 
             if (!hit)
             {
-                DialogTextManager.instance.SetScenarios(
-                    new string[]
-                    {
-                    "敵の攻撃！\nしかし外れた！"
-                    }
+                yield return StartCoroutine(
+                    DialogTextManager.instance.ShowAndWait(
+                        "敵の攻撃！\nしかし外れた！", 0.5f
+                    )
                 );
 
                 yield break;
@@ -915,14 +1206,11 @@ public class BattleManager : MonoBehaviour
 
             playerUI.UpdateUI(player);
 
-            DialogTextManager.instance.SetScenarios(
-                new string[]
-                {
-                $"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた"
-                }
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(
+                    $"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた", 0.5f
+                )
             );
-
-            yield return new WaitForSeconds(0.5f);
 
             yield break;
         }
@@ -983,28 +1271,25 @@ public class BattleManager : MonoBehaviour
 
         playerUI.UpdateUI(player);
 
-        DialogTextManager.instance.SetScenarios(
-            new string[]
-            {
-            result.message
-            }
+        yield return StartCoroutine(
+            DialogTextManager.instance.ShowAndWait(result.message, 0.5f)
         );
-
-        yield return new WaitForSeconds(0.5f);
     }
 
 
     IEnumerator EndBattle()
     {
-        bool defeatedBoss =
-            enemy != null &&
-            enemy.data != null &&
-            enemy.data.enemyType == EnemyType.Boss;
-
         if (isEndingBattle)
             yield break;
 
         isEndingBattle = true;
+
+        ClearEnemyActionPlan();
+        ClearPlayerSkillSelection();
+        enemyAI?.ResetBattleState();
+        isShowingEnemyTelegraph = false;
+
+        playerActionMessages = null;
 
         string deleteEnemyName =
             enemy != null ? enemy.name : "敵";
@@ -1029,9 +1314,10 @@ public class BattleManager : MonoBehaviour
             enemy = null;
         }
 
-        if (defeatedBoss)
+        if (player != null)
         {
             player.RemovePoison();
+            playerUI.UpdateUI(player);
         }
 
         // Destroyが反映されてから次の敵を生成する

@@ -22,6 +22,16 @@ public class DialogTextManager : MonoBehaviour
     private float timeElapsed = 1;
     private int currentLine = 0;
     private int lastUpdateCharacter = -1;
+    private int lastAdvanceFrame = -1;
+    private bool isAdvancePointerHeld;
+    private int lastAdvanceReleaseFrame = -1;
+    private int displayVersion;
+
+    public bool ConsumedClickThisFrame =>
+        lastAdvanceFrame == Time.frameCount ||
+        lastAdvanceReleaseFrame == Time.frameCount ||
+        (isAdvancePointerHeld && !Input.GetMouseButtonDown(0));
+    public bool HasPendingLines => scenarios != null && currentLine < scenarios.Length;
 
     public static DialogTextManager instance;
 
@@ -45,10 +55,21 @@ public class DialogTextManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+            isAdvancePointerHeld = false;
+
+        if (isAdvancePointerHeld && !Input.GetMouseButton(0))
+        {
+            lastAdvanceReleaseFrame = Time.frameCount;
+            isAdvancePointerHeld = false;
+        }
+
         if (IsCompleteDisplayText)
         {
-            if (currentLine < scenarios.Length && Input.GetMouseButtonDown(0))
+            if (scenarios != null && currentLine < scenarios.Length && Input.GetMouseButtonDown(0))
             {
+                lastAdvanceFrame = Time.frameCount;
+                isAdvancePointerHeld = true;
                 SetNextLine();
             }
         }
@@ -56,6 +77,8 @@ public class DialogTextManager : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
+                lastAdvanceFrame = Time.frameCount;
+                isAdvancePointerHeld = true;
                 timeUntilDisplay = 0;
             }
         }
@@ -100,6 +123,7 @@ public class DialogTextManager : MonoBehaviour
 
     public void SetScenarios(string[] sc)
     {
+        displayVersion++;
         scenarios = sc;
         currentLine = 0;
         SetNextLine();
@@ -110,15 +134,29 @@ public class DialogTextManager : MonoBehaviour
         float waitSeconds
     )
     {
-        SetScenarios(new string[]
+        return ShowAndWait(new[] { message }, waitSeconds);
+    }
+
+    public IEnumerator ShowAndWait(string[] messages, float waitSeconds)
+    {
+        int version = displayVersion;
+
+        foreach (string message in messages)
         {
-            message
-        });
+            if (version != displayVersion)
+                yield break;
 
-        yield return new WaitUntil(
-            () => IsCompleteDisplayText
-        );
+            SetScenarios(new[] { message });
+            version = displayVersion;
 
-        yield return new WaitForSeconds(waitSeconds);
+            yield return new WaitUntil(
+                () => version != displayVersion || IsCompleteDisplayText
+            );
+
+            if (version != displayVersion)
+                yield break;
+
+            yield return new WaitForSeconds(waitSeconds);
+        }
     }
 }

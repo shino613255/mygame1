@@ -7,8 +7,13 @@ public class SkillCooldowns : MonoBehaviour
 
     public bool IsReady(SkillData skill)
     {
+        return IsReadyAfterTicks(skill, 0);
+    }
+
+    public bool IsReadyAfterTicks(SkillData skill, int ticks)
+    {
         if (skill == null) return false;
-        return !cd.TryGetValue(skill, out var t) || t <= 0;
+        return !cd.TryGetValue(skill, out var t) || t <= Mathf.Max(0, ticks);
     }
 
     public void StartCooldown(SkillData skill)
