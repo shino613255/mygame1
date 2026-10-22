@@ -5,6 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game/Enemy/Enemy Data", fileName = "EnemyData_")]
 public class EnemyData : ScriptableObject
 {
+    [System.Serializable]
+    public class PartDamageMultiplier
+    {
+        public PartType partType;
+        [Min(0.01f)] public float physicalMultiplier = 1f;
+        [Min(0.01f)] public float magicMultiplier = 1f;
+    }
+
     [Header("基本情報")]
     public string enemyName;
     public Sprite icon;
@@ -37,6 +45,35 @@ public class EnemyData : ScriptableObject
 
     [Header("Attack Telegraph")]
     public SkillData telegraphedSkill;
+
+    [Header("Weak Point Stagger")]
+    public bool enableStagger;
+    public PartType staggerWeakPoint = PartType.Face;
+    [Min(1)] public int staggerGaugeMax = 100;
+    [Min(1)] public int staggerGainPerHit = 35;
+    [Min(1)] public int staggerRecoveryTurns = 1;
+
+    [Header("Part Damage Multipliers")]
+    public List<PartDamageMultiplier> partDamageMultipliers = new();
+
+    public float GetPartDamageMultiplier(PartType partType, SkillType attackType)
+    {
+        if (partDamageMultipliers == null ||
+            (attackType != SkillType.Physical && attackType != SkillType.Magic))
+            return 1f;
+
+        foreach (PartDamageMultiplier entry in partDamageMultipliers)
+        {
+            if (entry == null || entry.partType != partType)
+                continue;
+
+            float multiplier = attackType == SkillType.Magic
+                ? entry.magicMultiplier : entry.physicalMultiplier;
+            return multiplier > 0f && !float.IsInfinity(multiplier) ? multiplier : 1f;
+        }
+
+        return 1f;
+    }
 
     [Header("敵の種類（強さランク）")]
     // 敵の強さ区分やBoss判定など、種類ごとの処理分岐に使用する

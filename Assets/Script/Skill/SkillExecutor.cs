@@ -29,6 +29,14 @@ public static class SkillExecutor
 
         if (attacker == null || target == null || skill == null) return r;
 
+        if (skill.skillType == SkillType.Counter &&
+            (target is not EnemyManager counterTarget || counterTarget != attacker ||
+             !counterTarget.CanActivateCounter))
+        {
+            r.message = "今はカウンターを使えない！";
+            return r;
+        }
+
         var cds = attacker.GetComponent<SkillCooldowns>();                                                                                                  
 
         if (cds != null && !cds.IsReady(skill))                                                                                                             
@@ -62,6 +70,10 @@ public static class SkillExecutor
 
         switch (skill.skillType)
         {
+            case SkillType.Counter:
+                ((EnemyManager)target).ActivateCounter();
+                r.message = $"{attacker.name}はカウンターを構えた！\n次のプレイヤーターン終了までダメージを反射する。";
+                break;
             case SkillType.Physical:
                 {
                     int baseDmg =

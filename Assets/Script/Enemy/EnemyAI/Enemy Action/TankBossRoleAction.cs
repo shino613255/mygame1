@@ -115,11 +115,14 @@ public class TankBossRoleAction : IEnemyRoleAction
 
         SkillData tankSkill = tankRoleAction.ChooseSkill(
             enemy,
-            pool
+            pool,
+            false
         );
         SkillData fallbackSkill = tankSkill != null
             ? tankSkill
             : poisonTacticUnlocked ? poisonSkill : null;
+        if (fallbackSkill == null)
+            fallbackSkill = TankRoleAction.ChooseCounterSkill(enemy, pool);
 
         if (allowHeavyAttackStance && heavyAttackUnlocked && heavyAttack != null &&
             enemy.IsAlive && player != null && player.IsAlive)

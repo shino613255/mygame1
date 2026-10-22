@@ -45,6 +45,7 @@ public class BattleManager : MonoBehaviour
         public bool isReady;
         public bool isInterrupted;
         public bool isTelegraphed;
+        public int remainingChargeTurns;
     }
 
     private EnemyActionPlan enemyActionPlan;
@@ -102,6 +103,22 @@ public class BattleManager : MonoBehaviour
         enemyUI.gameObject.SetActive(true);
 
         enemy = enemymanager;
+        enemy.ClearCounter();
+        enemy.ResetStagger();
+        enemy.SetPartViewVisible(isPartViewVisible);
+
+        if (enemy.data != null && enemy.data.role == EnemyRole.Tank &&
+            (enemy.data.enemyType == EnemyType.Normal || enemy.data.enemyType == EnemyType.Boss) &&
+            enemy.GetComponent<SkillCooldowns>() == null)
+        {
+            enemy.gameObject.AddComponent<SkillCooldowns>();
+        }
+
+        if (enemy.data != null && enemy.data.enemyType == EnemyType.Boss &&
+            player != null && playerData != null && playerData.role == PlayerRole.Mage)
+        {
+            player.RestoreHpAndMp();
+        }
 
         if (mainCamera == null)
         {
@@ -359,7 +376,7 @@ public class BattleManager : MonoBehaviour
         {
             finalDamage = DamageRule.RollCrit(
                 skillDamage,
-                player.critRate,
+                Mathf.Clamp01(player.critRate + skill.critBonus),
                 player.critMultiplier
             );
 
@@ -422,6 +439,7 @@ public class BattleManager : MonoBehaviour
         }
 
         bool wasBroken = part.IsBroken;
+        int hpBefore = enemy.hp;
         int defenseBefore = enemy.def;
         int magicDefenseBefore = enemy.mdef;
         float accuracyPenaltyBefore = enemy.GetAccuracyPenalty();
@@ -436,6 +454,12 @@ public class BattleManager : MonoBehaviour
         bool interrupted = TryInterruptEnemyAction(part, justBroken);
 
         TryApplyStatusEffect(ctx);
+
+        int reflectedDamage = enemy.GetCounterDamage(Mathf.Max(0, hpBefore - enemy.hp));
+        if (reflectedDamage > 0)
+            player.TakeDamageRaw(reflectedDamage);
+
+        bool staggerHit = enemy.TryAddStagger(part, Mathf.Max(0, hpBefore - enemy.hp), result.partDamage);
 
         if (useSelectedSkill)
         {
@@ -479,6 +503,16 @@ public class BattleManager : MonoBehaviour
                     messages.Add($"{skill.skillName}を封印！\n敵は以後このスキルを使えない。");
             }
         }
+
+        if (staggerHit)
+        {
+            messages.Add($"弱点ヒット！ 体勢崩し {enemy.StaggerGauge}/{enemy.StaggerGaugeMax}");
+            if (enemy.IsStaggered)
+                messages.Add("体勢崩し！ 敵の次の行動を封じた！");
+        }
+
+        if (reflectedDamage > 0)
+            messages.Add($"カウンター！\nプレイヤーは{reflectedDamage}ダメージ受けた！");
 
         playerActionMessages = messages.ToArray();
         Debug.Log(string.Join("\n", playerActionMessages));
@@ -621,6 +655,11 @@ public class BattleManager : MonoBehaviour
                 $"{part.GetPartNameJP()}を攻撃！";
         }
 
+        if (result.damageMultiplier > 1f)
+            message += "\n弱点！";
+        else if (result.damageMultiplier > 0f && result.damageMultiplier < 1f)
+            message += "\n耐性あり";
+
         message += $"\nダメージ：本体{result.mainDamage}／部位{result.partDamage}";
 
         return message;
@@ -644,6 +683,8 @@ public class BattleManager : MonoBehaviour
                     return "脚を破壊！\nこのターンからプレイヤーは2回行動！";
             }
         }
+        if (wasBroken && enemy.UsesStagger)
+            return "この部位は破壊済み。\n部位破壊効果は再発生しない。";
         return wasBroken ? "この部位は破壊済み。\n再攻撃では妨害できない。" : string.Empty;
     }
     public void PlaySkillEffect(SkillData skill, Vector3 worldPos)
@@ -692,6 +733,10 @@ public class BattleManager : MonoBehaviour
         if (enemyActionPlan.isInterrupted)
             return $"{skillName}は中断済み！\n敵はこのターン行動しない。";
 
+        string announcement = UsesBossHeavyAttack(enemy) && enemyActionPlan.remainingChargeTurns > 1
+            ? $"{enemy.name}は{skillName}を構えている！\nあと{enemyActionPlan.remainingChargeTurns - 1}回構えてから発動！"
+            : $"次の敵行動：{announcementName}";
+
         bool hasHands = false;
         foreach (BodyPart part in enemy.GetComponentsInChildren<BodyPart>(true))
         {
@@ -700,10 +745,10 @@ public class BattleManager : MonoBehaviour
 
             hasHands = true;
             if (!part.IsBroken)
-                return $"次の敵行動：{announcementName}\n壊れていない手を破壊すると中断！";
+                return $"{announcement}\n壊れていない手を破壊すると中断！";
         }
 
-        return $"次の敵行動：{announcementName}\n" +
+        return $"{announcement}\n" +
             (hasHands ? "両手は破壊済み。今回は妨害不可。" : "破壊できる手がなく、今回は妨害不可。");
     }
 
@@ -717,14 +762,20 @@ public class BattleManager : MonoBehaviour
     {
         return target != null &&
             target.data != null &&
-            (target.data.enemyType == EnemyType.Normal ||
-             target.data.enemyType == EnemyType.Reinforced) &&
+            target.data.enemyType == EnemyType.Normal &&
             target.data.role == EnemyRole.Attacker &&
             target.data.telegraphedSkill != null;
     }
 
     private void PrepareEnemyAction()
     {
+        if (enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
+            enemyActionPlan.remainingChargeTurns > 0)
+        {
+            enemyActionPlan.isTelegraphed = false;
+            return;
+        }
+
         ClearEnemyActionPlan();
 
         if (UsesBossHeavyAttack(enemy))
@@ -732,12 +783,7 @@ public class BattleManager : MonoBehaviour
             SkillData heavyAttack = enemyAI.TakePendingBossHeavyAttack(enemy);
             if (heavyAttack != null)
             {
-                enemyActionPlan = new EnemyActionPlan
-                {
-                    enemy = enemy,
-                    skill = heavyAttack,
-                    isReady = true
-                };
+                StartEnemyCharge(heavyAttack, 2);
             }
             return;
         }
@@ -767,7 +813,7 @@ public class BattleManager : MonoBehaviour
     {
         if (!justBroken || part == null || part.partType != PartType.Hand ||
             !(UsesEnemyActionPlan(enemy) ||
-                (UsesBossHeavyAttack(enemy) && enemyActionPlan.isTelegraphed)) ||
+                (UsesChargedAttack(enemy) && enemyActionPlan.isTelegraphed)) ||
             !HasPlannedTelegraph() ||
             !enemy.IsAlive || enemyActionPlan.isInterrupted ||
             part.GetComponentInParent<EnemyManager>() != enemy)
@@ -806,6 +852,29 @@ public class BattleManager : MonoBehaviour
             target.data.telegraphedSkill.skillType == SkillType.Physical;
     }
 
+    private bool UsesEliteCharge(EnemyManager target)
+    {
+        return target != null && target.data != null &&
+            target.data.enemyType == EnemyType.Reinforced && target.data.role == EnemyRole.Attacker &&
+            target.data.telegraphedSkill != null;
+    }
+
+    private bool UsesChargedAttack(EnemyManager target)
+    {
+        return UsesBossHeavyAttack(target) || UsesEliteCharge(target);
+    }
+
+    private void StartEnemyCharge(SkillData skill, int playerTurns)
+    {
+        enemyActionPlan = new EnemyActionPlan
+        {
+            enemy = enemy,
+            skill = skill,
+            isReady = true,
+            remainingChargeTurns = playerTurns
+        };
+    }
+
     private void ClearPlayerSkillSelection()
     {
         selectedPlayerSkill = null;
@@ -814,6 +883,11 @@ public class BattleManager : MonoBehaviour
 
     private void OnDisable()
     {
+        if (enemy != null)
+        {
+            enemy.ClearCounter();
+            enemy.ResetStagger();
+        }
         ClearEnemyActionPlan();
         ClearPlayerSkillSelection();
         enemyAI?.ResetBattleState();
@@ -879,6 +953,8 @@ public class BattleManager : MonoBehaviour
                     enemy.GetPlayerActionCount();
             }
 
+            enemy.ClearCounter();
+
             yield return new WaitForSeconds(0.5f);
 
             yield return StartCoroutine(EnemyActAuto());
@@ -897,6 +973,11 @@ public class BattleManager : MonoBehaviour
                 enemyAI?.ResetBattleState();
                 if (player != null)
                     player.RemovePoison();
+                if (enemy != null)
+                {
+                    enemy.ClearCounter();
+                    enemy.ResetStagger();
+                }
                 questManager.QuestFailed();
                 yield break;
             }
@@ -959,6 +1040,11 @@ public class BattleManager : MonoBehaviour
 
                 if (player != null)
                     player.RemovePoison();
+                if (enemy != null)
+                {
+                    enemy.ClearCounter();
+                    enemy.ResetStagger();
+                }
                 questManager.QuestFailed();
 
                 yield break;
@@ -1027,6 +1113,22 @@ public class BattleManager : MonoBehaviour
 
         if (!isBattleRunning || isEndingBattle || enemy != battleEnemy)
             yield break;
+
+        if (player == null || !player.IsAlive)
+        {
+            ClearEnemyActionPlan();
+            ClearPlayerSkillSelection();
+            enemyAI?.ResetBattleState();
+            if (enemy != null)
+            {
+                enemy.ClearCounter();
+                enemy.ResetStagger();
+            }
+            if (player != null)
+                player.RemovePoison();
+            questManager.QuestFailed();
+            yield break;
+        }
 
         if (enemy != null)
         {
@@ -1119,13 +1221,38 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
-        bool isBossHeavyAction = UsesBossHeavyAttack(enemy) &&
-            enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
-            enemyActionPlan.skill == enemy.data.telegraphedSkill;
-        if (isBossHeavyAction && !enemyActionPlan.isTelegraphed)
+        if (enemy.ConsumeStaggerAtEnemyTurn())
         {
             ClearEnemyActionPlan();
-            Debug.LogWarning("予告されていない王の重撃は実行しません。", this);
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(
+                    $"{enemy.name}は体勢を崩して動けない！\n次のプレイヤーターンは体勢崩しの蓄積を休止する。", 0.5f)
+            );
+            yield break;
+        }
+
+        bool isChargedAction = UsesChargedAttack(enemy) &&
+            enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
+            enemyActionPlan.remainingChargeTurns > 0 &&
+            enemyActionPlan.skill == enemy.data.telegraphedSkill;
+        bool isBossHeavyAction = isChargedAction && UsesBossHeavyAttack(enemy);
+        if (isChargedAction && !enemyActionPlan.isTelegraphed)
+        {
+            ClearEnemyActionPlan();
+            Debug.LogWarning("予告されていない構え攻撃は実行しません。", this);
+            yield break;
+        }
+
+        if (isChargedAction && !enemyActionPlan.isInterrupted &&
+            !(isBossHeavyAction && TankBossRoleAction.GetSealedSkills(enemy).Contains(enemyActionPlan.skill)) &&
+            enemyActionPlan.remainingChargeTurns > 1)
+        {
+            enemyActionPlan.remainingChargeTurns--;
+            enemyActionPlan.isTelegraphed = false;
+            yield return StartCoroutine(
+                DialogTextManager.instance.ShowAndWait(
+                    $"{enemy.name}は強力な一撃の構えを続けている！", 0.5f)
+            );
             yield break;
         }
 
@@ -1141,7 +1268,11 @@ public class BattleManager : MonoBehaviour
             }
 
             skill = enemyAI.ChooseSkill(enemy, 0, player, UsesBossHeavyAttack(enemy));
-            if (UsesBossHeavyAttack(enemy) && enemyAI.PendingBossHeavyAttack != null)
+            if (UsesEliteCharge(enemy) && skill != null && skill == enemy.data.telegraphedSkill)
+                StartEnemyCharge(skill, 1);
+
+            if ((UsesBossHeavyAttack(enemy) && enemyAI.PendingBossHeavyAttack != null) ||
+                (UsesEliteCharge(enemy) && enemyActionPlan.isReady))
             {
                 yield return StartCoroutine(
                     DialogTextManager.instance.ShowAndWait(
@@ -1310,6 +1441,8 @@ public class BattleManager : MonoBehaviour
 
         if (enemy != null)
         {
+            enemy.ClearCounter();
+            enemy.ResetStagger();
             Destroy(enemy.gameObject);
             enemy = null;
         }

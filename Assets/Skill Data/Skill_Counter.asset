@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
+  m_Name: Skill_Counter
+  m_EditorClassIdentifier:
+  skillName: "\u30AB\u30A6\u30F3\u30BF\u30FC"
+  description:
+  icon: {fileID: 0}
+  mpCost: 5
+  cooldown: 3
+  skillType: 6
+  effectPrefab: {fileID: 0}
+  effectDuration: 1
+  effectOffset: {x: 0, y: 0}
+  power: 0
+  multiplier: 1
+  accuracy: 1
+  canCrit: 0
+  critBonus: 0
+  element: 0
+  targetType: 2
+  canTargetPart: 0
+  mainDamageRate: 1
+  partDamageRate: 1
+  statusEffect: {fileID: 0}
+  buff: {fileID: 0}
+  debuff: {fileID: 0}
+  applyChance: 0

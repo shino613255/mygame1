@@ -475,7 +475,7 @@ MonoBehaviour:
   highlight: {fileID: 3381609361509971935}
   partType: 3
   canBreak: 1
-  maxPartHp: 180
+  maxPartHp: 375
   colliderLineWidth: 0.03
 --- !u!212 &3381609361509971935
 SpriteRenderer:
@@ -733,7 +733,7 @@ MonoBehaviour:
   highlight: {fileID: 1784419125240024546}
   partType: 2
   canBreak: 1
-  maxPartHp: 240
+  maxPartHp: 375
   colliderLineWidth: 0.03
 --- !u!212 &1784419125240024546
 SpriteRenderer:
@@ -1014,7 +1014,7 @@ MonoBehaviour:
   highlight: {fileID: 2792565632258802332}
   partType: 0
   canBreak: 1
-  maxPartHp: 180
+  maxPartHp: 375
   colliderLineWidth: 0.03
 --- !u!212 &2792565632258802332
 SpriteRenderer:
@@ -1435,7 +1435,7 @@ MonoBehaviour:
   highlight: {fileID: 5919541993646385971}
   partType: 2
   canBreak: 1
-  maxPartHp: 240
+  maxPartHp: 375
   colliderLineWidth: 0.03
 --- !u!212 &5919541993646385971
 SpriteRenderer:

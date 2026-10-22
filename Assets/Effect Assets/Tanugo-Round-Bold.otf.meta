@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 49644eeee977d6c4f96d7322ce0b00f6
+guid: 64afda9565530c54e9a44ecff0eac9a9
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - BoukenGothic
+  - Tanugo-R
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

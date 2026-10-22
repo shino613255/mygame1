@@ -9,6 +9,11 @@ public class TankRoleAction : IEnemyRoleAction
         List<SkillData> pool
     )
     {
+        return ChooseSkill(enemy, pool, true);
+    }
+
+    public SkillData ChooseSkill(EnemyManager enemy, List<SkillData> pool, bool allowCounter)
+    {
         SkillData defenseSkill =
             pool.Find(s =>
                 s.skillType == SkillType.Buff &&
@@ -52,7 +57,13 @@ public class TankRoleAction : IEnemyRoleAction
             return healSkill;
         }
 
-        // ‰½‚à‚·‚é•K—v‚ª‚È‚¯‚ê‚Î’ÊíUŒ‚
-        return null;
+        return allowCounter ? ChooseCounterSkill(enemy, pool) : null;
+    }
+
+    public static SkillData ChooseCounterSkill(EnemyManager enemy, List<SkillData> pool)
+    {
+        return enemy.CanActivateCounter
+            ? pool.Find(skill => skill.skillType == SkillType.Counter)
+            : null;
     }
 }

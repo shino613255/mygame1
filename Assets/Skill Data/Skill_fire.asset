@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
-  m_Name: Skill_Fire
+  m_Name: Skill_fire
   m_EditorClassIdentifier: 
   skillName: "\u30D5\u30A1\u30A4\u30E4\u30FC"
   description: 
@@ -25,7 +25,7 @@ MonoBehaviour:
   multiplier: 1.8
   accuracy: 1
   canCrit: 1
-  critBonus: 1
+  critBonus: 0.05
   element: 1
   targetType: 0
   canTargetPart: 1
@@ -34,4 +34,4 @@ MonoBehaviour:
   statusEffect: {fileID: 11400000, guid: 440da4452168a284d891e5988c1740c1, type: 2}
   buff: {fileID: 0}
   debuff: {fileID: 0}
-  applyChance: 0.3
+  applyChance: 0.1

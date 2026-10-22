@@ -25,7 +25,7 @@ MonoBehaviour:
   multiplier: 1.6
   accuracy: 1
   canCrit: 1
-  critBonus: 0
+  critBonus: 0.05
   element: 2
   targetType: 0
   canTargetPart: 1
@@ -34,4 +34,4 @@ MonoBehaviour:
   statusEffect: {fileID: 11400000, guid: 031cee393756d2643ad5b096a9f67c09, type: 2}
   buff: {fileID: 0}
   debuff: {fileID: 0}
-  applyChance: 0.3
+  applyChance: 0.1

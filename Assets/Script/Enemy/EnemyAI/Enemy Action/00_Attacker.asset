@@ -15,9 +15,9 @@ MonoBehaviour:
   enemyName: "\u6226\u58EB"
   icon: {fileID: 21300000, guid: 834f7923735176044b22afc3df9f5e0b, type: 3}
   prefab: {fileID: 4036637313795360933, guid: 5d1bd10cecc95f84f918be41d959b7ec, type: 3}
-  maxHp: 380
+  maxHp: 475
   maxMp: 30
-  at: 9
+  at: 14
   mag: 18
   def: 18
   mdef: 18
@@ -30,6 +30,12 @@ MonoBehaviour:
   skillList:
   - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
   - {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}
+  telegraphedSkill: {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}
+  enableStagger: 0
+  staggerWeakPoint: 0
+  staggerGaugeMax: 100
+  staggerGainPerHit: 35
+  staggerRecoveryTurns: 1
+  partDamageMultipliers: []
   enemyType: 0
   role: 0
-  telegraphedSkill: {fileID: 11400000, guid: e21c4f35f679a264e90613f2f15df6c9, type: 2}

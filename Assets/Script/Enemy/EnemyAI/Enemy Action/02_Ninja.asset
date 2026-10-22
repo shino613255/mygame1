@@ -15,18 +15,25 @@ MonoBehaviour:
   enemyName: "\u5FCD\u8005"
   icon: {fileID: 0}
   prefab: {fileID: 4235716888136053994, guid: 0d1c3bdec8f2bc24688809d89983ab43, type: 3}
-  maxHp: 300
+  maxHp: 375
   maxMp: 0
-  at: 14
+  at: 12
   mag: 8
   def: 8
   mdef: 10
-  evasionRate: 0.33
+  evasionRate: 0.5
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
   deathEffect: {fileID: 0}
   hitSE: {fileID: 0}
   deathSE: {fileID: 0}
   attackSkill: {fileID: 0}
   skillList: []
+  telegraphedSkill: {fileID: 0}
+  enableStagger: 1
+  staggerWeakPoint: 0
+  staggerGaugeMax: 100
+  staggerGainPerHit: 35
+  staggerRecoveryTurns: 1
+  partDamageMultipliers: []
   enemyType: 0
   role: 2

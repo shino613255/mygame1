@@ -5,5 +5,6 @@ public enum SkillType
     Heal,
     Buff,
     Debuff,
-    RecoverMp
+    RecoverMp,
+    Counter
 }

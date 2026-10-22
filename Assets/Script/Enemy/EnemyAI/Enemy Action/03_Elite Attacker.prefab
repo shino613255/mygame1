@@ -124,7 +124,7 @@ MonoBehaviour:
   highlight: {fileID: 279364769936783689}
   partType: 1
   canBreak: 0
-  maxPartHp: 150
+  maxPartHp: 1
   colliderLineWidth: 0.03
 --- !u!212 &279364769936783689
 SpriteRenderer:
@@ -373,7 +373,7 @@ MonoBehaviour:
   highlight: {fileID: 8074188401406754166}
   partType: 3
   canBreak: 1
-  maxPartHp: 150
+  maxPartHp: 225
   colliderLineWidth: 0.03
 --- !u!212 &8074188401406754166
 SpriteRenderer:
@@ -553,7 +553,7 @@ MonoBehaviour:
   highlight: {fileID: 1784419125240024546}
   partType: 2
   canBreak: 1
-  maxPartHp: 150
+  maxPartHp: 225
   colliderLineWidth: 0.03
 --- !u!212 &1784419125240024546
 SpriteRenderer:
@@ -780,7 +780,7 @@ MonoBehaviour:
   highlight: {fileID: 2792565632258802332}
   partType: 0
   canBreak: 1
-  maxPartHp: 150
+  maxPartHp: 225
   colliderLineWidth: 0.03
 --- !u!212 &2792565632258802332
 SpriteRenderer:
@@ -955,7 +955,6 @@ MonoBehaviour:
   evasionRate: 0
   critRate: 0.02
   critMultiplier: 2
-  skillMultiplier: 2
   data: {fileID: 11400000, guid: 999b0e70364b57f408b081497f83e3dd, type: 2}
   damageEffect: {fileID: 9097266074469352976, guid: b8bcaa88d4434f14baaf382faae2fb02, type: 3}
 --- !u!114 &3678951827458509450
@@ -1130,7 +1129,7 @@ MonoBehaviour:
   highlight: {fileID: 5919541993646385971}
   partType: 2
   canBreak: 1
-  maxPartHp: 150
+  maxPartHp: 225
   colliderLineWidth: 0.03
 --- !u!212 &5919541993646385971
 SpriteRenderer:

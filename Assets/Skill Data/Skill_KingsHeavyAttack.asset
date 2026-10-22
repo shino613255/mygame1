@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
   m_Name: Skill_KingsHeavyAttack
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   skillName: "\u738B\u306E\u91CD\u6483"
-  description:
+  description: 
   icon: {fileID: 0}
   mpCost: 5
   cooldown: 3
@@ -21,11 +21,11 @@ MonoBehaviour:
   effectPrefab: {fileID: 0}
   effectDuration: 1.5
   effectOffset: {x: 0, y: 0}
-  power: 160
-  multiplier: 1
+  power: 300
+  multiplier: 2
   accuracy: 1
-  canCrit: 0
-  critBonus: 0
+  canCrit: 1
+  critBonus: 0.05
   element: 0
   targetType: 0
   canTargetPart: 0

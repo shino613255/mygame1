@@ -50,6 +50,12 @@ public class PlayerManager : UnitBase
         Debug.Log("‰ŠúƒXƒLƒ‹”: " + currentSkills.Count);
     }
 
+    public void RestoreHpAndMp()
+    {
+        hp = maxHp;
+        mp = maxMp;
+    }
+
     public bool ApplyPoison(
     StatusEffectData effect
 )

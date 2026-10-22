@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
+  m_Name: Skill_EnhancedRush
+  m_EditorClassIdentifier: 
+  skillName: "\u5F37\u5316\u30E9\u30C3\u30B7\u30E5"
+  description: 
+  icon: {fileID: 0}
+  mpCost: 0
+  cooldown: 0
+  skillType: 0
+  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
+  effectDuration: 1.5
+  effectOffset: {x: 0, y: 0}
+  power: 130
+  multiplier: 2
+  accuracy: 1
+  canCrit: 1
+  critBonus: 0.05
+  element: 0
+  targetType: 0
+  canTargetPart: 1
+  mainDamageRate: 20
+  partDamageRate: 20
+  statusEffect: {fileID: 0}
+  buff: {fileID: 0}
+  debuff: {fileID: 0}
+  applyChance: 0
