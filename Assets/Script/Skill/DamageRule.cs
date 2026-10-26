@@ -62,13 +62,17 @@ public static class DamageRule
         );
     }
 
-    public static bool RollHit(float accuracy, float evasion)
+    public static float CalcHitChance(float accuracy, float evasion, float finalAccuracyBonus = 0f)
     {
         accuracy = Mathf.Clamp01(accuracy);
         evasion = Mathf.Clamp01(evasion);
 
-        float final = Mathf.Clamp01(accuracy - evasion);
-        return Random.value < final;
+        return Mathf.Clamp01(accuracy - evasion + finalAccuracyBonus);
+    }
+
+    public static bool RollHit(float accuracy, float evasion, float finalAccuracyBonus = 0f)
+    {
+        return Random.value < CalcHitChance(accuracy, evasion, finalAccuracyBonus);
     }
 
     public static int RollCrit(int baseDamage, float rate, float bonusMultiplier = 1.5f, int minDamage = 1)

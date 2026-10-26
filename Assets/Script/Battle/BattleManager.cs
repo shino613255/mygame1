@@ -89,7 +89,10 @@ public class BattleManager : MonoBehaviour
         ClearEnemyActionPlan();
         ClearPlayerSkillSelection();
         if (player != null)
+        {
             player.RemovePoison();
+            player.ResetBattleState();
+        }
         isShowingEnemyTelegraph = false;
         isPlayerTurn = false;
         waitingTap = false;
@@ -115,7 +118,7 @@ public class BattleManager : MonoBehaviour
         }
 
         if (enemy.data != null && enemy.data.enemyType == EnemyType.Boss &&
-            player != null && playerData != null && playerData.role == PlayerRole.Mage)
+            player != null)
         {
             player.RestoreHpAndMp();
         }
@@ -240,6 +243,19 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
+        UnitBase skillTarget = selectedSkill.targetType == TargetType.Self ? (UnitBase)player : enemy;
+        if (!SkillUseRules.CanUse(player, skillTarget, selectedSkill, out string useError))
+        {
+            ShowPlayerChoiceMessage(useError);
+            return;
+        }
+        if (selectedSkill.targetType != TargetType.Self &&
+            (!SkillUseRules.IsDirectAttack(selectedSkill) || !selectedSkill.canTargetPart))
+        {
+            ShowPlayerChoiceMessage("このスキルでは部位を攻撃できない。");
+            return;
+        }
+
         playerInputBlockedThroughFrame = Time.frameCount;
 
         SkillCooldowns cooldowns =
@@ -252,13 +268,7 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        if (
-            (
-                selectedSkill.skillType == SkillType.Heal ||
-                selectedSkill.skillType == SkillType.RecoverMp
-            ) &&
-            selectedSkill.targetType == TargetType.Self
-        )
+        if (selectedSkill.targetType == TargetType.Self)
         {
             var result = SkillExecutor.Execute(player, player, selectedSkill);          
             if (!result.executed)
@@ -266,6 +276,7 @@ public class BattleManager : MonoBehaviour
                 ShowPlayerChoiceMessage(result.message);
                 return;
             }
+            player.ResetFocusedAttackChain();
             ClearPlayerSkillSelection();
             PlaySkillEffect(selectedSkill, player.transform.position);                  
 
@@ -359,6 +370,7 @@ public class BattleManager : MonoBehaviour
 
             mainDamageRate = 1f,
             partDamageRate = 1f,
+            focusedPartDamageMultiplier = 1f,
             canApplyStatus = false,
             sourceSkill = null,
 
@@ -389,6 +401,7 @@ public class BattleManager : MonoBehaviour
 
             mainDamageRate = skill.mainDamageRate,
             partDamageRate = skill.partDamageRate,
+            focusedPartDamageMultiplier = 1f,
 
             canApplyStatus = skill.statusEffect != null,
             sourceSkill = skill,
@@ -404,7 +417,7 @@ public class BattleManager : MonoBehaviour
         EnemyPartsController enemyParts =
             part.GetComponentInParent<EnemyPartsController>();
 
-        if (enemyParts == null)
+        if (enemyParts == null || part.GetComponentInParent<EnemyManager>() != enemy)
         {
             Debug.LogWarning(
                 $"部位「{part.GetPartNameJP()}」の親にEnemyPartsControllerが見つかりませんでしたわ！"
@@ -418,6 +431,8 @@ public class BattleManager : MonoBehaviour
         if (!TryCreateAttackContext(out AttackContext ctx))
             return;
 
+        SkillExecutor.PreparePlayerAttack(player, ref ctx);
+
         waitingTap = false;
         isPlayerTurn = false;
 
@@ -425,6 +440,8 @@ public class BattleManager : MonoBehaviour
 
         if (!RollPlayerAttackHit(ctx))
         {
+            player.ResetFocusedAttackChain();
+
             if (useSelectedSkill)
             {
                 useSelectedSkill = false;
@@ -445,11 +462,22 @@ public class BattleManager : MonoBehaviour
         float accuracyPenaltyBefore = enemy.GetAccuracyPenalty();
         var sealedBossSkillsBefore = TankBossRoleAction.GetSealedSkills(enemy);
 
+        ctx.focusedPartDamageMultiplier =
+            player.GetFocusedAttackPartDamageMultiplier(enemy, part);
+
         var result =
             enemyParts.ApplyAttack(ctx);
 
+        player.RecordFocusedAttackResult(enemy, part, result.partDamage);
+
         bool justBroken =
             !wasBroken && part.IsBroken;
+
+        int lifeDrainRecovery = justBroken
+            ? player.TryRecoverHpFromPartBreak(part)
+            : 0;
+
+        bool techniqueLearned = justBroken && player.BattleEffects.LearnTechnique(player.Role, part);
 
         bool interrupted = TryInterruptEnemyAction(part, justBroken);
 
@@ -495,6 +523,16 @@ public class BattleManager : MonoBehaviour
         if (!string.IsNullOrEmpty(breakMessage))
             messages.Add(breakMessage);
 
+        if (lifeDrainRecovery > 0)
+        {
+            messages.Add(
+                $"\u751F\u547D\u5438\u53CE\uFF01\nHP\u3092{lifeDrainRecovery}\u56DE\u5FA9\u3057\u305F\uFF01"
+            );
+        }
+
+        if (techniqueLearned)
+            messages.Add($"戦技習得！ {part.GetPartNameJP()}の戦技を得た！");
+
         if (justBroken && enemy.IsAlive)
         {
             foreach (SkillData skill in TankBossRoleAction.GetSealedSkills(enemy))
@@ -539,10 +577,10 @@ public class BattleManager : MonoBehaviour
     {
         if (useSelectedSkill && selectedPlayerSkill != null)
         {
-            if (!player.TryUseMp(selectedPlayerSkill.mpCost))
+            if (!SkillUseRules.TryPay(player, enemy, selectedPlayerSkill, out string useError))
             {
                 Debug.Log("MPが足りませんわ！");
-                ShowPlayerChoiceMessage("MPが足りない！スキルを選び直そう。");
+                ShowPlayerChoiceMessage(useError);
 
                 ctx = default;
                 return false;
@@ -591,7 +629,8 @@ public class BattleManager : MonoBehaviour
 
         return DamageRule.RollHit(
             accuracy,
-            enemy.evasionRate
+            enemy.evasionRate,
+            ctx.accuracyBonus
         );
     }
 
@@ -861,7 +900,7 @@ public class BattleManager : MonoBehaviour
 
     private bool UsesChargedAttack(EnemyManager target)
     {
-        return UsesBossHeavyAttack(target) || UsesEliteCharge(target);
+        return UsesBossHeavyAttack(target) || UsesEliteCharge(target) || ExpansionEnemyAction.UsesCharge(target);
     }
 
     private void StartEnemyCharge(SkillData skill, int playerTurns)
@@ -892,7 +931,10 @@ public class BattleManager : MonoBehaviour
         ClearPlayerSkillSelection();
         enemyAI?.ResetBattleState();
         if (player != null)
+        {
             player.RemovePoison();
+            player.ResetBattleState();
+        }
         isShowingEnemyTelegraph = false;
         isPlayerTurn = false;
         waitingTap = false;
@@ -912,6 +954,7 @@ public class BattleManager : MonoBehaviour
             enemy.IsAlive
         )
         {
+            player.BattleEffects.BeginPlayerTurn();
             // 脚の破壊状態によってプレイヤーの行動回数が変化する
             int playerActionCount =
                 enemy.GetPlayerActionCount();
@@ -953,6 +996,8 @@ public class BattleManager : MonoBehaviour
                     enemy.GetPlayerActionCount();
             }
 
+            player.BattleEffects.EndPlayerTurn();
+            enemy.BattleEffects.EndPlayerTurn();
             enemy.ClearCounter();
 
             yield return new WaitForSeconds(0.5f);
@@ -1149,6 +1194,12 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EnemyActAuto()
     {
+        yield return StartCoroutine(EnemyActCore());
+        if (player != null) player.BattleEffects.EndEnemyAction();
+    }
+
+    IEnumerator EnemyActCore()
+    {
         if (enemy == null || player == null)
         {
             ClearEnemyActionPlan();
@@ -1268,11 +1319,12 @@ public class BattleManager : MonoBehaviour
             }
 
             skill = enemyAI.ChooseSkill(enemy, 0, player, UsesBossHeavyAttack(enemy));
-            if (UsesEliteCharge(enemy) && skill != null && skill == enemy.data.telegraphedSkill)
+            if ((UsesEliteCharge(enemy) || ExpansionEnemyAction.UsesCharge(enemy)) &&
+                skill != null && skill == enemy.data.telegraphedSkill)
                 StartEnemyCharge(skill, 1);
 
             if ((UsesBossHeavyAttack(enemy) && enemyAI.PendingBossHeavyAttack != null) ||
-                (UsesEliteCharge(enemy) && enemyActionPlan.isReady))
+                ((UsesEliteCharge(enemy) || ExpansionEnemyAction.UsesCharge(enemy)) && enemyActionPlan.isReady))
             {
                 yield return StartCoroutine(
                     DialogTextManager.instance.ShowAndWait(
@@ -1284,6 +1336,7 @@ public class BattleManager : MonoBehaviour
 
         if (isBossHeavyAction && TankBossRoleAction.GetSealedSkills(enemy).Contains(skill))
             isInterrupted = true;
+        if (ExpansionEnemyAction.IsSealed(enemy, skill)) isInterrupted = true;
 
         if (isInterrupted)
         {
@@ -1299,6 +1352,7 @@ public class BattleManager : MonoBehaviour
         // nullなら通常攻撃
         if (skill == null)
         {
+            float physicalMultiplier = enemy.BattleEffects.ConsumePhysicalMultiplier();
             float finalAcc =
                 enemyBaseAccuracy -
                 enemy.GetAccuracyPenalty();
@@ -1333,7 +1387,9 @@ public class BattleManager : MonoBehaviour
                 true
             );
             
-            int dmg = player.TakePhysical(enemy.at);
+            int normalDamage = DamageRule.CalcNormalAttack(enemy.at, player.def);
+            normalDamage = Mathf.RoundToInt(normalDamage * physicalMultiplier);
+            int dmg = player.TakeDirectDamage(normalDamage);
 
             playerUI.UpdateUI(player);
 
@@ -1450,6 +1506,7 @@ public class BattleManager : MonoBehaviour
         if (player != null)
         {
             player.RemovePoison();
+            player.ResetBattleState();
             playerUI.UpdateUI(player);
         }
 

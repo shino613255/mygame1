@@ -41,11 +41,17 @@ public class EnemyPartsController : MonoBehaviour
 
         float adjustedDamage = ctx.baseDamage * result.damageMultiplier;
         result.mainDamage = Mathf.RoundToInt(adjustedDamage * ctx.mainDamageRate);
-        enemy.TakeDamageRaw(result.mainDamage);
+        result.mainDamage = enemy.TakeDirectDamage(result.mainDamage);
 
         if (selectedPart != null)
         {
-            int calculatedPartDamage = Mathf.RoundToInt(adjustedDamage * ctx.partDamageRate);
+            float focusedMultiplier = ctx.focusedPartDamageMultiplier > 0f
+                ? ctx.focusedPartDamageMultiplier
+                : 1f;
+            int calculatedPartDamage = Mathf.RoundToInt(
+                adjustedDamage * ctx.partDamageRate * focusedMultiplier *
+                (ctx.preparedPartDamageMultiplier > 0f ? ctx.preparedPartDamageMultiplier : 1f)
+            );
 
             result.partDamage = selectedPart.TakePartDamage(calculatedPartDamage);
         }

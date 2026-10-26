@@ -35,6 +35,8 @@ public class PlayerUIManager : MonoBehaviour
 
     public void UpdateUI(PlayerManager player)
     {
+        hpSlider.maxValue = player.maxHp;
+        mpSlider.maxValue = player.maxMp;
         hpSlider.value = player.hp;
         mpSlider.value = player.mp;
 

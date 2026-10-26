@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
+  m_Name: Common_Aim
+  m_EditorClassIdentifier: 
+  id: 11
+  skillName: "\u72D9\u3044\u6F84\u307E\u3057"
+  description: "\u6B21\u306E\u76F4\u63A5\u653B\u6483\u306E\u547D\u4E2D+15\u30DD\u30A4\u30F3\u30C8\u3001\u90E8\u4F4D1.25\u500D\u3002\u672C\u4F53\u306F\u5897\u3048\u306A\u3044\u3002\u30DF\u30B9\u3067\u3082\u6D88\u8CBB\u3002\u6B21\u306E\u30D7\u30EC\u30A4\u30E4\u30FC\u30BF\u30FC\u30F3\u7D42\u4E86\u307E\u3067\u3002"
+  icon: {fileID: 0}
+  mpCost: 4
+  cooldown: 2
+  skillType: 3
+  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
+  effectDuration: 1.5
+  effectOffset: {x: 0, y: 0}
+  power: 0
+  multiplier: 1
+  accuracy: 1
+  canCrit: 0
+  critBonus: 0
+  element: 0
+  targetType: 2
+  canTargetPart: 0
+  mainDamageRate: 1
+  partDamageRate: 1
+  statusEffect: {fileID: 0}
+  buff: {fileID: 0}
+  debuff: {fileID: 0}
+  applyChance: 0

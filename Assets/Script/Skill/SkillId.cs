@@ -1,0 +1,27 @@
+public enum SkillId
+{
+    None = 0,
+    Warrior_BreakSlash,
+    Warrior_GuardSlash,
+    Warrior_TacticalSlash,
+    Mage_FlamePiercer,
+    Mage_FrostBind,
+    Mage_ArcaneBurst,
+    Berserker_Rend,
+    Berserker_BloodPrice,
+    Berserker_WarCry,
+    Common_Guard,
+    Common_Aim,
+    Common_Antidote,
+    Common_FirstAid,
+    Common_PartProbe,
+    Auditor_ArcaneBolt,
+    Auditor_ManaLevy,
+    Auditor_ChargedLance,
+    Raider_CleavingBlow,
+    Raider_BloodFury,
+    Raider_ChargedAxe,
+    Pilgrim_TalismanBolt,
+    Pilgrim_TalismanWard,
+    Pilgrim_Renewal
+}

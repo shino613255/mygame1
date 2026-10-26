@@ -7,6 +7,7 @@ using static EnemyData;
 
 public class EnemyManager : UnitBase
 {
+    public EnemyBattleState BattleEffects { get; } = new EnemyBattleState();
     private float accuracyPenalty = 0f;
     
     private bool isLegBroken = false;
@@ -426,6 +427,7 @@ public class EnemyManager : UnitBase
 
     public void Setup(EnemyData enemyData)
     {
+        BattleEffects.Reset();
         ClearCounter();
         ResetStagger();
         data = enemyData;
@@ -526,5 +528,12 @@ public class EnemyManager : UnitBase
         {
             OnDied();
         }
+    }
+
+    public int TakeDirectDamage(int damage)
+    {
+        int before = hp;
+        TakeDamageRaw(BattleEffects.ReduceMainDirectDamage(damage));
+        return before - hp;
     }
 }

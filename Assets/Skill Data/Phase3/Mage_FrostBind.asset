@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
+  m_Name: Mage_FrostBind
+  m_EditorClassIdentifier: 
+  id: 5
+  skillName: "\u6C37\u7344\u30FB\u5C01\u5727"
+  description: "\u6C37\u9B54\u6CD5P160\u3002\u672C\u4F530.9\u500D\u3001\u90E8\u4F4D1.2\u500D\u3002\u547D\u4E2D\u6642\u306B\u65E2\u5B58\u306E\u51CD\u7D50\u3092100%\u3067\u4ED8\u4E0E\u8A66\u884C\u3002\u4F1A\u5FC3\u306A\u3057\u3002"
+  icon: {fileID: 0}
+  mpCost: 30
+  cooldown: 3
+  skillType: 1
+  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
+  effectDuration: 1.5
+  effectOffset: {x: 0, y: 0}
+  power: 160
+  multiplier: 1
+  accuracy: 1
+  canCrit: 0
+  critBonus: 0
+  element: 2
+  targetType: 0
+  canTargetPart: 1
+  mainDamageRate: 0.9
+  partDamageRate: 1.2
+  statusEffect: {fileID: 11400000, guid: 031cee393756d2643ad5b096a9f67c09, type: 2}
+  buff: {fileID: 0}
+  debuff: {fileID: 0}
+  applyChance: 1

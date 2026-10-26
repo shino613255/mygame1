@@ -8,6 +8,7 @@ public class PlayerSelectButton : MonoBehaviour
 
     public void OnClick()
     {
-        PlayerSelectionManager.Instance.SelectPlayer(playerData);
+        if (PlayerSelectionManager.Instance != null)
+            PlayerSelectionManager.Instance.SelectPlayer(playerData);
     }
 }

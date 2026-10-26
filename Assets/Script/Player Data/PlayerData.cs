@@ -8,6 +8,7 @@ public class PlayerData : ScriptableObject
     [Header("基本情報")]
     public string playerName;
     public PlayerRole role;
+    public Sprite portrait;
 
     [Header("初期ステータス")]
     public int startMaxHp;

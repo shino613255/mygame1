@@ -3,6 +3,8 @@
 [CreateAssetMenu(menuName = "Game/Skill/Skill Data", fileName = "Skill_")]
 public class SkillData : ScriptableObject
 {
+    public SkillId id;
+
     [Header("基本")]
     public string skillName;
     [TextArea] public string description;

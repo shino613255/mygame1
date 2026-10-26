@@ -87,6 +87,9 @@ public class EnemyAI : MonoBehaviour
 
         if (pool.Count == 0) return null;
 
+        if (enemy.data.role == EnemyRole.Caster || enemy.data.role == EnemyRole.Brute || enemy.data.role == EnemyRole.Warden)
+            return ExpansionEnemyAction.Choose(enemy, pool, player);
+
         if (
             roleActions != null &&
             roleActions.TryGetValue(

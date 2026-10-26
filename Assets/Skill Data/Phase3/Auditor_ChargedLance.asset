@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
+  m_Name: Auditor_ChargedLance
+  m_EditorClassIdentifier: 
+  id: 17
+  skillName: "\u7981\u546A\u5149\u69CD"
+  description: "1\u6575\u884C\u52D5\u306E\u69CB\u3048\u5F8C\u306B\u9B54\u6CD5P180\u3002\u65B0\u898F\u624B\u7834\u58CA\u3067\u4E2D\u65AD\u3001\u7247\u624B\u7834\u58CA\u3067\u5C01\u5370\u3002"
+  icon: {fileID: 0}
+  mpCost: 14
+  cooldown: 3
+  skillType: 1
+  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
+  effectDuration: 1.5
+  effectOffset: {x: 0, y: 0}
+  power: 180
+  multiplier: 1
+  accuracy: 1
+  canCrit: 0
+  critBonus: 0
+  element: 0
+  targetType: 0
+  canTargetPart: 1
+  mainDamageRate: 1
+  partDamageRate: 1
+  statusEffect: {fileID: 0}
+  buff: {fileID: 0}
+  debuff: {fileID: 0}
+  applyChance: 0

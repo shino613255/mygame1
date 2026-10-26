@@ -27,4 +27,7 @@ public class SkillCooldowns : MonoBehaviour
         var keys = new List<SkillData>(cd.Keys);
         foreach (var k in keys) cd[k] = Mathf.Max(0, cd[k] - 1);
     }
+
+    public int Remaining(SkillData skill) => skill != null && cd.TryGetValue(skill, out int turns) ? turns : 0;
+    public void Clear() => cd.Clear();
 }

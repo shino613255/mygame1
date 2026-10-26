@@ -37,7 +37,13 @@ public static class SkillExecutor
             return r;
         }
 
-        var cds = attacker.GetComponent<SkillCooldowns>();                                                                                                  
+        if (!SkillUseRules.TryPay(attacker, target, skill, out string useError))
+        {
+            r.message = useError;
+            return r;
+        }
+
+        var cds = attacker.GetComponent<SkillCooldowns>();
 
         if (cds != null && !cds.IsReady(skill))                                                                                                             
         {
@@ -45,14 +51,16 @@ public static class SkillExecutor
             return r;
         }
 
-        if (attacker.mp < skill.mpCost)
+        r.executed = true;                                                                                                                                  
+
+        if (ExecuteNewSelfSkill(attacker, skill, ref r))
         {
-            r.message = $"{skill.skillName} を使うMPが足りない！";
+            cds?.StartCooldown(skill);
             return r;
         }
 
-        attacker.mp -= skill.mpCost;                                                                                                                                
-        r.executed = true;                                                                                                                                  
+        float attackMultiplier = skill.skillType == SkillType.Physical && attacker is EnemyManager boostedEnemy
+            ? boostedEnemy.BattleEffects.ConsumePhysicalMultiplier() : 1f;
 
         bool needHitCheck = (skill.skillType == SkillType.Physical || skill.skillType == SkillType.Magic || skill.skillType == SkillType.Debuff);           
 
@@ -92,7 +100,10 @@ public static class SkillExecutor
                         baseDmg = after;
                     }
 
-                    r.value = target.TakeDamageRaw(baseDmg, false);                                                                                                 
+                    baseDmg = Mathf.Max(1, Mathf.RoundToInt(baseDmg * attackMultiplier));
+                    r.value = target is PlayerManager physicalTarget
+                        ? physicalTarget.TakeDirectDamage(baseDmg)
+                        : target.TakeDamageRaw(baseDmg, false);
                     r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}ダメージ！";
                     break;
                 }
@@ -113,8 +124,16 @@ public static class SkillExecutor
                         baseDmg = after;
                     }
 
-                    r.value = target.TakeDamageRaw(baseDmg, true);                                                                                                   
+                    r.value = target is PlayerManager magicTarget
+                        ? magicTarget.TakeDirectDamage(baseDmg, true)
+                        : target.TakeDamageRaw(baseDmg, true);
                     r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}ダメージ！";
+                    if (skill.id == SkillId.Auditor_ManaLevy)
+                    {
+                        int drained = Mathf.Min(10, target.mp);
+                        target.mp -= drained;
+                        r.message += $"\nMPを{drained}失った！";
+                    }
                     break;
                 }
             case SkillType.Heal:
@@ -256,6 +275,55 @@ public static class SkillExecutor
             }
         }
     }
+    public static void PreparePlayerAttack(PlayerManager player, ref AttackContext context)
+    {
+        float multiplier = player.BattleEffects.ConsumeAttackEffects(
+            context.sourceSkill, out float aimAccuracy, out float aimPartMultiplier);
+        context.baseDamage = Mathf.Max(1, Mathf.RoundToInt(context.baseDamage * multiplier));
+        context.accuracyBonus = player.GetPrecisionShotAccuracyBonus() + aimAccuracy;
+        context.preparedPartDamageMultiplier = aimPartMultiplier;
+    }
+
+    private static bool ExecuteNewSelfSkill(UnitBase user, SkillData skill, ref Result result)
+    {
+        switch (skill.id)
+        {
+            case SkillId.Common_Guard:
+                ((PlayerManager)user).BattleEffects.GrantGuard(0.5f);
+                break;
+            case SkillId.Common_Aim:
+                ((PlayerManager)user).BattleEffects.GrantAim();
+                break;
+            case SkillId.Common_Antidote:
+                ((PlayerManager)user).RemovePoison();
+                break;
+            case SkillId.Common_FirstAid:
+                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * 0.12f)));
+                break;
+            case SkillId.Berserker_WarCry:
+                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * 0.15f)));
+                ((PlayerManager)user).BattleEffects.GrantWarCry();
+                break;
+            case SkillId.Raider_BloodFury:
+                ((EnemyManager)user).BattleEffects.GrantBloodFury();
+                break;
+            case SkillId.Pilgrim_TalismanWard:
+                ((EnemyManager)user).BattleEffects.GrantWard();
+                break;
+            case SkillId.Pilgrim_Renewal:
+                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * 0.15f)));
+                break;
+            default:
+                return false;
+        }
+
+        result.hit = true;
+        result.message = $"{user.name}の{skill.skillName}！";
+        if (result.value > 0) result.message += $"\nHPを{result.value}回復した！";
+        if (user is PlayerManager player) player.ResetFocusedAttackChain();
+        return true;
+    }
+
     private static int Heal(UnitBase target, int amount)
     {
         int before = target.hp;

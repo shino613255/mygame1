@@ -5,9 +5,10 @@ using TMPro;
 public class SkillSlotUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI skillNameText;
-    [SerializeField] private Button button;
+    [SerializeField] private UnityEngine.UI.Button button;
 
     private SkillData skillData;
+    public SkillData Skill => skillData;
 
     public void SetSkill(SkillData data, PlayerManager manager)
     {
@@ -17,7 +18,9 @@ public class SkillSlotUI : MonoBehaviour
         {
             gameObject.SetActive(true);
 
-            skillNameText.text = skillData.skillName;
+            int remaining = manager.GetComponent<SkillCooldowns>()?.Remaining(data) ?? 0;
+            skillNameText.text = $"{data.skillName}  MP {manager.GetSkillMpCost(data)}  CD {remaining}/{data.cooldown}\n{data.description}";
+            skillNameText.raycastTarget = false;
             button.interactable = true;
         }
         else
@@ -30,6 +33,6 @@ public class SkillSlotUI : MonoBehaviour
     {
         if (skillData == null) return;
 
-        BattleManager.Instance.OnSkillSelected(skillData);
+        if (BattleManager.Instance != null) BattleManager.Instance.OnSkillSelected(skillData);
     }
 }
