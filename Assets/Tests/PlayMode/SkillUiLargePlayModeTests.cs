@@ -25,10 +25,11 @@ public partial class ClassExpansionPlayModeTests
             {
                 ScrollToCard(pager, slots[i]); yield return null; Canvas.ForceUpdateCanvases();
                 ValidateSkillLayout(name, Camera.main, width, height);
-                Rect bounds = ScreenRect(Camera.main, (RectTransform)slots[i].transform);
-                AssertInside(bounds, ScreenRect(Camera.main, scroll.viewport), slots[i].name + " must be fully reachable");
-                ClickRaycast(slots[i].GetComponent<UnityEngine.UI.Button>(), true);
+                var label = (TMP_Text)Get(slots[i], "Label");
+                AssertTextVisible(label, scroll.viewport, Camera.main);
+                AssertTextVisible((TMP_Text)Get(slots[i], "CostLabel"), scroll.viewport, Camera.main);
                 if (scrolling || i == 0) Capture(name + (scrolling ? "-card-" + (i + 1) : ""), width, height);
+                ClickRaycast(slots[i].GetComponent<UnityEngine.UI.Button>(), true);
             }
         }
     }
@@ -38,15 +39,32 @@ public partial class ClassExpansionPlayModeTests
         var scroll = (UnityEngine.UI.ScrollRect)Get(pager, "scroll");
         Canvas.ForceUpdateCanvases(); UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(scroll.content);
         var rect = (RectTransform)slot.transform;
-        float fromTop = -scroll.content.InverseTransformPoint(rect.TransformPoint(rect.rect.center)).y;
+        float fromTop = -scroll.content.InverseTransformPoint(rect.TransformPoint(new Vector3(rect.rect.xMin, rect.rect.yMax))).y;
         float maximum = Mathf.Max(0, scroll.content.rect.height - scroll.viewport.rect.height);
-        scroll.StopMovement(); scroll.content.anchoredPosition = new Vector2(0, Mathf.Clamp(fromTop - scroll.viewport.rect.height * .5f, 0, maximum));
+        scroll.StopMovement(); scroll.content.anchoredPosition = new Vector2(scroll.content.anchoredPosition.x, Mathf.Clamp(fromTop, 0, maximum));
+        scroll.horizontalNormalizedPosition = 0; Canvas.ForceUpdateCanvases();
+    }
+
+    private static void AssertTextVisible(TMP_Text label, RectTransform viewport, Camera camera)
+    {
+        label.ForceMeshUpdate();
+        Rect visible = ScreenRect(camera, viewport);
+        for (int i = 0; i < label.textInfo.characterCount; i++)
+        {
+            var character = label.textInfo.characterInfo[i];
+            if (!character.isVisible) continue;
+            Vector3 min = camera.WorldToScreenPoint(label.transform.TransformPoint(character.bottomLeft));
+            Vector3 max = camera.WorldToScreenPoint(label.transform.TransformPoint(character.topRight));
+            AssertInside(Rect.MinMaxRect(min.x, min.y, max.x, max.y), visible, label.text + " glyph " + character.character);
+        }
     }
 
     private static PointerEventData ClickRaycast(UnityEngine.UI.Button button, bool enlargedArea)
     {
         var rect = (RectTransform)button.transform;
-        Vector3 local = enlargedArea ? new Vector3(rect.rect.xMax - 24, rect.rect.center.y) : (Vector3)rect.rect.center;
+        var scroll = button.GetComponentInParent<UnityEngine.UI.ScrollRect>();
+        if (enlargedArea && scroll != null) { scroll.horizontalNormalizedPosition = 1; Canvas.ForceUpdateCanvases(); }
+        Vector3 local = enlargedArea ? new Vector3(rect.rect.xMax - 24, rect.rect.yMax - 60) : (Vector3)rect.rect.center;
         var canvas = button.GetComponentInParent<Canvas>();
         Camera camera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
         Vector2 position = RectTransformUtility.WorldToScreenPoint(camera, rect.TransformPoint(local));
@@ -55,7 +73,11 @@ public partial class ClassExpansionPlayModeTests
         Assert.That(hits, Is.Not.Empty, button.name);
         Assert.That(hits[0].gameObject.transform.IsChildOf(button.transform), Is.True,
             button.name + " must receive the click; hit " + hits[0].gameObject.name + " at " + position);
-        if (enlargedArea) Assert.That(local.x, Is.GreaterThan(400 * .5f), "Click must reach beyond the old card width");
+        if (enlargedArea)
+        {
+            Assert.That(local.x, Is.GreaterThan(620 * .5f), "Click must reach beyond the starting card width");
+            Assert.That(local.y, Is.GreaterThan(300 * .5f), "Click must reach beyond the starting card height");
+        }
         return data;
     }
 
@@ -93,6 +115,14 @@ public partial class ClassExpansionPlayModeTests
             Call(pager, "RefreshLayout"); yield return null; Canvas.ForceUpdateCanvases();
             var scroll = (UnityEngine.UI.ScrollRect)Get(pager, "scroll");
             Assert.That(((UnityEngine.UI.GridLayoutGroup)Get(pager, "grid")).constraintCount, Is.EqualTo(1));
+            Assert.That(scroll.horizontal, Is.True);
+            Assert.That(scroll.horizontalScrollbar.gameObject.activeInHierarchy, Is.True);
+            scroll.horizontalScrollbar.value = 0; yield return null;
+            float initialX = scroll.content.anchoredPosition.x;
+            File.AppendAllText(ArtifactFolder + "/scroll-metrics.tsv", $"zero: content={scroll.content.rect.size} viewport={scroll.viewport.rect.size} x={initialX} normalized={scroll.horizontalNormalizedPosition} bar={scroll.horizontalScrollbar.value}\n");
+            scroll.horizontalScrollbar.value = 1; yield return null;
+            File.AppendAllText(ArtifactFolder + "/scroll-metrics.tsv", $"one: x={scroll.content.anchoredPosition.x} normalized={scroll.horizontalNormalizedPosition} bar={scroll.horizontalScrollbar.value}\n");
+            Assert.That(scroll.content.anchoredPosition.x, Is.LessThan(initialX));
             Assert.That(scroll.content.anchoredPosition.y, Is.EqualTo(0).Within(1));
             var wheel = new PointerEventData(EventSystem.current) { scrollDelta = new Vector2(0, -3) };
             ExecuteEvents.Execute(scroll.gameObject, wheel, ExecuteEvents.scrollHandler); yield return null;
@@ -104,6 +134,7 @@ public partial class ClassExpansionPlayModeTests
             Assert.That((int)Get(pager, "Page"), Is.EqualTo(1));
             Assert.That(scroll.content.anchoredPosition.y, Is.EqualTo(0).Within(1));
             Assert.That(slots.Count(s => s.gameObject.activeSelf), Is.EqualTo(2));
+            Assert.That(scroll.horizontalNormalizedPosition, Is.EqualTo(0).Within(.01f));
             ClickLargeButton((UnityEngine.UI.Button)Get(pager, "previousButton")); yield return null;
             Assert.That((int)Get(pager, "Page"), Is.Zero);
             for (int i = 0; i < 3; i++) { panel.SetActive(false); panel.SetActive(true); yield return null; }

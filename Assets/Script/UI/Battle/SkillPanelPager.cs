@@ -12,8 +12,8 @@ public class SkillPanelPager : MonoBehaviour
     private UnityEngine.UI.ScrollRect scroll;
     private UnityEngine.UI.GridLayoutGroup grid;
     private RectTransform content;
-    private const float CardWidth = 620f;
-    private const float CardHeight = 300f;
+    private const float CardWidth = 930f;
+    private const float CardHeight = 450f;
 
     public int Page => page;
     public int PageCount => slots == null || slots.Length == 0 || player == null ? 1 :
@@ -38,13 +38,14 @@ public class SkillPanelPager : MonoBehaviour
             var rect = (RectTransform)slots[i].transform;
             rect.sizeDelta = new Vector2(CardWidth, CardHeight);
         }
-        bool narrowFooter = area.width < 760f;
-        float side = narrowFooter ? 130f : 250f;
-        SetFooter(previousButton, new Vector2(-side, 59));
-        SetFooter(nextButton, new Vector2(side, 59));
+        bool narrowFooter = area.width < 1100f;
+        float side = narrowFooter ? 184.5f : 320f;
+        SetFooter(previousButton, new Vector2(-side, 83.5f));
+        SetFooter(nextButton, new Vector2(side, 83.5f));
         if (pageLabel != null)
         {
-            SetRect(pageLabel.rectTransform, new Vector2(.5f, 0), new Vector2(0, narrowFooter ? 150 : 59), new Vector2(200, 70));
+            SetRect(pageLabel.rectTransform, narrowFooter ? Vector2.one : new Vector2(.5f, 0),
+                narrowFooter ? new Vector2(-112, -50) : new Vector2(0, 83.5f), new Vector2(200, 70));
             SetControlFont(pageLabel);
         }
         var close = transform.Find("CloseSkills");
@@ -54,12 +55,21 @@ public class SkillPanelPager : MonoBehaviour
             foreach (TMP_Text label in close.GetComponentsInChildren<TMP_Text>(true)) SetControlFont(label);
         }
         if (scroll == null) return;
-        ((RectTransform)scroll.transform).offsetMin = new Vector2(24, narrowFooter ? 205 : 128);
-        ((RectTransform)scroll.transform).offsetMax = new Vector2(-24, -110);
-        int columns = scroll.viewport.rect.width >= CardWidth * 2 + 24 ? 2 : 1;
+        float margin = area.width >= 1900 ? 6 : 24;
+        ((RectTransform)scroll.transform).offsetMin = new Vector2(margin, 170);
+        ((RectTransform)scroll.transform).offsetMax = new Vector2(-margin, -110);
+        int columns = scroll.viewport.rect.width >= CardWidth * 2 + 12 ? 2 : 1;
         grid.constraintCount = columns;
-        content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, CardWidth * columns + 24 * (columns - 1));
+        content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, CardWidth * columns + 12 * (columns - 1));
+        bool horizontalChanged = scroll.horizontal != (scroll.viewport.rect.width < CardWidth);
         scroll.horizontal = scroll.viewport.rect.width < CardWidth;
+        scroll.viewport.offsetMin = new Vector2(0, scroll.horizontal ? 36 : 0);
+        if (horizontalChanged)
+        {
+            // ScrollRect binds scrollbar input only while its axis is enabled.
+            scroll.horizontalScrollbar = scroll.horizontalScrollbar;
+            scroll.horizontalNormalizedPosition = 0;
+        }
         UnityEngine.UI.LayoutRebuilder.MarkLayoutForRebuild(content);
     }
 
@@ -78,7 +88,7 @@ public class SkillPanelPager : MonoBehaviour
         content.anchorMin = content.anchorMax = content.pivot = new Vector2(.5f, 1);
         content.anchoredPosition = Vector2.zero;
         grid = content.gameObject.AddComponent<UnityEngine.UI.GridLayoutGroup>();
-        grid.cellSize = new Vector2(CardWidth, CardHeight); grid.spacing = new Vector2(24, 20);
+        grid.cellSize = new Vector2(CardWidth, CardHeight); grid.spacing = new Vector2(12, 20);
         grid.childAlignment = TextAnchor.UpperCenter;
         grid.constraint = UnityEngine.UI.GridLayoutGroup.Constraint.FixedColumnCount;
         var fitter = content.gameObject.AddComponent<UnityEngine.UI.ContentSizeFitter>();
@@ -103,6 +113,21 @@ public class SkillPanelPager : MonoBehaviour
         bar.direction = UnityEngine.UI.Scrollbar.Direction.BottomToTop;
         scroll.verticalScrollbar = bar;
         scroll.verticalScrollbarVisibility = UnityEngine.UI.ScrollRect.ScrollbarVisibility.AutoHide;
+        var horizontalTrack = CreateRect("HorizontalScrollbar", root);
+        horizontalTrack.anchorMin = Vector2.zero; horizontalTrack.anchorMax = new Vector2(1, 0);
+        horizontalTrack.offsetMin = Vector2.zero; horizontalTrack.offsetMax = new Vector2(-36, 24);
+        var horizontalBackground = horizontalTrack.gameObject.AddComponent<UnityEngine.UI.Image>();
+        horizontalBackground.color = background.color;
+        var horizontalBar = horizontalTrack.gameObject.AddComponent<UnityEngine.UI.Scrollbar>();
+        var horizontalHandle = CreateRect("Handle", horizontalTrack);
+        horizontalHandle.anchorMin = Vector2.zero; horizontalHandle.anchorMax = Vector2.one;
+        horizontalHandle.offsetMin = horizontalHandle.offsetMax = Vector2.zero;
+        var horizontalImage = horizontalHandle.gameObject.AddComponent<UnityEngine.UI.Image>();
+        horizontalImage.color = image.color;
+        horizontalBar.handleRect = horizontalHandle; horizontalBar.targetGraphic = horizontalImage;
+        horizontalBar.direction = UnityEngine.UI.Scrollbar.Direction.LeftToRight;
+        scroll.horizontalScrollbar = horizontalBar;
+        scroll.horizontalScrollbarVisibility = UnityEngine.UI.ScrollRect.ScrollbarVisibility.AutoHide;
     }
 
     private static RectTransform CreateRect(string name, Transform parent)
@@ -120,13 +145,13 @@ public class SkillPanelPager : MonoBehaviour
     private static void SetFooter(UnityEngine.UI.Button button, Vector2 position)
     {
         if (button == null) return;
-        SetRect((RectTransform)button.transform, new Vector2(.5f, 0), position, new Vector2(230, 90));
-        foreach (TMP_Text label in button.GetComponentsInChildren<TMP_Text>(true)) SetControlFont(label);
+        SetRect((RectTransform)button.transform, new Vector2(.5f, 0), position, new Vector2(345, 135));
+        foreach (TMP_Text label in button.GetComponentsInChildren<TMP_Text>(true)) SetControlFont(label, 45);
     }
 
-    private static void SetControlFont(TMP_Text label)
+    private static void SetControlFont(TMP_Text label, float size = 30)
     {
-        label.enableAutoSizing = false; label.fontSize = 30; label.fontSizeMin = 30; label.fontSizeMax = 30;
+        label.enableAutoSizing = false; label.fontSize = size; label.fontSizeMin = size; label.fontSizeMax = size;
     }
 
     public void Bind(PlayerManager owner)
@@ -151,6 +176,6 @@ public class SkillPanelPager : MonoBehaviour
         if (pageLabel != null) pageLabel.text = $"スキル {page + 1} / {PageCount}";
         if (previousButton != null) previousButton.interactable = page > 0;
         if (nextButton != null) nextButton.interactable = page < PageCount - 1;
-        if (scroll != null) { scroll.StopMovement(); scroll.verticalNormalizedPosition = 1; scroll.horizontalNormalizedPosition = .5f; }
+        if (scroll != null) { scroll.StopMovement(); scroll.verticalNormalizedPosition = 1; scroll.horizontalNormalizedPosition = 0; }
     }
 }

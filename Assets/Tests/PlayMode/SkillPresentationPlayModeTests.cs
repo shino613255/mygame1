@@ -24,6 +24,8 @@ public partial class ClassExpansionPlayModeTests
             Assert.That(label.fontSize, Is.GreaterThanOrEqualTo(30), id);
             Assert.That(label.fontSizeMin, Is.GreaterThanOrEqualTo(30), id);
             Assert.That(cost.fontSize, Is.GreaterThanOrEqualTo(30), id);
+            foreach (var character in label.textInfo.characterInfo.Take(label.textInfo.characterCount).Where(c => c.isVisible))
+                Assert.That(character.pointSize, Is.GreaterThanOrEqualTo(30), id + " actual character size");
             Assert.That(label.textInfo.lineCount, Is.LessThanOrEqualTo(3), id + " " + name);
             Assert.That(label.isTextOverflowing, Is.False, id);
             Assert.That(label.overflowMode, Is.EqualTo(TextOverflowModes.Overflow));
@@ -31,8 +33,8 @@ public partial class ClassExpansionPlayModeTests
             var rect = (RectTransform)slot.transform;
             var corners = new Vector3[4]; rect.GetWorldCorners(corners);
             Vector2 min = camera.WorldToScreenPoint(corners[0]), max = camera.WorldToScreenPoint(corners[2]);
-            Assert.That(rect.rect.width, Is.GreaterThanOrEqualTo(400 * 1.5f));
-            Assert.That(rect.rect.height, Is.GreaterThanOrEqualTo(195 * 1.5f));
+            Assert.That(rect.rect.width, Is.GreaterThanOrEqualTo(620 * 1.5f));
+            Assert.That(rect.rect.height, Is.GreaterThanOrEqualTo(300 * 1.5f));
             Assert.That(rect.localScale, Is.EqualTo(Vector3.one));
             Rect screen = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
             Assert.That(rectangles.Any(r => r.Overlaps(screen)), Is.False, "Skill buttons overlap"); rectangles.Add(screen);
@@ -53,13 +55,17 @@ public partial class ClassExpansionPlayModeTests
             Assert.That(screen.Overlaps(viewport), Is.False, control + " overlaps scroll area");
             Assert.That(controls.Any(r => r.Overlaps(screen)), Is.False); controls.Add(screen);
             var rect = (RectTransform)button.transform;
-            Assert.That(rect.rect.width, Is.GreaterThanOrEqualTo(150 * 1.5f));
-            Assert.That(rect.rect.height, Is.GreaterThanOrEqualTo(55 * 1.5f));
-            Assert.That(button.GetComponentInChildren<TMP_Text>().fontSize, Is.GreaterThanOrEqualTo(30));
+            Assert.That(rect.rect.width, Is.GreaterThanOrEqualTo(230 * 1.5f));
+            Assert.That(rect.rect.height, Is.GreaterThanOrEqualTo(90 * 1.5f));
+            Assert.That(button.GetComponentInChildren<TMP_Text>().fontSize, Is.GreaterThanOrEqualTo(45));
             File.AppendAllText(ArtifactFolder + "/navigation-metrics.tsv", $"{name}\t{control}\tsize={rect.rect.size}\tfont={button.GetComponentInChildren<TMP_Text>().fontSize}\n");
         }
         Rect page = ScreenRect(camera, ((TMP_Text)Get(pager, "pageLabel")).rectTransform);
         Assert.That(controls.Any(r => r.Overlaps(page)), Is.False, "Page number overlaps navigation");
+        AssertInside(page, new Rect(0, 0, width, height), "Page number");
+        Rect close = ScreenRect(camera, (RectTransform)pager.transform.Find("CloseSkills"));
+        AssertInside(close, new Rect(0, 0, width, height), "Close button");
+        Assert.That(close.Overlaps(page) || close.Overlaps(viewport), Is.False, "Header overlaps");
         AssertInside(viewport, new Rect(0, 0, width, height), "Viewport");
     }
 

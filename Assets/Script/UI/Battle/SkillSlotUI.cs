@@ -43,8 +43,8 @@ public class SkillSlotUI : MonoBehaviour
             costText.name = "SkillCostText";
         }
         var rect = skillNameText.rectTransform;
-        rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
-        rect.offsetMin = new Vector2(20, 74); rect.offsetMax = new Vector2(-20, -20);
+        rect.anchorMin = new Vector2(0, 1); rect.anchorMax = Vector2.one;
+        rect.offsetMin = new Vector2(20, -160); rect.offsetMax = new Vector2(-20, -20);
         skillNameText.alignment = TextAlignmentOptions.TopLeft;
         skillNameText.enableAutoSizing = false;
         skillNameText.fontSize = 30;
@@ -56,9 +56,9 @@ public class SkillSlotUI : MonoBehaviour
         costText.fontSizeMin = 30; costText.fontSizeMax = 30; costText.raycastTarget = false;
         costText.alignment = TextAlignmentOptions.BottomLeft;
         var costRect = costText.rectTransform;
-        costRect.anchorMin = Vector2.zero; costRect.anchorMax = new Vector2(1, 0);
+        costRect.anchorMin = new Vector2(0, 1); costRect.anchorMax = Vector2.one;
         costRect.pivot = Vector2.zero;
-        costRect.offsetMin = new Vector2(20, 14); costRect.offsetMax = new Vector2(-20, 60);
+        costRect.offsetMin = new Vector2(20, -212); costRect.offsetMax = new Vector2(-20, -166);
     }
 
     public void OnClick()
