@@ -17,6 +17,21 @@ public class PlayerUIManager : MonoBehaviour
 
     [SerializeField] private Sprite poisonIcon;
 
+    public Vector3 GetSkillEffectPosition(Camera worldCamera)
+    {
+        if (worldCamera == null) worldCamera = Camera.main;
+        if (worldCamera == null) return Vector3.zero;
+        Canvas canvas = GetComponentInParent<Canvas>();
+        RectTransform portrait = canvas != null ? canvas.transform.Find("ClassPortrait") as RectTransform : null;
+        float depth = Mathf.Abs(worldCamera.transform.position.z);
+        if (portrait == null) return worldCamera.ViewportToWorldPoint(new Vector3(.15f, .35f, depth));
+        Vector2 screen = RectTransformUtility.WorldToScreenPoint(
+            canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera,
+            portrait.TransformPoint(portrait.rect.center));
+        Vector3 position = worldCamera.ScreenToWorldPoint(new Vector3(screen.x, screen.y, depth));
+        position.z = 0; return position;
+    }
+
     public void SetupUI(PlayerManager player)
     {
         hpSlider.minValue = 0;

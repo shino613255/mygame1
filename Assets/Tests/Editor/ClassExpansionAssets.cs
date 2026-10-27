@@ -84,6 +84,7 @@ public static partial class ClassExpansionAssets
             }
             Save(data);
         }
+        SkillPresentationAssets.ConfigureProfiles();
         SetupTown(warrior, mage, berserker);
         SetupQuestUI();
         ValidateClassesAndSkills();
@@ -264,8 +265,8 @@ public static partial class ClassExpansionAssets
         {
             if (data.portrait == null || data.startSkills.Any(s => s == null || !SkillUseRules.IsAllowedForRole(s, data.role)))
                 throw new InvalidOperationException("Invalid class asset: " + data.name);
-            int newCount = data.startSkills.Count(s => s.id != SkillId.None);
-            if (newCount != 8) throw new InvalidOperationException("Each class needs eight new skills.");
+            if (data.startSkills.Count > 6 || !data.startSkills.SequenceEqual(SkillPresentationAssets.Loadout(data.role)))
+                throw new InvalidOperationException("Class loadout must match the current six-skill selection.");
         }
         Directory.CreateDirectory(ReportFolder);
         File.WriteAllLines(ReportFolder + "/created-skills.tsv", skills.OrderBy(s => s.id).Select(s =>

@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd17adfced4963a4dab41014bc074f56, type: 3}
   m_Name: Skill_Heal
   m_EditorClassIdentifier: 
+  id: 0
   skillName: "\u30D2\u30FC\u30EB"
-  description: 
+  description: "\u81EA\u5206\u306EHP\u309280+MAG\xD70.5\u56DE\u5FA9\n\u6700\u5927HP\u3092\u8D85\u3048\u306A\u3044"
   icon: {fileID: 0}
   mpCost: 10
   cooldown: 0

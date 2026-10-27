@@ -174,7 +174,7 @@ public class PlayerManager : UnitBase
 
     public void AddSkill(SkillData skill)
     {
-        if (skill == null || currentSkills.Contains(skill) || !SkillUseRules.IsAllowedForRole(skill, Role)) return;
+        if (skill == null || currentSkills.Count >= 6 || currentSkills.Contains(skill) || !SkillUseRules.IsAllowedForRole(skill, Role)) return;
 
         currentSkills.Add(skill);                                                                   
         UpdateSkillPanel();                                                                                     

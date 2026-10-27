@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 11
   skillName: "\u72D9\u3044\u6F84\u307E\u3057"
-  description: "\u6B21\u306E\u76F4\u63A5\u653B\u6483\u306E\u547D\u4E2D+15\u30DD\u30A4\u30F3\u30C8\u3001\u90E8\u4F4D1.25\u500D\u3002\u672C\u4F53\u306F\u5897\u3048\u306A\u3044\u3002\u30DF\u30B9\u3067\u3082\u6D88\u8CBB\u3002\u6B21\u306E\u30D7\u30EC\u30A4\u30E4\u30FC\u30BF\u30FC\u30F3\u7D42\u4E86\u307E\u3067\u3002"
+  description: "\u6B21\u6483\u306E\u547D\u4E2D+15pt/\u90E8\u4F4D1.25\u500D\n\u30DF\u30B9\u6D88\u8CBB\u30FB\u6B21\u306E\u81EA\u30BF\u30FC\u30F3\u7D42\u4E86\u307E\u3067"
   icon: {fileID: 0}
   mpCost: 4
   cooldown: 2
   skillType: 3
-  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
-  effectDuration: 1.5
+  effectPrefab: {fileID: 9066938789514363614, guid: b10d35b746c536446bf6f15301d01b1a, type: 3}
+  effectDuration: 0.8
   effectOffset: {x: 0, y: 0}
   power: 0
   multiplier: 1

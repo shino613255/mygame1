@@ -16,7 +16,6 @@ public class QuestManager : MonoBehaviour
 
     private int currentFloorIndex = 0;      
     private int currentEnemyIndex = 0;      
-    int currentStage = 0;
 
     private bool hasActiveEnemy = false;
     private bool isQuestCleared = false;
@@ -53,7 +52,7 @@ public class QuestManager : MonoBehaviour
 
         playerUI.UpdateUI(player);                                                                              
 
-        stageUI.UpdateUI(currentStage);                                                                         
+        stageUI.UpdateUI(currentFloorIndex);                                                                         
 
         DialogTextManager.instance.SetScenarios(new string[]
         {
@@ -96,9 +95,8 @@ public class QuestManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
 
-        currentStage++;
 
-        stageUI.UpdateUI(currentStage);
+        stageUI.UpdateUI(currentFloorIndex);
 
         EncountEnemy();
 

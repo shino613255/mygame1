@@ -14,8 +14,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-public class ClassExpansionPlayModeTests
+public partial class ClassExpansionPlayModeTests
 {
+    private static string ArtifactFolder => Environment.GetEnvironmentVariable("BREAKTACTICS_TEST_OUTPUT") ?? "Logs/SkillUiLarge";
     private const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     [UnityTearDown]
@@ -50,14 +51,17 @@ public class ClassExpansionPlayModeTests
                     reached.Add(skill);
                     string text = slot.GetComponentInChildren<TMP_Text>().text;
                     StringAssert.Contains((string)Get(skill, "skillName"), text);
-                    StringAssert.Contains("MP", text); StringAssert.Contains("CD", text);
+                    string cost = ((TMP_Text)Get(slot, "CostLabel")).text;
+                    StringAssert.Contains("MP", cost); StringAssert.Contains("CD", cost);
                     StringAssert.Contains((string)Get(skill, "description"), text);
                 }
-                if (role == "Mage") Capture("mage-skills-page-" + (page + 1));
+                foreach (var size in new[] { new Vector2Int(1920, 1080), new Vector2Int(1280, 720),
+                    new Vector2Int(960, 600), new Vector2Int(800, 600), new Vector2Int(900, 1200) })
+                    yield return CaptureLargeSkillPage($"ui-{role}-{size.x}x{size.y}-page-{page + 1}", size.x, size.y);
                 if (page + 1 < count) ((Button)Get(pager, "nextButton")).onClick.Invoke();
             }
             CollectionAssert.AreEquivalent(skills, reached);
-            Assert.That(reached.Count, Is.EqualTo(role == "Mage" ? 12 : 8));
+            Assert.That(reached.Count, Is.EqualTo(6));
         }
     }
 
@@ -87,7 +91,7 @@ public class ClassExpansionPlayModeTests
                 Component chosen = null;
                 for (int page = 0; page < (int)Get(pager, "PageCount") && chosen == null; page++)
                 {
-                    chosen = FindAll("SkillSlotUI").FirstOrDefault(s => Get(s, "Skill") == skill);
+                    chosen = FindAll("SkillSlotUI").FirstOrDefault(s => (UnityEngine.Object)Get(s, "Skill") == skill);
                     if (chosen == null) ((Button)Get(pager, "nextButton")).onClick.Invoke();
                 }
                 Assert.That(chosen, Is.Not.Null); chosen.GetComponent<Button>().onClick.Invoke(); yield return Ready(battle);
@@ -197,14 +201,14 @@ public class ClassExpansionPlayModeTests
         while (!condition() && Time.realtimeSinceStartup < limit) yield return null;
         Assert.That(condition(), Is.True, "Timed out waiting for runtime state");
     }
-    private static void Capture(string name)
+    private static Color32[] Capture(string name, int width = 960, int height = 720, bool validateSkills = false)
     {
-        Directory.CreateDirectory("Logs/ClassExpansion");
+        Directory.CreateDirectory(ArtifactFolder);
         Camera camera = Camera.main;
-        if (camera == null) return;
+        Assert.That(camera, Is.Not.Null);
         var canvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None)
             .Where(c => c.isRootCanvas).Select(c => new { canvas = c, mode = c.renderMode, camera = c.worldCamera, distance = c.planeDistance }).ToArray();
-        var target = new RenderTexture(960, 720, 24);
+        var target = new RenderTexture(width, height, 24);
         var previousTarget = camera.targetTexture;
         var previousActive = RenderTexture.active;
         Texture2D image = null;
@@ -216,11 +220,19 @@ public class ClassExpansionPlayModeTests
                 state.canvas.renderMode = RenderMode.ScreenSpaceCamera;
                 state.canvas.worldCamera = camera; state.canvas.planeDistance = 5f;
             }
-            Canvas.ForceUpdateCanvases(); camera.Render(); RenderTexture.active = target;
-            image = new Texture2D(960, 720, TextureFormat.RGB24, false);
-            image.ReadPixels(new Rect(0, 0, 960, 720), 0, 0); image.Apply();
+            Canvas.ForceUpdateCanvases();
+            if (validateSkills)
+            {
+                Component pager = Find("SkillPanelPager"); Call(pager, "RefreshLayout"); Call(pager, "Refresh");
+                Canvas.ForceUpdateCanvases();
+                ValidateSkillLayout(name, camera, width, height);
+            }
+            camera.Render(); RenderTexture.active = target;
+            image = new Texture2D(width, height, TextureFormat.RGB24, false);
+            image.ReadPixels(new Rect(0, 0, width, height), 0, 0); image.Apply();
             Assert.That(image.GetPixels32().Where((p, i) => i % 100 == 0).Distinct().Count(), Is.GreaterThan(20), "Rendering must contain more than a flat background");
-            File.WriteAllBytes("Logs/ClassExpansion/" + name + ".png", image.EncodeToPNG());
+            File.WriteAllBytes(ArtifactFolder + "/" + name + ".png", image.EncodeToPNG());
+            return image.GetPixels32();
         }
         finally
         {

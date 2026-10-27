@@ -29,14 +29,8 @@ MonoBehaviour:
   uniquePassiveDescription: 
   startSkills:
   - {fileID: 11400000, guid: 8b6d659774624694da5cae9c522789cf, type: 2}
-  - {fileID: 11400000, guid: 9d41655e2162059488b84be3087dc482, type: 2}
-  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
-  - {fileID: 11400000, guid: 061eb43f776671743ab674505ed98000, type: 2}
   - {fileID: 11400000, guid: 8d0856819fd7c5249924838812164b4a, type: 2}
   - {fileID: 11400000, guid: 1b5a2eccade45c44e989109aa27a4f65, type: 2}
   - {fileID: 11400000, guid: 9825de9fd10a5fa40a11682a0eb0a170, type: 2}
-  - {fileID: 11400000, guid: 712e86cda4174cf459853b6602cee9a4, type: 2}
-  - {fileID: 11400000, guid: 6b5c9a03e0ae1554f81ac68e50620980, type: 2}
-  - {fileID: 11400000, guid: 47dc85445447e504d8a796663198dfd1, type: 2}
-  - {fileID: 11400000, guid: a9361b48434d2ef4b9083b3c4f03b642, type: 2}
-  - {fileID: 11400000, guid: 759f2914e7650d04a9ceb49c12d68d06, type: 2}
+  - {fileID: 11400000, guid: f9bb1f4baaf8ba0459b462a289a95a32, type: 2}
+  - {fileID: 11400000, guid: 061eb43f776671743ab674505ed98000, type: 2}

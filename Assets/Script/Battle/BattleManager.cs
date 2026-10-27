@@ -29,6 +29,9 @@ public class BattleManager : MonoBehaviour
     public PlayerData playerData;
     private EnemyManager enemy;
     private EnemyAI enemyAI;
+    private SkillVfxController skillVfx;
+    public SkillVfxController SkillVfx => skillVfx != null ? skillVfx :
+        (skillVfx = GetComponent<SkillVfxController>() ?? gameObject.AddComponent<SkillVfxController>());
     private bool waitingTap;
     private bool isPlayerTurn;
 
@@ -85,6 +88,7 @@ public class BattleManager : MonoBehaviour
         isBattleRunning = true;
 
         isEndingBattle = false;
+        SkillVfx.Clear();
 
         ClearEnemyActionPlan();
         ClearPlayerSkillSelection();
@@ -278,7 +282,7 @@ public class BattleManager : MonoBehaviour
             }
             player.ResetFocusedAttackChain();
             ClearPlayerSkillSelection();
-            PlaySkillEffect(selectedSkill, player.transform.position);                  
+            PlaySkillEffect(selectedSkill, playerUI.GetSkillEffectPosition(mainCamera));
 
             playerUI.UpdateUI(player);
 
@@ -436,8 +440,6 @@ public class BattleManager : MonoBehaviour
         waitingTap = false;
         isPlayerTurn = false;
 
-        PlayAttackEffect(ctx);
-
         if (!RollPlayerAttackHit(ctx))
         {
             player.ResetFocusedAttackChain();
@@ -455,6 +457,7 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
+        PlayAttackEffect(ctx, part);
         bool wasBroken = part.IsBroken;
         int hpBefore = enemy.hp;
         int defenseBefore = enemy.def;
@@ -601,22 +604,13 @@ public class BattleManager : MonoBehaviour
         return true;
     }
 
-    private void PlayAttackEffect(AttackContext ctx)
+    private void PlayAttackEffect(AttackContext ctx, BodyPart part)
     {
         if (ctx.sourceSkill == null)
             return;
 
-        Vector3 clickPos =
-            mainCamera.ScreenToWorldPoint(
-                Input.mousePosition
-            );
-
-        clickPos.z = 0f;
-
-        PlaySkillEffect(
-            ctx.sourceSkill,
-            clickPos
-        );
+        Collider2D collider = part.GetComponent<Collider2D>();
+        PlaySkillEffect(ctx.sourceSkill, collider != null ? collider.bounds.center : part.transform.position);
     }
     private bool RollPlayerAttackHit(
     AttackContext ctx
@@ -728,28 +722,7 @@ public class BattleManager : MonoBehaviour
     }
     public void PlaySkillEffect(SkillData skill, Vector3 worldPos)
     {
-        if (skill == null) return;
-        if (skill.effectPrefab == null) return;
-
-        Vector3 pos = worldPos + (Vector3)skill.effectOffset;                          
-        pos.z = 0f;
-
-        GameObject effect = Instantiate(
-            skill.effectPrefab,
-            pos,
-            Quaternion.identity
-        );
-
-        Renderer[] renderers = effect.GetComponentsInChildren<Renderer>(true);          
-
-        foreach (var r in renderers)
-        {
-            r.sortingLayerName = "Default";
-            // 戦闘キャラクターより手前にエフェクトを表示する
-            r.sortingOrder = 10;        
-        }
-
-        Destroy(effect, skill.effectDuration);
+        SkillVfx.Play(skill, worldPos);
     }
 
     private bool CanReceivePlayerInput()
@@ -922,6 +895,7 @@ public class BattleManager : MonoBehaviour
 
     private void OnDisable()
     {
+        if (skillVfx != null) skillVfx.Clear();
         if (enemy != null)
         {
             enemy.ClearCounter();
@@ -1424,11 +1398,11 @@ public class BattleManager : MonoBehaviour
                 0f
             );
 
-        if (result.executed)
+        if (result.executed && result.hit)
         {
             PlaySkillEffect(
                 skill,
-                enemy.transform.position
+                target == enemy ? enemy.transform.position : playerUI.GetSkillEffectPosition(mainCamera)
             );
         }
 
@@ -1470,6 +1444,7 @@ public class BattleManager : MonoBehaviour
             yield break;
 
         isEndingBattle = true;
+        SkillVfx.Clear();
 
         ClearEnemyActionPlan();
         ClearPlayerSkillSelection();

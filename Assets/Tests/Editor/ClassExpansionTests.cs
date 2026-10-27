@@ -18,9 +18,9 @@ public class ClassExpansionTests
         objects.Clear();
     }
 
-    [TestCase("Warrior", 1000, 100, 55, 40, 4, 8, 8)]
-    [TestCase("Mage", 800, 150, 30, 80, 0, 20, 12)]
-    [TestCase("Berserker", 1500, 60, 95, 10, 0, 0, 8)]
+    [TestCase("Warrior", 1000, 100, 55, 40, 4, 8, 6)]
+    [TestCase("Mage", 800, 150, 30, 80, 0, 20, 6)]
+    [TestCase("Berserker", 1500, 60, 95, 10, 0, 0, 6)]
     public void ProfilesInitializeMatchingStatsAndAllSkills(string name, int hp, int mp, int at, int mag, int def, int mdef, int count)
     {
         PlayerManager player = Player(name);
@@ -120,19 +120,19 @@ public class ClassExpansionTests
     [Test]
     public void FirstAidAndAntidoteValidateBeforeCosts()
     {
-        PlayerManager player = Player("Mage");
+        PlayerManager player = Player("Warrior");
         SkillData aid = Skill(SkillId.Common_FirstAid);
         SkillData antidote = Skill(SkillId.Common_Antidote);
         Assert.That(SkillExecutor.Execute(player, player, aid).executed, Is.False);
         Assert.That(SkillExecutor.Execute(player, player, antidote).executed, Is.False);
-        Assert.That(player.mp, Is.EqualTo(150));
-        player.hp = 750;
+        Assert.That(player.mp, Is.EqualTo(100));
+        player.hp = 950;
         Assert.That(SkillExecutor.Execute(player, player, aid).value, Is.EqualTo(50));
-        Assert.That(player.hp, Is.EqualTo(800)); Assert.That(player.mp, Is.EqualTo(142));
+        Assert.That(player.hp, Is.EqualTo(1000)); Assert.That(player.mp, Is.EqualTo(92));
         SkillData poisonSkill = AssetDatabase.LoadAssetAtPath<SkillData>("Assets/Skill Data/Skill_Poison.asset");
         Assert.That(player.ApplyPoison(poisonSkill.statusEffect), Is.True);
         Assert.That(SkillExecutor.Execute(player, player, antidote).executed, Is.True);
-        Assert.That(player.IsPoisoned, Is.False); Assert.That(player.hp, Is.EqualTo(800));
+        Assert.That(player.IsPoisoned, Is.False); Assert.That(player.hp, Is.EqualTo(1000));
     }
 
     [Test]
@@ -230,12 +230,11 @@ public class ClassExpansionTests
     [Test]
     public void NewUiFontContainsAllSkillNamesAndDescriptionsWithoutChangingOldFonts()
     {
-        var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Skill Data/Phase3/Phase3UI.asset");
+        var font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/Skill Data/Presentation/SkillMenuUI.asset");
         Assert.That(font, Is.Not.Null);
         Assert.That(font.atlasPopulationMode, Is.EqualTo(TMPro.AtlasPopulationMode.Static));
-        foreach (string guid in AssetDatabase.FindAssets("t:SkillData"))
+        foreach (var skill in Enum.GetValues(typeof(PlayerRole)).Cast<PlayerRole>().SelectMany(SkillPresentationAssets.Loadout).Distinct())
         {
-            var skill = AssetDatabase.LoadAssetAtPath<SkillData>(AssetDatabase.GUIDToAssetPath(guid));
             foreach (char c in (skill.skillName + skill.description).Where(c => !char.IsControl(c)).Distinct())
                 Assert.That(font.HasCharacter(c), Is.True, skill.name + " missing " + c);
         }

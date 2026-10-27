@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   skillName: "\u6226\u5DE7\u65AC"
-  description: "\u7269\u7406P150\u3001\u90E8\u4F4D1.2\u500D\u3002\u6226\u6280\u306E\u7A2E\u985E\u3054\u3068\u306B\u76F4\u63A5\u30C0\u30E1\u30FC\u30B8+10%\u3001\u6700\u59271.3\u500D\u3002"
+  description: "\u7269\u7406P150/\u90E8\u4F4D1.2\u500D\n\u6226\u6280\u6570\u3067\u76F4\u63A5\u30C0\u30E1\u30FC\u30B81\uFF5E1.3\u500D"
   icon: {fileID: 0}
   mpCost: 14
   cooldown: 3
   skillType: 0
-  effectPrefab: {fileID: 8194992990867289339, guid: 99bc28c0d45f51c4fbac01080b73edc7, type: 3}
-  effectDuration: 1.5
+  effectPrefab: {fileID: 3303239866254793862, guid: 032f6c09fae6ef44fb526ce047b4f0d8, type: 3}
+  effectDuration: 1
   effectOffset: {x: 0, y: 0}
   power: 150
   multiplier: 1
