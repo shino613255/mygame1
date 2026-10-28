@@ -13,7 +13,6 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private float enemyBaseAccuracy = 1f;             
     [SerializeField] private SkillData selectedPlayerSkill;
     [SerializeField] private bool useSelectedSkill = false;
-    [SerializeField] private List<SkillSlotUI> skillSlots;
 
     [Header("UI References")]
     [SerializeField] private GameObject skillSelectionPanel;
@@ -161,7 +160,17 @@ public class BattleManager : MonoBehaviour
         {
             player.Setup(playerData);
 
-            SetupSkillSlots();
+            SkillPanelPager pager =
+                skillSelectionPanel.GetComponentInChildren<SkillPanelPager>(true);
+
+            if (pager != null)
+            {
+                pager.Bind(player);
+            }
+            else
+            {
+                Debug.LogError("SkillPanelPagerÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÅB");
+            }
         }
     }    
 
@@ -199,33 +208,6 @@ public class BattleManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             TryPickBodyPart(Input.mousePosition);
-        }
-    }
-
-    private void SetupSkillSlots()
-    {
-        if (playerData == null)
-            return;
-
-        for (int i = 0; i < skillSlots.Count; i++)
-        {
-            if (
-                playerData.startSkills != null &&
-                i < playerData.startSkills.Count
-            )
-            {
-                skillSlots[i].SetSkill(
-                    playerData.startSkills[i],
-                    player
-                );
-            }
-            else
-            {
-                skillSlots[i].SetSkill(
-                    null,
-                    player
-                );
-            }
         }
     }
 

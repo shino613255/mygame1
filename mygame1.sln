@@ -3,13 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{701774C5-388B-35EE-AAF2-B2FE1808B876}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-firstpass", "Assembly-CSharp-firstpass.csproj", "{D26B42E7-438F-45DC-0DDE-0EC7E21958DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFXREditor", "CFXREditor.csproj", "{CC2A9CCD-F12B-267E-AA1E-2EB5FCE2DF0D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BreakTactics.Expansion.PlayModeTests", "BreakTactics.Expansion.PlayModeTests.csproj", "{698B443D-66BA-BB9E-CDC4-AC6D920304DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonyColorsPro.Demo.Editor", "ToonyColorsPro.Demo.Editor.csproj", "{C06CE993-764C-13FE-52D2-BBEFB2ADD75C}"
 EndProject
@@ -31,10 +27,6 @@ Global
 		{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6374B7A0-78A3-9A3F-B559-A0846CFA32CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{701774C5-388B-35EE-AAF2-B2FE1808B876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{701774C5-388B-35EE-AAF2-B2FE1808B876}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{701774C5-388B-35EE-AAF2-B2FE1808B876}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{701774C5-388B-35EE-AAF2-B2FE1808B876}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D26B42E7-438F-45DC-0DDE-0EC7E21958DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D26B42E7-438F-45DC-0DDE-0EC7E21958DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D26B42E7-438F-45DC-0DDE-0EC7E21958DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,10 +35,6 @@ Global
 		{CC2A9CCD-F12B-267E-AA1E-2EB5FCE2DF0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC2A9CCD-F12B-267E-AA1E-2EB5FCE2DF0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC2A9CCD-F12B-267E-AA1E-2EB5FCE2DF0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{698B443D-66BA-BB9E-CDC4-AC6D920304DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{698B443D-66BA-BB9E-CDC4-AC6D920304DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{698B443D-66BA-BB9E-CDC4-AC6D920304DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{698B443D-66BA-BB9E-CDC4-AC6D920304DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C06CE993-764C-13FE-52D2-BBEFB2ADD75C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C06CE993-764C-13FE-52D2-BBEFB2ADD75C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C06CE993-764C-13FE-52D2-BBEFB2ADD75C}.Release|Any CPU.ActiveCfg = Release|Any CPU

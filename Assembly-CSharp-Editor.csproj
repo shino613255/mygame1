@@ -61,17 +61,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2023.2.22f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Tests\Editor\ClassExpansionEnemies.cs" />
-    <Compile Include="Assets\Tests\Editor\ExpansionEnemyTests.cs" />
-    <Compile Include="Assets\Tests\Editor\ClassExpansionFont.cs" />
-    <Compile Include="Assets\Tests\Editor\ClassExpansionAssets.cs" />
-    <Compile Include="Assets\Tests\Editor\SkillPresentationTests.cs" />
-    <Compile Include="Assets\Tests\Editor\ClassExpansionValidation.cs" />
-    <Compile Include="Assets\Tests\Editor\FocusedAttackTests.cs" />
     <Compile Include="Assets\Tests\Editor\SkillPresentationVfx.cs" />
-    <Compile Include="Assets\Tests\Editor\PlayerLifeDrainTests.cs" />
-    <Compile Include="Assets\Tests\Editor\ClassExpansionTests.cs" />
-    <Compile Include="Assets\Tests\Editor\SkillPresentationAssets.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

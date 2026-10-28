@@ -62,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Tests\PlayMode\SkillPresentationPlayModeTests.cs" />
-    <Compile Include="Assets\Tests\PlayMode\ClassExpansionPlayModeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Tests\PlayMode\BreakTactics.Expansion.PlayModeTests.asmdef" />
