@@ -68,7 +68,6 @@
     <Compile Include="Assets\Tests\Editor\SkillPresentationTests.cs" />
     <Compile Include="Assets\Tests\Editor\ClassExpansionValidation.cs" />
     <Compile Include="Assets\Tests\Editor\FocusedAttackTests.cs" />
-    <Compile Include="Assets\Tests\Editor\SkillUiLargeAssets.cs" />
     <Compile Include="Assets\Tests\Editor\SkillPresentationVfx.cs" />
     <Compile Include="Assets\Tests\Editor\PlayerLifeDrainTests.cs" />
     <Compile Include="Assets\Tests\Editor\ClassExpansionTests.cs" />
