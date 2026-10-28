@@ -63,13 +63,11 @@
   <ItemGroup>
     <Compile Include="Assets\Tests\Editor\ClassExpansionEnemies.cs" />
     <Compile Include="Assets\Tests\Editor\ExpansionEnemyTests.cs" />
-    <Compile Include="Assets\Tests\Editor\AutoplayAssetAudit.cs" />
     <Compile Include="Assets\Tests\Editor\ClassExpansionFont.cs" />
     <Compile Include="Assets\Tests\Editor\ClassExpansionAssets.cs" />
     <Compile Include="Assets\Tests\Editor\SkillPresentationTests.cs" />
     <Compile Include="Assets\Tests\Editor\ClassExpansionValidation.cs" />
     <Compile Include="Assets\Tests\Editor\FocusedAttackTests.cs" />
-    <Compile Include="Assets\Tests\Editor\AutoplayEditorRunner.cs" />
     <Compile Include="Assets\Tests\Editor\SkillUiLargeAssets.cs" />
     <Compile Include="Assets\Tests\Editor\SkillPresentationVfx.cs" />
     <Compile Include="Assets\Tests\Editor\PlayerLifeDrainTests.cs" />

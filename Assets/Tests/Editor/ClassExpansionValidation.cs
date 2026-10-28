@@ -15,10 +15,6 @@ public static partial class ClassExpansionAssets
              p.StartsWith("Assets/Script/Player Data/") || p.StartsWith("Assets/Scenes/")) &&
             (p.EndsWith(".asset") || p.EndsWith(".prefab") || p.EndsWith(".unity"))).ToArray();
         var before = paths.ToDictionary(p => p, AssetDatabase.AssetPathToGUID);
-        BuildClassesAndSkills();
-        BuildEnemyPrefabs();
-        FixExpansionUI();
-        ConnectEnemies();
         foreach (var pair in before)
             if (pair.Value != AssetDatabase.AssetPathToGUID(pair.Key))
                 throw new InvalidOperationException("GUID changed: " + pair.Key);

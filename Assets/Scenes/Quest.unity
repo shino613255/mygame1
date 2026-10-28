@@ -8670,7 +8670,6 @@ MonoBehaviour:
   previousButton: {fileID: 1735675254}
   nextButton: {fileID: 323242491}
   pageLabel: {fileID: 396730065}
-  player: {fileID: 540119328}
 --- !u!114 &2059511740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9073,6 +9072,14 @@ PrefabInstance:
     - target: {fileID: 2978782878563092908, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5168858358716054135, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
+      propertyPath: onCompletedEvents.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5168858358716054135, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
+      propertyPath: onCompletedEvents.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6384851177106123136, guid: 853c317c6efd8e84ba6d003e3d23ad6c, type: 3}
       propertyPath: m_FontData.m_Font

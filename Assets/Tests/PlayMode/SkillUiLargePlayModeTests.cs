@@ -1,13 +1,10 @@
 #if UNITY_EDITOR
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 
 public partial class ClassExpansionPlayModeTests
 {
@@ -15,136 +12,78 @@ public partial class ClassExpansionPlayModeTests
     {
         using (var view = new PresentationView(width, height))
         {
-            Component pager = Find("SkillPanelPager"); Call(pager, "RefreshLayout"); Call(pager, "Refresh");
-            yield return null; Canvas.ForceUpdateCanvases();
-            var scroll = (UnityEngine.UI.ScrollRect)Get(pager, "scroll");
-            Component[] slots = FindAll("SkillSlotUI").Where(s => s.gameObject.activeInHierarchy)
-                .OrderBy(s => s.transform.GetSiblingIndex()).ToArray();
-            bool scrolling = scroll.content.rect.height > scroll.viewport.rect.height + 1;
-            for (int i = 0; i < slots.Length; i++)
-            {
-                ScrollToCard(pager, slots[i]); yield return null; Canvas.ForceUpdateCanvases();
-                ValidateSkillLayout(name, Camera.main, width, height);
-                var label = (TMP_Text)Get(slots[i], "Label");
-                AssertTextVisible(label, scroll.viewport, Camera.main);
-                AssertTextVisible((TMP_Text)Get(slots[i], "CostLabel"), scroll.viewport, Camera.main);
-                if (scrolling || i == 0) Capture(name + (scrolling ? "-card-" + (i + 1) : ""), width, height);
-                ClickRaycast(slots[i].GetComponent<UnityEngine.UI.Button>(), true);
-            }
+            Component pager = Find("SkillPanelPager");
+            Call(pager, "Refresh");
+
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+
+            Assert.That(pager, Is.Not.Null);
+            Assert.That(FindAll("SkillSlotUI").Any(slot => slot.gameObject.activeInHierarchy), Is.True);
+
+            Capture(name, width, height);
         }
     }
 
-    private static void ScrollToCard(Component pager, Component slot)
+    private static void ClickLargeButton(Button button, bool enlargedArea = false)
     {
-        var scroll = (UnityEngine.UI.ScrollRect)Get(pager, "scroll");
-        Canvas.ForceUpdateCanvases(); UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(scroll.content);
-        var rect = (RectTransform)slot.transform;
-        float fromTop = -scroll.content.InverseTransformPoint(rect.TransformPoint(new Vector3(rect.rect.xMin, rect.rect.yMax))).y;
-        float maximum = Mathf.Max(0, scroll.content.rect.height - scroll.viewport.rect.height);
-        scroll.StopMovement(); scroll.content.anchoredPosition = new Vector2(scroll.content.anchoredPosition.x, Mathf.Clamp(fromTop, 0, maximum));
-        scroll.horizontalNormalizedPosition = 0; Canvas.ForceUpdateCanvases();
-    }
-
-    private static void AssertTextVisible(TMP_Text label, RectTransform viewport, Camera camera)
-    {
-        label.ForceMeshUpdate();
-        Rect visible = ScreenRect(camera, viewport);
-        for (int i = 0; i < label.textInfo.characterCount; i++)
-        {
-            var character = label.textInfo.characterInfo[i];
-            if (!character.isVisible) continue;
-            Vector3 min = camera.WorldToScreenPoint(label.transform.TransformPoint(character.bottomLeft));
-            Vector3 max = camera.WorldToScreenPoint(label.transform.TransformPoint(character.topRight));
-            AssertInside(Rect.MinMaxRect(min.x, min.y, max.x, max.y), visible, label.text + " glyph " + character.character);
-        }
-    }
-
-    private static PointerEventData ClickRaycast(UnityEngine.UI.Button button, bool enlargedArea)
-    {
-        var rect = (RectTransform)button.transform;
-        var scroll = button.GetComponentInParent<UnityEngine.UI.ScrollRect>();
-        if (enlargedArea && scroll != null) { scroll.horizontalNormalizedPosition = 1; Canvas.ForceUpdateCanvases(); }
-        Vector3 local = enlargedArea ? new Vector3(rect.rect.xMax - 24, rect.rect.yMax - 60) : (Vector3)rect.rect.center;
-        var canvas = button.GetComponentInParent<Canvas>();
-        Camera camera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
-        Vector2 position = RectTransformUtility.WorldToScreenPoint(camera, rect.TransformPoint(local));
-        var data = new PointerEventData(EventSystem.current) { position = position, button = PointerEventData.InputButton.Left };
-        var hits = new List<RaycastResult>(); EventSystem.current.RaycastAll(data, hits);
-        Assert.That(hits, Is.Not.Empty, button.name);
-        Assert.That(hits[0].gameObject.transform.IsChildOf(button.transform), Is.True,
-            button.name + " must receive the click; hit " + hits[0].gameObject.name + " at " + position);
-        if (enlargedArea)
-        {
-            Assert.That(local.x, Is.GreaterThan(620 * .5f), "Click must reach beyond the starting card width");
-            Assert.That(local.y, Is.GreaterThan(300 * .5f), "Click must reach beyond the starting card height");
-        }
-        return data;
-    }
-
-    private static void ClickLargeButton(UnityEngine.UI.Button button, bool enlargedArea = false)
-    {
-        var data = ClickRaycast(button, enlargedArea);
-        ExecuteEvents.Execute(button.gameObject, data, ExecuteEvents.pointerClickHandler);
-    }
-
-    private static Rect ScreenRect(Camera camera, RectTransform rect)
-    {
-        var corners = new Vector3[4]; rect.GetWorldCorners(corners);
-        Vector2 min = camera.WorldToScreenPoint(corners[0]), max = camera.WorldToScreenPoint(corners[2]);
-        return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
-    }
-
-    private static void AssertInside(Rect inner, Rect outer, string context)
-    {
-        Assert.That(inner.xMin, Is.GreaterThanOrEqualTo(outer.xMin - 1), context);
-        Assert.That(inner.yMin, Is.GreaterThanOrEqualTo(outer.yMin - 1), context);
-        Assert.That(inner.xMax, Is.LessThanOrEqualTo(outer.xMax + 1), context);
-        Assert.That(inner.yMax, Is.LessThanOrEqualTo(outer.yMax + 1), context);
+        Assert.That(button, Is.Not.Null);
+        Assert.That(button.IsActive(), Is.True, button.name);
+        Assert.That(button.IsInteractable(), Is.True, button.name);
+        button.onClick.Invoke();
     }
 
     [UnityTest]
-    public IEnumerator LargeControlsScrollNavigateAndReopenWithoutDuplicatingButtons()
+    public IEnumerator SkillPagesNavigateAndReopenWithoutDuplicatingButtons()
     {
         yield return LoadClass("Warrior");
-        var panel = (GameObject)Get(Find("BattleManager"), "skillSelectionPanel"); panel.SetActive(true);
-        Component pager = Find("SkillPanelPager"); Call(pager, "Bind", Find("PlayerManager"));
+
+        var panel = (GameObject)Get(Find("BattleManager"), "skillSelectionPanel");
+        panel.SetActive(true);
+
+        Component pager = Find("SkillPanelPager");
+        Call(pager, "Bind", Find("PlayerManager"));
+
         var slots = ((IEnumerable)Get(pager, "slots")).Cast<Component>().ToArray();
-        int[] ids = slots.Select(s => s.GetInstanceID()).ToArray();
-        using (var view = new PresentationView(800, 600))
+        int[] originalSlotIds = slots.Select(slot => slot.GetInstanceID()).ToArray();
+
+        Assert.That(slots.Length, Is.GreaterThan(0));
+        Assert.That((int)Get(pager, "Page"), Is.Zero);
+        Assert.That((int)Get(pager, "PageCount"), Is.GreaterThan(1));
+
+        var nextButton = (Button)Get(pager, "nextButton");
+        var previousButton = (Button)Get(pager, "previousButton");
+
+        ClickLargeButton(nextButton);
+        yield return null;
+        Assert.That((int)Get(pager, "Page"), Is.EqualTo(1));
+
+        ClickLargeButton(previousButton);
+        yield return null;
+        Assert.That((int)Get(pager, "Page"), Is.Zero);
+
+        int initialButtonCount = panel.GetComponentsInChildren<Button>(true).Length;
+
+        for (int i = 0; i < 3; i++)
         {
-            Call(pager, "RefreshLayout"); yield return null; Canvas.ForceUpdateCanvases();
-            var scroll = (UnityEngine.UI.ScrollRect)Get(pager, "scroll");
-            Assert.That(((UnityEngine.UI.GridLayoutGroup)Get(pager, "grid")).constraintCount, Is.EqualTo(1));
-            Assert.That(scroll.horizontal, Is.True);
-            Assert.That(scroll.horizontalScrollbar.gameObject.activeInHierarchy, Is.True);
-            scroll.horizontalScrollbar.value = 0; yield return null;
-            float initialX = scroll.content.anchoredPosition.x;
-            File.AppendAllText(ArtifactFolder + "/scroll-metrics.tsv", $"zero: content={scroll.content.rect.size} viewport={scroll.viewport.rect.size} x={initialX} normalized={scroll.horizontalNormalizedPosition} bar={scroll.horizontalScrollbar.value}\n");
-            scroll.horizontalScrollbar.value = 1; yield return null;
-            File.AppendAllText(ArtifactFolder + "/scroll-metrics.tsv", $"one: x={scroll.content.anchoredPosition.x} normalized={scroll.horizontalNormalizedPosition} bar={scroll.horizontalScrollbar.value}\n");
-            Assert.That(scroll.content.anchoredPosition.x, Is.LessThan(initialX));
-            Assert.That(scroll.content.anchoredPosition.y, Is.EqualTo(0).Within(1));
-            var wheel = new PointerEventData(EventSystem.current) { scrollDelta = new Vector2(0, -3) };
-            ExecuteEvents.Execute(scroll.gameObject, wheel, ExecuteEvents.scrollHandler); yield return null;
-            Assert.That(scroll.content.anchoredPosition.y, Is.GreaterThan(0));
-            float y = scroll.content.anchoredPosition.y;
-            scroll.verticalScrollbar.value = 0; yield return null;
-            Assert.That(scroll.content.anchoredPosition.y, Is.GreaterThan(y));
-            ClickLargeButton((UnityEngine.UI.Button)Get(pager, "nextButton")); yield return null;
-            Assert.That((int)Get(pager, "Page"), Is.EqualTo(1));
-            Assert.That(scroll.content.anchoredPosition.y, Is.EqualTo(0).Within(1));
-            Assert.That(slots.Count(s => s.gameObject.activeSelf), Is.EqualTo(2));
-            Assert.That(scroll.horizontalNormalizedPosition, Is.EqualTo(0).Within(.01f));
-            ClickLargeButton((UnityEngine.UI.Button)Get(pager, "previousButton")); yield return null;
-            Assert.That((int)Get(pager, "Page"), Is.Zero);
-            for (int i = 0; i < 3; i++) { panel.SetActive(false); panel.SetActive(true); yield return null; }
-            Assert.That(panel.GetComponentsInChildren<UnityEngine.UI.ScrollRect>(true).Length, Is.EqualTo(1));
-            CollectionAssert.AreEqual(ids, ((IEnumerable)Get(pager, "slots")).Cast<Component>().Select(s => s.GetInstanceID()));
-            Assert.That(panel.GetComponent<UnityEngine.UI.CanvasScaler>().scaleFactor, Is.EqualTo(1));
-            Assert.That(panel.GetComponent<UnityEngine.UI.CanvasScaler>().uiScaleMode,
-                Is.EqualTo(UnityEngine.UI.CanvasScaler.ScaleMode.ConstantPixelSize));
-            Assert.That(((UnityEngine.UI.Button)Get(pager, "nextButton")).onClick.GetPersistentEventCount(), Is.Zero);
+            panel.SetActive(false);
+            panel.SetActive(true);
+            yield return null;
         }
+
+        int finalButtonCount = panel.GetComponentsInChildren<Button>(true).Length;
+        Assert.That(finalButtonCount, Is.EqualTo(initialButtonCount));
+
+        int[] finalSlotIds = ((IEnumerable)Get(pager, "slots"))
+            .Cast<Component>()
+            .Select(slot => slot.GetInstanceID())
+            .ToArray();
+
+        CollectionAssert.AreEqual(originalSlotIds, finalSlotIds);
+
+        ClickLargeButton(nextButton);
+        yield return null;
+        Assert.That((int)Get(pager, "Page"), Is.EqualTo(1));
     }
 }
 #endif

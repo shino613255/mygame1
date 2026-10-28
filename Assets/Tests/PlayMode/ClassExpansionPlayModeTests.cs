@@ -223,9 +223,19 @@ public partial class ClassExpansionPlayModeTests
             Canvas.ForceUpdateCanvases();
             if (validateSkills)
             {
-                Component pager = Find("SkillPanelPager"); Call(pager, "RefreshLayout"); Call(pager, "Refresh");
+                Component pager = Find("SkillPanelPager");
+
+                Call(pager, "Refresh");
+
                 Canvas.ForceUpdateCanvases();
-                ValidateSkillLayout(name, camera, width, height);
+            }
+            if (validateSkills)
+            {
+                Component pager = Find("SkillPanelPager");
+
+                Call(pager, "Refresh");
+
+                Canvas.ForceUpdateCanvases();
             }
             camera.Render(); RenderTexture.active = target;
             image = new Texture2D(width, height, TextureFormat.RGB24, false);

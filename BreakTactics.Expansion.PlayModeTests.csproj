@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="Assets\Tests\PlayMode\SkillPresentationPlayModeTests.cs" />
     <Compile Include="Assets\Tests\PlayMode\ClassExpansionPlayModeTests.cs" />
-    <Compile Include="Assets\Tests\PlayMode\AutoplayTests.cs" />
     <Compile Include="Assets\Tests\PlayMode\SkillUiLargePlayModeTests.cs" />
   </ItemGroup>
   <ItemGroup>
