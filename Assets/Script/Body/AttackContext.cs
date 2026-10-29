@@ -7,6 +7,6 @@ public struct AttackContext
     public float preparedPartDamageMultiplier;
     public float accuracyBonus;
     public bool canApplyStatus;
-    public SkillData sourceSkill; 
-    public bool isCritical;           
+    public SkillData sourceSkill;
+    public bool isCritical;
 }

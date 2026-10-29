@@ -7,12 +7,15 @@ public class SkillData : ScriptableObject
 
     [Header("基本")]
     public string skillName;
-    [TextArea] public string description;
+    [TextArea]
+    public string description;
     public Sprite icon;
 
     [Header("コスト（任意）")]
-    [Min(0)] public int mpCost = 0;
-    [Min(0)] public int cooldown = 0;
+    [Min(0)]
+    public int mpCost = 0;
+    [Min(0)]
+    public int cooldown = 0;
 
     [Header("種別")]
     public SkillType skillType = SkillType.Physical;
@@ -25,7 +28,6 @@ public class SkillData : ScriptableObject
     [Header("威力")]
     [Tooltip("固定加算ダメージ/回復（使わないなら0でOK）")]
     public int power = 0;
-
     [Tooltip("AT/MAGなどのステータスに掛けるスキル倍率")]
     public float multiplier = 1f;
 
@@ -34,7 +36,6 @@ public class SkillData : ScriptableObject
 
     [Header("クリティカル（任意）")]
     public bool canCrit = true;
-
     [Tooltip("クリ率の追加（0〜1）。例：0.1=+10%")]
     [Range(0f, 1f)]
     public float critBonus = 0f;
@@ -48,10 +49,8 @@ public class SkillData : ScriptableObject
     [Header("部位攻撃設定")]
     [Tooltip("このスキルで部位を選んで攻撃できるか")]
     public bool canTargetPart = true;
-
     [Tooltip("本体に入るダメージ倍率")]
     public float mainDamageRate = 1f;
-
     [Tooltip("部位に入るダメージ倍率")]
     public float partDamageRate = 1f;
 
@@ -59,7 +58,6 @@ public class SkillData : ScriptableObject
     public StatusEffectData statusEffect;
     public BuffData buff;
     public DebuffData debuff;
-
     [Range(0f, 1f)]
     public float applyChance = 1f;
 }

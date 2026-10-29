@@ -15,7 +15,6 @@ public class GrowthSelectionManager : MonoBehaviour
         "MagicAttackUpButton",
         "DefenceUpButton"
     };
-
     private static readonly RewardDefinition[] RewardDefinitions =
     {
         new RewardDefinition(GrowthRewardId.MaxHpUp, "\u6700\u5927HP\u4E0A\u6607", true),
@@ -27,12 +26,10 @@ public class GrowthSelectionManager : MonoBehaviour
         new RewardDefinition(GrowthRewardId.FocusedAttack, "\u96C6\u4E2D\u653B\u6483", false),
         new RewardDefinition(GrowthRewardId.PrecisionShot, "\u7CBE\u5BC6\u5C04\u6483", false)
     };
-
     [SerializeField] private GameObject growthPanel;
     [SerializeField] private PlayerManager player;
     [SerializeField] private PlayerUIManager playerUI;
     [SerializeField] private QuestManager questManager;
-
     private readonly List<RewardSlot> rewardSlots = new List<RewardSlot>();
     private readonly List<GrowthRewardId> currentOffers = new List<GrowthRewardId>();
     private bool selectionOpen;
@@ -43,7 +40,6 @@ public class GrowthSelectionManager : MonoBehaviour
     private void Start()
     {
         InitializeRewardSlots();
-
         if (growthPanel != null)
         {
             growthPanel.SetActive(false);
@@ -65,7 +61,6 @@ public class GrowthSelectionManager : MonoBehaviour
 
         selectionOpen = true;
         selectionCommitted = false;
-
         List<GrowthRewardId> eligibleRewards = GetEligibleRewardIds(player);
         List<GrowthRewardId> offers = SelectRandomRewards(eligibleRewards, RewardChoiceCount, seed);
         BindRewardSlots(offers);
@@ -105,14 +100,29 @@ public class GrowthSelectionManager : MonoBehaviour
     public static List<GrowthRewardId> GetEligibleRewardIds(PlayerManager targetPlayer)
     {
         var eligibleRewards = new List<GrowthRewardId>();
-
         foreach (RewardDefinition definition in RewardDefinitions)
         {
             PlayerRole role = targetPlayer != null ? targetPlayer.Role : PlayerRole.Mage;
-            if (definition.Id == GrowthRewardId.MagicAttackUp && role != PlayerRole.Mage) continue;
-            if (definition.Id == GrowthRewardId.AttackUp && role == PlayerRole.Mage) continue;
-            if (definition.Id == GrowthRewardId.DefenseUp && role == PlayerRole.Berserker) continue;
-            if (definition.Id == GrowthRewardId.MaxMpUp && role != PlayerRole.Berserker) continue;
+            if (definition.Id == GrowthRewardId.MagicAttackUp && role != PlayerRole.Mage)
+            {
+                continue;
+            }
+
+            if (definition.Id == GrowthRewardId.AttackUp && role == PlayerRole.Mage)
+            {
+                continue;
+            }
+
+            if (definition.Id == GrowthRewardId.DefenseUp && role == PlayerRole.Berserker)
+            {
+                continue;
+            }
+
+            if (definition.Id == GrowthRewardId.MaxMpUp && role != PlayerRole.Berserker)
+            {
+                continue;
+            }
+
             if (definition.IsRepeatable || (targetPlayer != null && !targetPlayer.HasGrowthReward(definition.Id)))
             {
                 eligibleRewards.Add(definition.Id);
@@ -122,10 +132,7 @@ public class GrowthSelectionManager : MonoBehaviour
         return eligibleRewards;
     }
 
-    public static List<GrowthRewardId> SelectRandomRewards(
-        IReadOnlyList<GrowthRewardId> eligibleRewards,
-        int maxChoices,
-        int seed)
+    public static List<GrowthRewardId> SelectRandomRewards(IReadOnlyList<GrowthRewardId> eligibleRewards, int maxChoices, int seed)
     {
         var candidates = new List<GrowthRewardId>();
         if (eligibleRewards == null || maxChoices <= 0)
@@ -144,7 +151,6 @@ public class GrowthSelectionManager : MonoBehaviour
 
         var random = new System.Random(seed);
         int choiceCount = Math.Min(maxChoices, candidates.Count);
-
         for (int i = 0; i < choiceCount; i++)
         {
             int selectedIndex = random.Next(i, candidates.Count);
@@ -200,16 +206,13 @@ public class GrowthSelectionManager : MonoBehaviour
     private void BindRewardSlots(IReadOnlyList<GrowthRewardId> offers)
     {
         currentOffers.Clear();
-
         for (int i = 0; i < rewardSlots.Count; i++)
         {
             RewardSlot slot = rewardSlots[i];
             slot.Button.onClick = new Button.ButtonClickedEvent();
-
             bool hasOffer = i < offers.Count;
             slot.Button.gameObject.SetActive(hasOffer);
             slot.Button.interactable = hasOffer;
-
             if (!hasOffer)
             {
                 continue;
@@ -232,7 +235,6 @@ public class GrowthSelectionManager : MonoBehaviour
         selectionCommitted = true;
         selectionOpen = false;
         SetRewardButtonsInteractable(false);
-
         if (!TryApplyReward(rewardId))
         {
             selectionCommitted = false;
@@ -315,6 +317,7 @@ public class GrowthSelectionManager : MonoBehaviour
         }
 
         public Button Button { get; }
+
         public TMP_Text Label { get; }
     }
 
@@ -328,7 +331,9 @@ public class GrowthSelectionManager : MonoBehaviour
         }
 
         public GrowthRewardId Id { get; }
+
         public string DisplayName { get; }
+
         public bool IsRepeatable { get; }
     }
 }

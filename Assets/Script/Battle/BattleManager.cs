@@ -1,16 +1,24 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static EnemyPartsController;
 
 public class BattleManager : MonoBehaviour
 {
+    private const int BossHeavyChargeTurns = 2;
+    private const int SingleTurnCharge = 1;
+
+    [Header("Battle Presentation")]
+    [SerializeField] private float battlePauseDuration = 0.5f;
+    [SerializeField] private float dialogPauseDuration = 0.5f;
+    [SerializeField] private float screenShakeDuration = 0.3f;
+    [SerializeField] private float screenShakeStrength = 0.5f;
+    [SerializeField] private int screenShakeVibrato = 20;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float playerBaseAccuracy = 1f;
-    [SerializeField] private float enemyBaseAccuracy = 1f;             
+    [SerializeField] private float enemyBaseAccuracy = 1f;
     [SerializeField] private SkillData selectedPlayerSkill;
     [SerializeField] private bool useSelectedSkill = false;
 
@@ -18,9 +26,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private GameObject skillSelectionPanel;
     [SerializeField] private GameObject playerStatusPanel;
     [SerializeField] private GameObject skillButton;
-
     public event System.Action BattleEnded;
-    public Transform screenShakeTarget;                                 
+    public Transform screenShakeTarget;
     public QuestManager questManager;
     public PlayerUIManager playerUI;
     public EnemyUIManager enemyUI;
@@ -29,13 +36,23 @@ public class BattleManager : MonoBehaviour
     private EnemyManager enemy;
     private EnemyAI enemyAI;
     private SkillVfxController skillVfx;
-    public SkillVfxController SkillVfx => skillVfx != null ? skillVfx :
-        (skillVfx = GetComponent<SkillVfxController>() ?? gameObject.AddComponent<SkillVfxController>());
+
+    public SkillVfxController SkillVfx
+    {
+        get
+        {
+            if (skillVfx == null)
+            {
+                skillVfx = GetComponent<SkillVfxController>() ?? gameObject.AddComponent<SkillVfxController>();
+            }
+
+            return skillVfx;
+        }
+    }
+
     private bool waitingTap;
     private bool isPlayerTurn;
-
     [SerializeField] private PlayerData defaultMageData;
-
     private bool isPartViewVisible = false;
     private bool isBattleRunning = false;
     private bool isEndingBattle = false;
@@ -54,8 +71,8 @@ public class BattleManager : MonoBehaviour
     private bool isShowingEnemyTelegraph;
     private string[] playerActionMessages;
     private int playerInputBlockedThroughFrame = -1;
-
     public static BattleManager Instance;
+
     void Awake()
     {
         enemyAI = GetComponent<EnemyAI>();
@@ -66,29 +83,21 @@ public class BattleManager : MonoBehaviour
     {
         if (enemymanager == null)
         {
-            Debug.LogError(
-                "BattleManager.Setup にnullのEnemyManagerが渡されました。"
-            );
+            Debug.LogError("BattleManager.Setup にnullのEnemyManagerが渡されました。");
             return;
         }
 
         if (isBattleRunning)
         {
-            Debug.LogWarning(
-                "すでに戦闘中なのでBattleManager.Setupを無視します。"
-            );
+            Debug.LogWarning("すでに戦闘中なのでBattleManager.Setupを無視します。");
             return;
         }
 
         skillButton.SetActive(true);
         playerStatusPanel.SetActive(true);
-        
-
         isBattleRunning = true;
-
         isEndingBattle = false;
         SkillVfx.Clear();
-
         ClearEnemyActionPlan();
         ClearPlayerSkillSelection();
         if (player != null)
@@ -96,23 +105,19 @@ public class BattleManager : MonoBehaviour
             player.RemovePoison();
             player.ResetBattleState();
         }
+
         isShowingEnemyTelegraph = false;
         isPlayerTurn = false;
         waitingTap = false;
         playerActionMessages = null;
         playerInputBlockedThroughFrame = Time.frameCount;
-
         enemyAI.ResetBattleState();
-
         SoundManager.instance.PlayBGM("Battle");
-
         enemyUI.gameObject.SetActive(true);
-
         enemy = enemymanager;
         enemy.ClearCounter();
         enemy.ResetStagger();
         enemy.SetPartViewVisible(isPartViewVisible);
-
         if (enemy.data != null && enemy.data.role == EnemyRole.Tank &&
             (enemy.data.enemyType == EnemyType.Normal || enemy.data.enemyType == EnemyType.Boss) &&
             enemy.GetComponent<SkillCooldowns>() == null)
@@ -120,8 +125,7 @@ public class BattleManager : MonoBehaviour
             enemy.gameObject.AddComponent<SkillCooldowns>();
         }
 
-        if (enemy.data != null && enemy.data.enemyType == EnemyType.Boss &&
-            player != null)
+        if (enemy.data != null && enemy.data.enemyType == EnemyType.Boss && player != null)
         {
             player.RestoreHpAndMp();
         }
@@ -132,9 +136,7 @@ public class BattleManager : MonoBehaviour
         }
 
         enemyUI.SetupUI(enemy);
-
         playerUI.SetupUI(player);
-
         StartCoroutine(BattleLoop());
     }
 
@@ -144,11 +146,9 @@ public class BattleManager : MonoBehaviour
         skillSelectionPanel.SetActive(false);
         playerStatusPanel.SetActive(false);
         enemyUI.gameObject.SetActive(false);
-
         if (PlayerSelectionManager.Instance != null)
         {
-            playerData =
-                PlayerSelectionManager.Instance.selectedPlayer;
+            playerData = PlayerSelectionManager.Instance.selectedPlayer;
         }
 
         if (playerData == null)
@@ -159,10 +159,7 @@ public class BattleManager : MonoBehaviour
         if (playerData != null && player != null)
         {
             player.Setup(playerData);
-
-            SkillPanelPager pager =
-                skillSelectionPanel.GetComponentInChildren<SkillPanelPager>(true);
-
+            SkillPanelPager pager = skillSelectionPanel.GetComponentInChildren<SkillPanelPager>(true);
             if (pager != null)
             {
                 pager.Bind(player);
@@ -172,38 +169,39 @@ public class BattleManager : MonoBehaviour
                 Debug.LogError("SkillPanelPagerが見つかりません。");
             }
         }
-    }    
+    }
 
     public void ToggleSkillPanel()
     {
         if (!CanReceivePlayerInput())
+        {
             return;
+        }
 
         playerInputBlockedThroughFrame = Time.frameCount;
-        skillSelectionPanel.SetActive(
-            !skillSelectionPanel.activeSelf
-        );
+        skillSelectionPanel.SetActive(!skillSelectionPanel.activeSelf);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.V))
         {
-            isPartViewVisible =
-                !isPartViewVisible;
-
+            isPartViewVisible = !isPartViewVisible;
             if (enemy != null)
             {
-                enemy.SetPartViewVisible(
-                    isPartViewVisible
-                );
+                enemy.SetPartViewVisible(isPartViewVisible);
             }
         }
 
-        if (!CanReceivePlayerInput()) return;
+        if (!CanReceivePlayerInput())
+        {
+            return;
+        }
 
         if (skillSelectionPanel.activeSelf)
+        {
             return;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -214,18 +212,23 @@ public class BattleManager : MonoBehaviour
     public void OnSkillSelected(SkillData selectedSkill)
     {
         if (!CanReceivePlayerInput())
+        {
             return;
+        }
 
         if (enemy == null)
+        {
             return;
+        }
 
         if (!enemy.IsAlive)
+        {
             return;
+        }
 
         if (selectedSkill == null)
         {
-            Debug.LogWarning
-                ("選択されたスキルがnullですわ！");
+            Debug.LogWarning("選択されたスキルがnullですわ！");
             return;
         }
 
@@ -235,6 +238,7 @@ public class BattleManager : MonoBehaviour
             ShowPlayerChoiceMessage(useError);
             return;
         }
+
         if (selectedSkill.targetType != TargetType.Self &&
             (!SkillUseRules.IsDirectAttack(selectedSkill) || !selectedSkill.canTargetPart))
         {
@@ -243,12 +247,8 @@ public class BattleManager : MonoBehaviour
         }
 
         playerInputBlockedThroughFrame = Time.frameCount;
-
-        SkillCooldowns cooldowns =
-            player.GetComponent<SkillCooldowns>();
-
-        if (cooldowns != null &&
-            !cooldowns.IsReady(selectedSkill))
+        SkillCooldowns cooldowns = player.GetComponent<SkillCooldowns>();
+        if (cooldowns != null && !cooldowns.IsReady(selectedSkill))
         {
             ShowPlayerChoiceMessage($"{selectedSkill.skillName}はクールダウン中！");
             return;
@@ -256,186 +256,147 @@ public class BattleManager : MonoBehaviour
 
         if (selectedSkill.targetType == TargetType.Self)
         {
-            var result = SkillExecutor.Execute(player, player, selectedSkill);          
+            var result = SkillExecutor.Execute(player, player, selectedSkill);
             if (!result.executed)
             {
                 ShowPlayerChoiceMessage(result.message);
                 return;
             }
+
             player.ResetFocusedAttackChain();
             ClearPlayerSkillSelection();
             PlaySkillEffect(selectedSkill, playerUI.GetSkillEffectPosition(mainCamera));
-
             playerUI.UpdateUI(player);
-
             skillSelectionPanel.SetActive(false);
-
             waitingTap = false;
             isPlayerTurn = false;
-
-            playerActionMessages = new[] { result.message };
-
+            playerActionMessages = new[]
+            {
+                result.message
+            };
             return;
         }
+
         selectedPlayerSkill = selectedSkill;
         useSelectedSkill = true;
         waitingTap = true;
-
         skillSelectionPanel.SetActive(false);
-
         ShowPlayerChoiceMessage($"{selectedSkill.skillName}：部位を選択！");
-
-        Debug.Log($"スキル「{selectedSkill.skillName}」を選択しましたわ！");
     }
 
     private void TryPickBodyPart(Vector2 screenPos)
     {
         if (EventSystem.current != null)
         {
-            var pointer = new PointerEventData(EventSystem.current) { position = screenPos };
+            var pointer = new PointerEventData(EventSystem.current)
+            {
+                position = screenPos
+            };
             var hits = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointer, hits);
-
             if (hits.Exists(result => result.module is UnityEngine.UI.GraphicRaycaster))
+            {
                 return;
+            }
         }
 
-        Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);                    
-        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);                   // クリックした一点にColliderがあるか確認する
+        Vector2 worldPos = mainCamera.ScreenToWorldPoint(screenPos);
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+        if (!hit.collider)
+        {
+            return;
+        }
 
-        if (!hit.collider) return;
-
-        var part = hit.collider.GetComponentInParent<BodyPart>();                       
-        if (part == null) return;
+        var part = hit.collider.GetComponentInParent<BodyPart>();
+        if (part == null)
+        {
+            return;
+        }
 
         OnBodyPartTapped(part);
     }
 
     private int CalculateDamage(SkillData skill)
     {
-        // 通常攻撃
         if (skill == null)
         {
-            return DamageRule.CalcNormalAttack(
-                player.at,
-                enemy.def
-            );
+            return DamageRule.CalcNormalAttack(player.at, enemy.def);
         }
 
         if (skill.skillType == SkillType.Magic)
         {
-            return DamageRule.CalcMagic(
-                player.mag,
-                enemy.mdef,
-                skill.power
-            );
+            return DamageRule.CalcMagic(player.mag, enemy.mdef, skill.power);
         }
 
-        return DamageRule.CalcPhysical(
-            player.at,
-            enemy.def,
-            skill.power
-        );
+        return DamageRule.CalcPhysical(player.at, enemy.def, skill.power);
     }
 
     private AttackContext CreateNormalAttackContext()
     {
         int normalDamage = CalculateDamage(null);
-
-        int finalDamage = DamageRule.RollCrit(
-            normalDamage,
-            player.critRate,
-            player.critMultiplier
-        );
-
+        int finalDamage = DamageRule.RollCrit(normalDamage, player.critRate, player.critMultiplier);
         bool isCritical = finalDamage > normalDamage;
-
         return new AttackContext
         {
             baseDamage = finalDamage,
-
             mainDamageRate = 1f,
             partDamageRate = 1f,
             focusedPartDamageMultiplier = 1f,
             canApplyStatus = false,
             sourceSkill = null,
-
             isCritical = isCritical
         };
     }
+
     private AttackContext CreateSkillAttackContext(SkillData skill)
     {
         int skillDamage = CalculateDamage(skill);
-
         int finalDamage = skillDamage;
         bool isCritical = false;
-
         if (skill.canCrit)
         {
-            finalDamage = DamageRule.RollCrit(
-                skillDamage,
-                Mathf.Clamp01(player.critRate + skill.critBonus),
-                player.critMultiplier
-            );
-
+            finalDamage = DamageRule.RollCrit(skillDamage, Mathf.Clamp01(player.critRate + skill.critBonus), player.critMultiplier);
             isCritical = finalDamage > skillDamage;
         }
 
         return new AttackContext
         {
             baseDamage = finalDamage,
-
             mainDamageRate = skill.mainDamageRate,
             partDamageRate = skill.partDamageRate,
             focusedPartDamageMultiplier = 1f,
-
             canApplyStatus = skill.statusEffect != null,
             sourceSkill = skill,
-
             isCritical = isCritical
         };
     }
+
     public void OnBodyPartTapped(BodyPart part)
     {
         if (!CanAttackPart(part))
+        {
             return;
+        }
 
-        EnemyPartsController enemyParts =
-            part.GetComponentInParent<EnemyPartsController>();
-
+        EnemyPartsController enemyParts = part.GetComponentInParent<EnemyPartsController>();
         if (enemyParts == null || part.GetComponentInParent<EnemyManager>() != enemy)
         {
-            Debug.LogWarning(
-                $"部位「{part.GetPartNameJP()}」の親にEnemyPartsControllerが見つかりませんでしたわ！"
-            );
+            Debug.LogWarning($"部位「{part.GetPartNameJP()}」の親にEnemyPartsControllerが見つかりませんでしたわ！");
             return;
         }
 
         enemyParts.SetSelectedPart(part);
-
-
         if (!TryCreateAttackContext(out AttackContext ctx))
+        {
             return;
+        }
 
         SkillExecutor.PreparePlayerAttack(player, ref ctx);
-
         waitingTap = false;
         isPlayerTurn = false;
-
         if (!RollPlayerAttackHit(ctx))
         {
-            player.ResetFocusedAttackChain();
-
-            if (useSelectedSkill)
-            {
-                useSelectedSkill = false;
-                selectedPlayerSkill = null;
-            }
-
-            playerUI.UpdateUI(player);
-
-            playerActionMessages = new[] { $"{player.name}の攻撃！\nしかし{enemy.name}に当たらなかった！" };
-
+            HandlePlayerAttackMiss();
             return;
         }
 
@@ -446,34 +407,16 @@ public class BattleManager : MonoBehaviour
         int magicDefenseBefore = enemy.mdef;
         float accuracyPenaltyBefore = enemy.GetAccuracyPenalty();
         var sealedBossSkillsBefore = TankBossRoleAction.GetSealedSkills(enemy);
-
-        ctx.focusedPartDamageMultiplier =
-            player.GetFocusedAttackPartDamageMultiplier(enemy, part);
-
-        var result =
-            enemyParts.ApplyAttack(ctx);
-
+        ctx.focusedPartDamageMultiplier = player.GetFocusedAttackPartDamageMultiplier(enemy, part);
+        var result = enemyParts.ApplyAttack(ctx);
         player.RecordFocusedAttackResult(enemy, part, result.partDamage);
-
-        bool justBroken =
-            !wasBroken && part.IsBroken;
-
-        int lifeDrainRecovery = justBroken
-            ? player.TryRecoverHpFromPartBreak(part)
-            : 0;
-
+        bool justBroken = !wasBroken && part.IsBroken;
+        int lifeDrainRecovery = justBroken ? player.TryRecoverHpFromPartBreak(part) : 0;
         bool techniqueLearned = justBroken && player.BattleEffects.LearnTechnique(player.Role, part);
-
         bool interrupted = TryInterruptEnemyAction(part, justBroken);
-
         TryApplyStatusEffect(ctx);
-
-        int reflectedDamage = enemy.GetCounterDamage(Mathf.Max(0, hpBefore - enemy.hp));
-        if (reflectedDamage > 0)
-            player.TakeDamageRaw(reflectedDamage);
-
+        int reflectedDamage = ApplyCounterDamage(hpBefore);
         bool staggerHit = enemy.TryAddStagger(part, Mathf.Max(0, hpBefore - enemy.hp), result.partDamage);
-
         if (useSelectedSkill)
         {
             useSelectedSkill = false;
@@ -486,9 +429,7 @@ public class BattleManager : MonoBehaviour
         }
 
         playerUI.UpdateUI(player);
-
         var messages = new List<string>();
-
         if (interrupted)
         {
             messages.Add(UsesBossHeavyAttack(enemy)
@@ -497,33 +438,36 @@ public class BattleManager : MonoBehaviour
         }
 
         messages.Add(CreateAttackMessage(part, ctx, result));
-
         string breakMessage = CreatePartBreakMessage(
-            part, wasBroken, justBroken,
+            part,
+            wasBroken,
+            justBroken,
             Mathf.Max(0, defenseBefore - enemy.def),
             Mathf.Max(0, magicDefenseBefore - enemy.mdef),
-            enemy.GetAccuracyPenalty() - accuracyPenaltyBefore
-        );
-
+            enemy.GetAccuracyPenalty() - accuracyPenaltyBefore);
         if (!string.IsNullOrEmpty(breakMessage))
+        {
             messages.Add(breakMessage);
+        }
 
         if (lifeDrainRecovery > 0)
         {
-            messages.Add(
-                $"\u751F\u547D\u5438\u53CE\uFF01\nHP\u3092{lifeDrainRecovery}\u56DE\u5FA9\u3057\u305F\uFF01"
-            );
+            messages.Add($"\u751F\u547D\u5438\u53CE\uFF01\nHP\u3092{lifeDrainRecovery}\u56DE\u5FA9\u3057\u305F\uFF01");
         }
 
         if (techniqueLearned)
+        {
             messages.Add($"戦技習得！ {part.GetPartNameJP()}の戦技を得た！");
+        }
 
         if (justBroken && enemy.IsAlive)
         {
             foreach (SkillData skill in TankBossRoleAction.GetSealedSkills(enemy))
             {
                 if (!sealedBossSkillsBefore.Contains(skill))
+                {
                     messages.Add($"{skill.skillName}を封印！\n敵は以後このスキルを使えない。");
+                }
             }
         }
 
@@ -531,29 +475,67 @@ public class BattleManager : MonoBehaviour
         {
             messages.Add($"弱点ヒット！ 体勢崩し {enemy.StaggerGauge}/{enemy.StaggerGaugeMax}");
             if (enemy.IsStaggered)
+            {
                 messages.Add("体勢崩し！ 敵の次の行動を封じた！");
+            }
         }
 
         if (reflectedDamage > 0)
+        {
             messages.Add($"カウンター！\nプレイヤーは{reflectedDamage}ダメージ受けた！");
+        }
 
         playerActionMessages = messages.ToArray();
-        Debug.Log(string.Join("\n", playerActionMessages));
+    }
+
+    private void HandlePlayerAttackMiss()
+    {
+        player.ResetFocusedAttackChain();
+        if (useSelectedSkill)
+        {
+            useSelectedSkill = false;
+            selectedPlayerSkill = null;
+        }
+
+        playerUI.UpdateUI(player);
+        playerActionMessages = new[]
+        {
+            $"{player.name}の攻撃！\nしかし{enemy.name}に当たらなかった！"
+        };
+    }
+
+    private int ApplyCounterDamage(int hpBefore)
+    {
+        int reflectedDamage = enemy.GetCounterDamage(Mathf.Max(0, hpBefore - enemy.hp));
+        if (reflectedDamage > 0)
+        {
+            player.TakeDamageRaw(reflectedDamage);
+        }
+
+        return reflectedDamage;
     }
 
     private bool CanAttackPart(BodyPart part)
     {
         if (part == null)
+        {
             return false;
+        }
 
         if (!CanReceivePlayerInput())
+        {
             return false;
+        }
 
         if (enemy == null)
+        {
             return false;
+        }
 
         if (!enemy.IsAlive)
+        {
             return false;
+        }
 
         return true;
     }
@@ -564,93 +546,76 @@ public class BattleManager : MonoBehaviour
         {
             if (!SkillUseRules.TryPay(player, enemy, selectedPlayerSkill, out string useError))
             {
-                Debug.Log("MPが足りませんわ！");
                 ShowPlayerChoiceMessage(useError);
-
                 ctx = default;
                 return false;
             }
 
-            ctx =
-                CreateSkillAttackContext(
-                    selectedPlayerSkill
-                );
-
+            ctx = CreateSkillAttackContext(selectedPlayerSkill);
             player.GetComponent<SkillCooldowns>()?.StartCooldown(selectedPlayerSkill);
-
             return true;
         }
 
         ctx = CreateNormalAttackContext();
-
         return true;
     }
 
     private void PlayAttackEffect(AttackContext ctx, BodyPart part)
     {
         if (ctx.sourceSkill == null)
+        {
             return;
+        }
 
         Collider2D collider = part.GetComponent<Collider2D>();
         PlaySkillEffect(ctx.sourceSkill, collider != null ? collider.bounds.center : part.transform.position);
     }
-    private bool RollPlayerAttackHit(
-    AttackContext ctx
-)
-    {
-        float accuracy =
-            ctx.sourceSkill != null
-                ? ctx.sourceSkill.accuracy
-                : playerBaseAccuracy;
 
-        return DamageRule.RollHit(
-            accuracy,
-            enemy.evasionRate,
-            ctx.accuracyBonus
-        );
+    private bool RollPlayerAttackHit(AttackContext ctx)
+    {
+        float accuracy = ctx.sourceSkill != null ? ctx.sourceSkill.accuracy : playerBaseAccuracy;
+        return DamageRule.RollHit(accuracy, enemy.evasionRate, ctx.accuracyBonus);
     }
 
-    private void TryApplyStatusEffect(
-    AttackContext ctx
-)
+    private void TryApplyStatusEffect(AttackContext ctx)
     {
         if (ctx.sourceSkill == null)
+        {
             return;
+        }
 
-        StatusEffectData effect =
-            ctx.sourceSkill.statusEffect;
-
+        StatusEffectData effect = ctx.sourceSkill.statusEffect;
         if (effect == null)
+        {
             return;
+        }
 
         if (enemy == null || !enemy.IsAlive)
+        {
             return;
+        }
 
         float chance = ctx.sourceSkill.applyChance;
-              
-
         if (Random.value > chance)
+        {
             return;
+        }
 
         switch (effect.type)
         {
             case StatusEffectType.Burn:
                 enemy.ApplyBurn(effect);
                 break;
-
             case StatusEffectType.Frozen:
                 enemy.ApplyFrozen(effect);
                 break;
         }
     }
-    private string CreateAttackMessage(
-    BodyPart part,
-    AttackContext ctx,
-    AttackResult result
-)
+
+    private string CreateAttackMessage(BodyPart part, AttackContext ctx, AttackResult result)
     {
         string message;
-        if(ctx.isCritical)
+        if (ctx.isCritical)
         {
             message = "クリティカル！\n";
         }
@@ -661,28 +626,33 @@ public class BattleManager : MonoBehaviour
 
         if (ctx.sourceSkill != null)
         {
-            message +=
-                $"{ctx.sourceSkill.skillName}で{part.GetPartNameJP()}に攻撃！";
+            message += $"{ctx.sourceSkill.skillName}で{part.GetPartNameJP()}に攻撃！";
         }
         else
         {
-            message +=
-                $"{part.GetPartNameJP()}を攻撃！";
+            message += $"{part.GetPartNameJP()}を攻撃！";
         }
 
         if (result.damageMultiplier > 1f)
+        {
             message += "\n弱点！";
+        }
         else if (result.damageMultiplier > 0f && result.damageMultiplier < 1f)
+        {
             message += "\n耐性あり";
+        }
 
         message += $"\nダメージ：本体{result.mainDamage}／部位{result.partDamage}";
-
         return message;
     }
 
     private string CreatePartBreakMessage(
-        BodyPart part, bool wasBroken, bool justBroken,
-        int defenseDown, int magicDefenseDown, float accuracyDown)
+        BodyPart part,
+        bool wasBroken,
+        bool justBroken,
+        int defenseDown,
+        int magicDefenseDown,
+        float accuracyDown)
     {
         if (justBroken)
         {
@@ -690,18 +660,21 @@ public class BattleManager : MonoBehaviour
             {
                 case PartType.Face:
                     return $"顔を破壊！\n防御-{defenseDown}／魔法防御-{magicDefenseDown}";
-
                 case PartType.Hand:
                     return $"手を破壊！\n通常攻撃の命中率-{Mathf.RoundToInt(accuracyDown * 100f)}ポイント";
-
                 case PartType.Leg:
                     return "脚を破壊！\nこのターンからプレイヤーは2回行動！";
             }
         }
+
         if (wasBroken && enemy.UsesStagger)
+        {
             return "この部位は破壊済み。\n部位破壊効果は再発生しない。";
+        }
+
         return wasBroken ? "この部位は破壊済み。\n再攻撃では妨害できない。" : string.Empty;
     }
+
     public void PlaySkillEffect(SkillData skill, Vector3 worldPos)
     {
         SkillVfx.Play(skill, worldPos);
@@ -710,40 +683,44 @@ public class BattleManager : MonoBehaviour
     private bool CanReceivePlayerInput()
     {
         var dialog = DialogTextManager.instance;
-        return isBattleRunning && !isEndingBattle && isPlayerTurn &&
-            !isShowingEnemyTelegraph && Time.frameCount > playerInputBlockedThroughFrame &&
-            (dialog == null || (dialog.IsCompleteDisplayText && !dialog.HasPendingLines &&
-                !dialog.ConsumedClickThisFrame));
+        return isBattleRunning && !isEndingBattle && isPlayerTurn && !isShowingEnemyTelegraph &&
+            Time.frameCount > playerInputBlockedThroughFrame &&
+            (dialog == null || (dialog.IsCompleteDisplayText && !dialog.HasPendingLines && !dialog.ConsumedClickThisFrame));
     }
 
     private string GetEnemyTelegraphMessage()
     {
         if (!HasPlannedTelegraph())
+        {
             return string.Empty;
+        }
 
         string skillName = enemyActionPlan.skill.skillName;
         string announcementName = UsesBossHeavyAttack(enemy) ? skillName + "！" : skillName;
-
         if (enemyActionPlan.isInterrupted)
+        {
             return $"{skillName}は中断済み！\n敵はこのターン行動しない。";
+        }
 
         string announcement = UsesBossHeavyAttack(enemy) && enemyActionPlan.remainingChargeTurns > 1
             ? $"{enemy.name}は{skillName}を構えている！\nあと{enemyActionPlan.remainingChargeTurns - 1}回構えてから発動！"
             : $"次の敵行動：{announcementName}";
-
         bool hasHands = false;
         foreach (BodyPart part in enemy.GetComponentsInChildren<BodyPart>(true))
         {
             if (part.partType != PartType.Hand || !part.canBreak)
+            {
                 continue;
+            }
 
             hasHands = true;
             if (!part.IsBroken)
+            {
                 return $"{announcement}\n壊れていない手を破壊すると中断！";
+            }
         }
 
-        return $"{announcement}\n" +
-            (hasHands ? "両手は破壊済み。今回は妨害不可。" : "破壊できる手がなく、今回は妨害不可。");
+        return $"{announcement}\n" + (hasHands ? "両手は破壊済み。今回は妨害不可。" : "破壊できる手がなく、今回は妨害不可。");
     }
 
     private void ShowPlayerChoiceMessage(string message)
@@ -754,36 +731,34 @@ public class BattleManager : MonoBehaviour
 
     private bool UsesEnemyActionPlan(EnemyManager target)
     {
-        return target != null &&
-            target.data != null &&
-            target.data.enemyType == EnemyType.Normal &&
-            target.data.role == EnemyRole.Attacker &&
-            target.data.telegraphedSkill != null;
+        return target != null && target.data != null && target.data.enemyType == EnemyType.Normal &&
+            target.data.role == EnemyRole.Attacker && target.data.telegraphedSkill != null;
     }
 
     private void PrepareEnemyAction()
     {
-        if (enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
-            enemyActionPlan.remainingChargeTurns > 0)
+        if (enemyActionPlan.isReady && enemyActionPlan.enemy == enemy && enemyActionPlan.remainingChargeTurns > 0)
         {
             enemyActionPlan.isTelegraphed = false;
             return;
         }
 
         ClearEnemyActionPlan();
-
         if (UsesBossHeavyAttack(enemy))
         {
             SkillData heavyAttack = enemyAI.TakePendingBossHeavyAttack(enemy);
             if (heavyAttack != null)
             {
-                StartEnemyCharge(heavyAttack, 2);
+                StartEnemyCharge(heavyAttack, BossHeavyChargeTurns);
             }
+
             return;
         }
 
         if (!UsesEnemyActionPlan(enemy))
+        {
             return;
+        }
 
         enemyActionPlan = new EnemyActionPlan
         {
@@ -795,21 +770,15 @@ public class BattleManager : MonoBehaviour
 
     private bool HasPlannedTelegraph()
     {
-        return enemyActionPlan.isReady &&
-            enemyActionPlan.enemy == enemy &&
-            enemy != null &&
-            enemy.data != null &&
-            enemyActionPlan.skill != null &&
-            enemyActionPlan.skill == enemy.data.telegraphedSkill;
+        return enemyActionPlan.isReady && enemyActionPlan.enemy == enemy && enemy != null && enemy.data != null &&
+            enemyActionPlan.skill != null && enemyActionPlan.skill == enemy.data.telegraphedSkill;
     }
 
     private bool TryInterruptEnemyAction(BodyPart part, bool justBroken)
     {
         if (!justBroken || part == null || part.partType != PartType.Hand ||
-            !(UsesEnemyActionPlan(enemy) ||
-                (UsesChargedAttack(enemy) && enemyActionPlan.isTelegraphed)) ||
-            !HasPlannedTelegraph() ||
-            !enemy.IsAlive || enemyActionPlan.isInterrupted ||
+            !(UsesEnemyActionPlan(enemy) || (UsesChargedAttack(enemy) && enemyActionPlan.isTelegraphed)) ||
+            !HasPlannedTelegraph() || !enemy.IsAlive || enemyActionPlan.isInterrupted ||
             part.GetComponentInParent<EnemyManager>() != enemy)
         {
             return false;
@@ -823,9 +792,10 @@ public class BattleManager : MonoBehaviour
     {
         skill = null;
         isInterrupted = false;
-
         if (!enemyActionPlan.isReady || enemyActionPlan.enemy != enemy)
+        {
             return false;
+        }
 
         skill = enemyActionPlan.skill;
         isInterrupted = enemyActionPlan.isInterrupted;
@@ -840,17 +810,15 @@ public class BattleManager : MonoBehaviour
 
     private bool UsesBossHeavyAttack(EnemyManager target)
     {
-        return target != null && target.data != null &&
-            target.data.enemyType == EnemyType.Boss && target.data.role == EnemyRole.Tank &&
-            target.data.telegraphedSkill != null &&
+        return target != null && target.data != null && target.data.enemyType == EnemyType.Boss &&
+            target.data.role == EnemyRole.Tank && target.data.telegraphedSkill != null &&
             target.data.telegraphedSkill.skillType == SkillType.Physical;
     }
 
     private bool UsesEliteCharge(EnemyManager target)
     {
-        return target != null && target.data != null &&
-            target.data.enemyType == EnemyType.Reinforced && target.data.role == EnemyRole.Attacker &&
-            target.data.telegraphedSkill != null;
+        return target != null && target.data != null && target.data.enemyType == EnemyType.Reinforced &&
+            target.data.role == EnemyRole.Attacker && target.data.telegraphedSkill != null;
     }
 
     private bool UsesChargedAttack(EnemyManager target)
@@ -877,12 +845,17 @@ public class BattleManager : MonoBehaviour
 
     private void OnDisable()
     {
-        if (skillVfx != null) skillVfx.Clear();
+        if (skillVfx != null)
+        {
+            skillVfx.Clear();
+        }
+
         if (enemy != null)
         {
             enemy.ClearCounter();
             enemy.ResetStagger();
         }
+
         ClearEnemyActionPlan();
         ClearPlayerSkillSelection();
         enemyAI?.ResetBattleState();
@@ -891,6 +864,7 @@ public class BattleManager : MonoBehaviour
             player.RemovePoison();
             player.ResetBattleState();
         }
+
         isShowingEnemyTelegraph = false;
         isPlayerTurn = false;
         waitingTap = false;
@@ -902,179 +876,138 @@ public class BattleManager : MonoBehaviour
     IEnumerator BattleLoop()
     {
         EnemyManager battleEnemy = enemy;
-
-        while (
-            player != null &&
-            enemy != null &&
-            player.IsAlive &&
-            enemy.IsAlive
-        )
+        while (player != null && enemy != null && player.IsAlive && enemy.IsAlive)
         {
             player.BattleEffects.BeginPlayerTurn();
-            // 脚の破壊状態によってプレイヤーの行動回数が変化する
-            int playerActionCount =
-                enemy.GetPlayerActionCount();
-
-            SkillCooldowns playerCooldowns =
-                player.GetComponent<SkillCooldowns>();
-
+            int playerActionCount = enemy.GetPlayerActionCount();
+            SkillCooldowns playerCooldowns = player.GetComponent<SkillCooldowns>();
             if (playerCooldowns != null)
             {
                 playerCooldowns.Tick();
             }
 
             PrepareEnemyAction();
-
-            // 行動可能回数ぶんプレイヤーターン
             for (int i = 0; i < playerActionCount; i++)
             {
                 yield return StartCoroutine(PlayerActByTap(i == 0));
-
                 if (enemy != battleEnemy)
                 {
                     yield break;
                 }
 
-                if (
-                    player == null ||
-                    enemy == null ||
-                    !player.IsAlive ||
-                    !enemy.IsAlive
-                )
+                if (player == null || enemy == null || !player.IsAlive || !enemy.IsAlive)
                 {
                     ClearEnemyActionPlan();
                     yield break;
                 }
 
-                // 1回目の攻撃で脚を破壊した場合にも、
-                // そのターンから2回目を行えるよう再取得
-                playerActionCount =
-                    enemy.GetPlayerActionCount();
+                // 最初の行動で脚を破壊した場合は、このターンから追加行動を許可する。
+                playerActionCount = enemy.GetPlayerActionCount();
             }
 
             player.BattleEffects.EndPlayerTurn();
             enemy.BattleEffects.EndPlayerTurn();
             enemy.ClearCounter();
-
-            yield return new WaitForSeconds(0.5f);
-
+            yield return new WaitForSeconds(battlePauseDuration);
             yield return StartCoroutine(EnemyActAuto());
-
             if (enemy != battleEnemy)
+            {
                 yield break;
+            }
 
-            // Player死亡
-            if (
-                player == null ||
-                !player.IsAlive
-            )
+            if (player == null || !player.IsAlive)
             {
                 ClearEnemyActionPlan();
                 ClearPlayerSkillSelection();
                 enemyAI?.ResetBattleState();
                 if (player != null)
+                {
                     player.RemovePoison();
+                }
+
                 if (enemy != null)
                 {
                     enemy.ClearCounter();
                     enemy.ResetStagger();
                 }
+
                 questManager.QuestFailed();
                 yield break;
             }
 
-            // Enemy死亡
-            if (
-                enemy == null ||
-                !enemy.IsAlive
-            )
+            if (enemy == null || !enemy.IsAlive)
             {
                 ClearEnemyActionPlan();
                 yield break;
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(battlePauseDuration);
         }
 
         ClearEnemyActionPlan();
     }
+
     IEnumerator PlayerActByTap(bool isFirstActionOfTurn = false)
     {
         EnemyManager battleEnemy = enemy;
         isPlayerTurn = false;
         waitingTap = true;
         playerActionMessages = null;
-
-
-        // 毒ダメージ
-        int poisonDamage =
-            isFirstActionOfTurn ? player.TickPoisonDamage() : 0;
-
+        int poisonDamage = isFirstActionOfTurn ? player.TickPoisonDamage() : 0;
         if (poisonDamage > 0)
         {
             playerUI.UpdateUI(player);
-
             var poisonMessages = new List<string>
             {
                 $"毒ダメージ！\n{poisonDamage}ダメージ受けた！"
             };
             if (player.IsAlive && !player.IsPoisoned)
+            {
                 poisonMessages.Add("毒が自然に解除された！");
+            }
 
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(
-                    poisonMessages.ToArray(),
-                    0.5f
-                )
-            );
-
-
-            // 毒で死亡
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait(poisonMessages.ToArray(), dialogPauseDuration));
             if (player == null || !player.IsAlive)
             {
                 waitingTap = false;
                 isPlayerTurn = false;
-
                 ClearEnemyActionPlan();
                 ClearPlayerSkillSelection();
                 enemyAI?.ResetBattleState();
-
                 if (player != null)
+                {
                     player.RemovePoison();
+                }
+
                 if (enemy != null)
                 {
                     enemy.ClearCounter();
                     enemy.ResetStagger();
                 }
-                questManager.QuestFailed();
 
+                questManager.QuestFailed();
                 yield break;
             }
         }
 
-
         if (!isBattleRunning || isEndingBattle || enemy != battleEnemy)
+        {
             yield break;
+        }
 
         if (isFirstActionOfTurn && HasPlannedTelegraph())
         {
             isShowingEnemyTelegraph = true;
             skillSelectionPanel.SetActive(false);
-
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(GetEnemyTelegraphMessage(), 0.5f)
-            );
-
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait(GetEnemyTelegraphMessage(), dialogPauseDuration));
             yield return null;
-
             if (enemy != battleEnemy)
+            {
                 yield break;
+            }
 
             isShowingEnemyTelegraph = false;
-
-            if (!isBattleRunning || isEndingBattle ||
-                player == null || !player.IsAlive ||
-                enemy == null || !enemy.IsAlive)
+            if (!isBattleRunning || isEndingBattle || player == null || !player.IsAlive || enemy == null || !enemy.IsAlive)
             {
                 ClearEnemyActionPlan();
                 yield break;
@@ -1088,32 +1021,28 @@ public class BattleManager : MonoBehaviour
         }
 
         isPlayerTurn = true;
-
-
-        // プレイヤーが攻撃するまで待つ
         while (waitingTap)
         {
             yield return null;
         }
 
-
         isPlayerTurn = false;
-
         if (!isBattleRunning || isEndingBattle || enemy != battleEnemy)
+        {
             yield break;
+        }
 
         string[] messages = playerActionMessages;
         playerActionMessages = null;
-
         if (messages != null)
         {
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(messages, 0.5f)
-            );
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait(messages, dialogPauseDuration));
         }
 
         if (!isBattleRunning || isEndingBattle || enemy != battleEnemy)
+        {
             yield break;
+        }
 
         if (player == null || !player.IsAlive)
         {
@@ -1125,8 +1054,12 @@ public class BattleManager : MonoBehaviour
                 enemy.ClearCounter();
                 enemy.ResetStagger();
             }
+
             if (player != null)
+            {
                 player.RemovePoison();
+            }
+
             questManager.QuestFailed();
             yield break;
         }
@@ -1136,22 +1069,19 @@ public class BattleManager : MonoBehaviour
             enemyUI.UpdateUI(enemy);
         }
 
-
-        if (
-            enemy != null &&
-            !enemy.IsAlive
-        )
+        if (enemy != null && !enemy.IsAlive)
         {
-            yield return StartCoroutine(
-                EndBattle()
-            );
+            yield return StartCoroutine(EndBattle());
         }
     }
 
     IEnumerator EnemyActAuto()
     {
         yield return StartCoroutine(EnemyActCore());
-        if (player != null) player.BattleEffects.EndEnemyAction();
+        if (player != null)
+        {
+            player.BattleEffects.EndEnemyAction();
+        }
     }
 
     IEnumerator EnemyActCore()
@@ -1169,28 +1099,19 @@ public class BattleManager : MonoBehaviour
             yield break;
         }
 
-        // Buffの残りターンを進める
         enemy.TickDefenseBuff();
         enemy.TickMagicDefenseBuff();
         enemy.TickFrozen();
-
-        // Cooldownは火傷の有無に関係なく毎ターン進める
-        SkillCooldowns cooldowns =
-            enemy.GetComponent<SkillCooldowns>();
-
+        SkillCooldowns cooldowns = enemy.GetComponent<SkillCooldowns>();
         if (cooldowns != null)
         {
             cooldowns.Tick();
         }
 
         enemyUI.UpdateUI(enemy);
-
-        // 火傷ダメージ
         int burnDmg = enemy.TickBurnDamage();
-
         if (burnDmg > 0)
         {
-            // 火傷で倒れた場合
             if (enemy == null || !enemy.IsAlive)
             {
                 yield return StartCoroutine(EndBattle());
@@ -1198,26 +1119,11 @@ public class BattleManager : MonoBehaviour
             }
 
             enemyUI.UpdateUI(enemy);
-
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(
-                    $"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた",
-                    0.5f
-                )
-            );
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait($"火傷ダメージ！\n敵は{burnDmg}ダメージ受けた", dialogPauseDuration));
         }
 
-        yield return new WaitForSeconds(0.5f);
-
-        // 待っている間に戦闘が終了していたら処理を終了
-        if (
-            enemy == null ||
-            enemy != actingEnemy ||
-            player == null ||
-            !player.IsAlive ||
-            !isBattleRunning ||
-            isEndingBattle
-        )
+        yield return new WaitForSeconds(battlePauseDuration);
+        if (enemy == null || enemy != actingEnemy || player == null || !player.IsAlive || !isBattleRunning || isEndingBattle)
         {
             yield break;
         }
@@ -1231,17 +1137,14 @@ public class BattleManager : MonoBehaviour
         if (enemy.ConsumeStaggerAtEnemyTurn())
         {
             ClearEnemyActionPlan();
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(
-                    $"{enemy.name}は体勢を崩して動けない！\n次のプレイヤーターンは体勢崩しの蓄積を休止する。", 0.5f)
-            );
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait(
+                $"{enemy.name}は体勢を崩して動けない！\n次のプレイヤーターンは体勢崩しの蓄積を休止する。",
+                dialogPauseDuration));
             yield break;
         }
 
-        bool isChargedAction = UsesChargedAttack(enemy) &&
-            enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
-            enemyActionPlan.remainingChargeTurns > 0 &&
-            enemyActionPlan.skill == enemy.data.telegraphedSkill;
+        bool isChargedAction = UsesChargedAttack(enemy) && enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
+            enemyActionPlan.remainingChargeTurns > 0 && enemyActionPlan.skill == enemy.data.telegraphedSkill;
         bool isBossHeavyAction = isChargedAction && UsesBossHeavyAttack(enemy);
         if (isChargedAction && !enemyActionPlan.isTelegraphed)
         {
@@ -1256,16 +1159,11 @@ public class BattleManager : MonoBehaviour
         {
             enemyActionPlan.remainingChargeTurns--;
             enemyActionPlan.isTelegraphed = false;
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(
-                    $"{enemy.name}は強力な一撃の構えを続けている！", 0.5f)
-            );
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait($"{enemy.name}は強力な一撃の構えを続けている！", dialogPauseDuration));
             yield break;
         }
 
-        // 敵が使うスキルを決める
         SkillData skill;
-
         if (!TryConsumeEnemyAction(out skill, out bool isInterrupted))
         {
             if (UsesEnemyActionPlan(enemy))
@@ -1275,92 +1173,61 @@ public class BattleManager : MonoBehaviour
             }
 
             skill = enemyAI.ChooseSkill(enemy, 0, player, UsesBossHeavyAttack(enemy));
-            if ((UsesEliteCharge(enemy) || ExpansionEnemyAction.UsesCharge(enemy)) &&
-                skill != null && skill == enemy.data.telegraphedSkill)
-                StartEnemyCharge(skill, 1);
+            if ((UsesEliteCharge(enemy) || ExpansionEnemyAction.UsesCharge(enemy)) && skill != null &&
+                skill == enemy.data.telegraphedSkill)
+            {
+                StartEnemyCharge(skill, SingleTurnCharge);
+            }
 
             if ((UsesBossHeavyAttack(enemy) && enemyAI.PendingBossHeavyAttack != null) ||
                 ((UsesEliteCharge(enemy) || ExpansionEnemyAction.UsesCharge(enemy)) && enemyActionPlan.isReady))
             {
-                yield return StartCoroutine(
-                    DialogTextManager.instance.ShowAndWait(
-                        $"{enemy.name}は強力な一撃を構えた！", 0.5f)
-                );
+                yield return StartCoroutine(DialogTextManager.instance.ShowAndWait($"{enemy.name}は強力な一撃を構えた！", dialogPauseDuration));
                 yield break;
             }
         }
 
         if (isBossHeavyAction && TankBossRoleAction.GetSealedSkills(enemy).Contains(skill))
+        {
             isInterrupted = true;
-        if (ExpansionEnemyAction.IsSealed(enemy, skill)) isInterrupted = true;
+        }
+
+        if (ExpansionEnemyAction.IsSealed(enemy, skill))
+        {
+            isInterrupted = true;
+        }
 
         if (isInterrupted)
         {
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(
-                    $"{skill.skillName}は中断された！\n{enemy.name}は行動できない！",
-                    0.5f
-                )
-            );
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait(
+                $"{skill.skillName}は中断された！\n{enemy.name}は行動できない！",
+                dialogPauseDuration));
             yield break;
         }
 
-        // nullなら通常攻撃
         if (skill == null)
         {
             float physicalMultiplier = enemy.BattleEffects.ConsumePhysicalMultiplier();
-            float finalAcc =
-                enemyBaseAccuracy -
-                enemy.GetAccuracyPenalty();
-
+            float finalAcc = enemyBaseAccuracy - enemy.GetAccuracyPenalty();
             finalAcc = Mathf.Clamp01(finalAcc);
-
-            bool hit =
-                DamageRule.RollHit(
-                    finalAcc,
-                    0f
-                );
-
+            bool hit = DamageRule.RollHit(finalAcc, 0f);
             if (!hit)
             {
-                yield return StartCoroutine(
-                    DialogTextManager.instance.ShowAndWait(
-                        "敵の攻撃！\nしかし外れた！", 0.5f
-                    )
-                );
-
+                yield return StartCoroutine(DialogTextManager.instance.ShowAndWait("敵の攻撃！\nしかし外れた！", dialogPauseDuration));
                 yield break;
             }
 
             SoundManager.instance.PlayButtonSE(1);
-
-            screenShakeTarget.DOShakePosition(
-                0.3f,
-                0.5f,
-                20,
-                0,
-                false,
-                true
-            );
-            
+            ShakeScreen();
             int normalDamage = DamageRule.CalcNormalAttack(enemy.at, player.def);
             normalDamage = Mathf.RoundToInt(normalDamage * physicalMultiplier);
             int dmg = player.TakeDirectDamage(normalDamage);
-
             playerUI.UpdateUI(player);
-
-            yield return StartCoroutine(
-                DialogTextManager.instance.ShowAndWait(
-                    $"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた", 0.5f
-                )
-            );
-
+            yield return StartCoroutine(DialogTextManager.instance.ShowAndWait($"敵の攻撃！\nプレイヤーは{dmg}ダメージ受けた", dialogPauseDuration));
             yield break;
         }
 
-        // スキルの対象を決める
         UnitBase target;
-
         if (skill.targetType == TargetType.Self)
         {
             target = enemy;
@@ -1370,88 +1237,58 @@ public class BattleManager : MonoBehaviour
             target = player;
         }
 
-        // スキル側の命中判定・Buff・Healなどは
-        // SkillExecutorに任せる
-        var result =
-            SkillExecutor.Execute(
-                enemy,
-                target,
-                skill,
-                0f
-            );
-
+        var result = SkillExecutor.Execute(enemy, target, skill, 0f);
         if (result.executed && result.hit)
         {
             PlaySkillEffect(
                 skill,
-                target == enemy ? enemy.transform.position : playerUI.GetSkillEffectPosition(mainCamera)
-            );
+                target == enemy ? enemy.transform.position : playerUI.GetSkillEffectPosition(mainCamera));
         }
 
         enemyUI.UpdateUI(enemy);
-
-        if (
-            result.hit &&
-            skill.targetType != TargetType.Self
-        )
+        if (result.hit && skill.targetType != TargetType.Self)
         {
             SoundManager.instance.PlayButtonSE(1);
-
-            screenShakeTarget.DOShakePosition(
-                0.3f,
-                0.5f,
-                20,
-                0,
-                false,
-                true
-            );
-        }
-
-        if (result.crit)
-        {
-            Debug.Log("クリティカル！");
+            ShakeScreen();
         }
 
         playerUI.UpdateUI(player);
-
-        yield return StartCoroutine(
-            DialogTextManager.instance.ShowAndWait(result.message, 0.5f)
-        );
+        yield return StartCoroutine(DialogTextManager.instance.ShowAndWait(result.message, dialogPauseDuration));
     }
 
+    private void ShakeScreen()
+    {
+        screenShakeTarget.DOShakePosition(
+            screenShakeDuration,
+            screenShakeStrength,
+            screenShakeVibrato,
+            0,
+            false,
+            true);
+    }
 
     IEnumerator EndBattle()
     {
         if (isEndingBattle)
+        {
             yield break;
+        }
 
         isEndingBattle = true;
         SkillVfx.Clear();
-
         ClearEnemyActionPlan();
         ClearPlayerSkillSelection();
         enemyAI?.ResetBattleState();
         isShowingEnemyTelegraph = false;
-
         playerActionMessages = null;
-
-        string deleteEnemyName =
-            enemy != null ? enemy.name : "敵";
-
-        // 戦闘終了中の入力を防ぐため、先に戦闘状態を解除する
+        string deleteEnemyName = enemy != null ? enemy.name : "敵";
         isBattleRunning = false;
         isPlayerTurn = false;
         waitingTap = false;
-
         skillSelectionPanel.SetActive(false);
         playerStatusPanel.SetActive(false);
-
-        DialogTextManager.instance.SetScenarios(new string[]
-        {
-            $"{deleteEnemyName}を倒した"
-        });
+        DialogTextManager.instance.SetScenarios(new string[] { $"{deleteEnemyName}を倒した" });
         enemyUI.gameObject.SetActive(false);
-
         if (enemy != null)
         {
             enemy.ClearCounter();
@@ -1469,31 +1306,26 @@ public class BattleManager : MonoBehaviour
 
         // Destroyが反映されてから次の敵を生成する
         yield return null;
-
         SoundManager.instance.PlayBGM("Quest");
-
-        Debug.Log("BattleManager：戦闘終了通知を送信");
         BattleEnded?.Invoke();
-
-        Debug.Log("戦闘終了");
         skillButton.SetActive(false);
     }
 
     public void DebugKillEnemy()
     {
         if (enemy == null)
+        {
             return;
+        }
 
         if (!isBattleRunning)
+        {
             return;
+        }
 
         enemy.TakeDamageRaw(enemy.hp);
-
-        // PlayerActByTapの入力待ちを解除して終了処理へ進める
         waitingTap = false;
         isPlayerTurn = false;
-
-        // 通常の戦闘終了処理へ
         StartCoroutine(EndBattle());
     }
 }

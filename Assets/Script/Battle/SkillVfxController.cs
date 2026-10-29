@@ -3,26 +3,51 @@ using UnityEngine;
 
 public sealed class SkillVfxController : MonoBehaviour
 {
+    private const float MinimumEffectDuration = 0.1f;
+    private const int EffectSortingOrder = 10;
+
     private readonly List<GameObject> effects = new List<GameObject>();
-    public int ActiveEffectCount { get { effects.RemoveAll(e => e == null); return effects.Count; } }
+
+    public int ActiveEffectCount
+    {
+        get
+        {
+            effects.RemoveAll(e => e == null);
+            return effects.Count;
+        }
+    }
 
     public GameObject Play(SkillData skill, Vector3 position)
     {
-        if (skill == null || skill.effectPrefab == null) return null;
-        position += (Vector3)skill.effectOffset; position.z = 0;
+        if (skill == null || skill.effectPrefab == null)
+        {
+            return null;
+        }
+
+        position += (Vector3)skill.effectOffset;
+        position.z = 0;
         GameObject effect = Instantiate(skill.effectPrefab, position, skill.effectPrefab.transform.rotation, transform);
         foreach (Renderer renderer in effect.GetComponentsInChildren<Renderer>(true))
         {
-            renderer.sortingLayerName = "Default"; renderer.sortingOrder = 10;
+            renderer.sortingLayerName = "Default";
+            renderer.sortingOrder = EffectSortingOrder;
         }
+
         effects.Add(effect);
-        Destroy(effect, Mathf.Max(.1f, skill.effectDuration));
+        Destroy(effect, Mathf.Max(MinimumEffectDuration, skill.effectDuration));
         return effect;
     }
 
     public void Clear()
     {
-        foreach (GameObject effect in effects) if (effect != null) Destroy(effect);
+        foreach (GameObject effect in effects)
+        {
+            if (effect != null)
+            {
+                Destroy(effect);
+            }
+        }
+
         effects.Clear();
     }
 

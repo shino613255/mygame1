@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSelectButton : MonoBehaviour
@@ -9,6 +7,8 @@ public class PlayerSelectButton : MonoBehaviour
     public void OnClick()
     {
         if (PlayerSelectionManager.Instance != null)
+        {
             PlayerSelectionManager.Instance.SelectPlayer(playerData);
+        }
     }
 }

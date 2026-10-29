@@ -6,67 +6,29 @@ public static class DamageRule
     private const int NormalAttackPower = 100;
     private const int MinDamage = 1;
 
-    public static int CalcNormalAttack(
-        int atk,
-        int def
-    )
+    public static int CalcNormalAttack(int atk, int def)
     {
-        return CalcPhysical(
-            atk,
-            def,
-            NormalAttackPower
-        );
+        return CalcPhysical(atk, def, NormalAttackPower);
     }
 
-    public static int CalcPhysical(
-        int atk,
-        int def,
-        int skillPower
-    )
+    public static int CalcPhysical(int atk, int def, int skillPower)
     {
         float safeDef = Mathf.Max(1, def);
-
-        int damage =
-            Mathf.RoundToInt(
-                Mathf.Sqrt(
-                    skillPower * atk / safeDef
-                )
-                * DamageConstant
-            );
-
-        return Mathf.Max(
-            MinDamage,
-            damage
-        );
+        int damage = Mathf.RoundToInt(Mathf.Sqrt(skillPower * atk / safeDef) * DamageConstant);
+        return Mathf.Max(MinDamage, damage);
     }
 
-    public static int CalcMagic(
-        int mag,
-        int mdef,
-        int skillPower
-    )
+    public static int CalcMagic(int mag, int mdef, int skillPower)
     {
         float safeMdef = Mathf.Max(1, mdef);
-
-        int damage =
-            Mathf.RoundToInt(
-                Mathf.Sqrt(
-                    skillPower * mag / safeMdef
-                )
-                * DamageConstant
-            );
-
-        return Mathf.Max(
-            MinDamage,
-            damage
-        );
+        int damage = Mathf.RoundToInt(Mathf.Sqrt(skillPower * mag / safeMdef) * DamageConstant);
+        return Mathf.Max(MinDamage, damage);
     }
 
     public static float CalcHitChance(float accuracy, float evasion, float finalAccuracyBonus = 0f)
     {
         accuracy = Mathf.Clamp01(accuracy);
         evasion = Mathf.Clamp01(evasion);
-
         return Mathf.Clamp01(accuracy - evasion + finalAccuracyBonus);
     }
 
@@ -78,10 +40,11 @@ public static class DamageRule
     public static int RollCrit(int baseDamage, float rate, float bonusMultiplier = 1.5f, int minDamage = 1)
     {
         rate = Mathf.Clamp01(rate);
-
         baseDamage = Mathf.Max(minDamage, baseDamage);
-
-        if (Random.value >= rate) return baseDamage;
+        if (Random.value >= rate)
+        {
+            return baseDamage;
+        }
 
         int crit = Mathf.RoundToInt(baseDamage * bonusMultiplier);
         return Mathf.Max(minDamage, crit);

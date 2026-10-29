@@ -3,35 +3,45 @@ using System.Collections;
 using UnityEngine;
 
 public class PlayerManager : UnitBase
-{ 
+{
+    private const int MaxSkillCount = 6;
+
     [Header("Skill Panel")]
     [SerializeField] private SkillSlotUI[] skillSlots;
     [SerializeField] private UnityEngine.UI.Image portraitView;
     [SerializeField] private SkillPanelPager skillPager;
 
     public PlayerData Data { get; private set; }
-    public PlayerRole Role => Data != null ? Data.role : PlayerRole.Mage;
-    public PlayerBattleState BattleEffects { get; } = new PlayerBattleState();
-    public IReadOnlyList<SkillData> Skills => currentSkills;
-    public bool HasSkill(SkillData skill) => skill != null && currentSkills.Contains(skill);
 
-    private List<SkillData> currentSkills = new List<SkillData>();                                      
-    private SkillData currentSkill;                                                                         
-    private bool acted;                                                                                     
-    private EnemyManager targetEnemy;                                                                       
+    public PlayerRole Role => Data != null ? Data.role : PlayerRole.Mage;
+
+    public PlayerBattleState BattleEffects { get; } = new PlayerBattleState();
+
+    public IReadOnlyList<SkillData> Skills => currentSkills;
+
+    public bool HasSkill(SkillData skill) => skill != null && currentSkills.Contains(skill);
+    private List<SkillData> currentSkills = new List<SkillData>();
+    private SkillData currentSkill;
+    private bool acted;
+    private EnemyManager targetEnemy;
     public bool useSkill = false;
 
     [Header("Poison")]
     private bool isPoisoned = false;
     private StatusEffectData poisonEffect;
     private int remainingPoisonTurns;
+
     public bool IsPoisoned => isPoisoned;
 
     [Header("Growth Rewards")]
-    [SerializeField, Range(0f, 1f)] private float lifeDrainHealRate = 0.05f;
-    [SerializeField, Min(1f)] private float focusedAttackSecondHitMultiplier = 1.2f;
-    [SerializeField, Min(1f)] private float focusedAttackThirdHitMultiplier = 1.4f;
-    [SerializeField, Range(0f, 1f)] private float precisionShotAccuracyBonus = 0.1f;
+    [SerializeField, Range(0f, 1f)]
+    private float lifeDrainHealRate = 0.05f;
+    [SerializeField, Min(1f)]
+    private float focusedAttackSecondHitMultiplier = 1.2f;
+    [SerializeField, Min(1f)]
+    private float focusedAttackThirdHitMultiplier = 1.4f;
+    [SerializeField, Range(0f, 1f)]
+    private float precisionShotAccuracyBonus = 0.1f;
     private readonly HashSet<GrowthRewardId> acquiredGrowthRewards = new HashSet<GrowthRewardId>();
     private readonly HashSet<BodyPart> lifeDrainTriggeredParts = new HashSet<BodyPart>();
     private EnemyManager focusedAttackEnemy;
@@ -39,7 +49,9 @@ public class PlayerManager : UnitBase
     private int focusedAttackHitCount;
 
     public bool HasLifeDrainReward => HasGrowthReward(GrowthRewardId.LifeDrain);
+
     public bool HasFocusedAttackReward => HasGrowthReward(GrowthRewardId.FocusedAttack);
+
     public bool HasPrecisionShotReward => HasGrowthReward(GrowthRewardId.PrecisionShot);
 
     public void Setup(PlayerData data)
@@ -47,10 +59,16 @@ public class PlayerManager : UnitBase
         ResetGrowthRewards();
         ResetBattleState();
         var cooldowns = GetComponent<SkillCooldowns>();
-        if (cooldowns == null) cooldowns = gameObject.AddComponent<SkillCooldowns>();
-        cooldowns.Clear();
+        if (cooldowns == null)
+        {
+            cooldowns = gameObject.AddComponent<SkillCooldowns>();
+        }
 
-        if (data == null) return;                                                                          
+        cooldowns.Clear();
+        if (data == null)
+        {
+            return;
+        }
 
         Data = data;
         RemovePoison();
@@ -60,8 +78,7 @@ public class PlayerManager : UnitBase
             portraitView.enabled = data.portrait != null;
         }
 
-        name = data.playerName;                                                                            
-
+        name = data.playerName;
         this.maxHp = data.startMaxHp;
         this.hp = data.startMaxHp;
         this.maxMp = data.startMaxMp;
@@ -70,19 +87,13 @@ public class PlayerManager : UnitBase
         this.mag = data.startMag;
         this.def = data.startDef;
         this.mdef = data.startMdef;
-
-
-        Debug.Log($"[完了] {data.playerName}のステータスを同期しましたわ！ (AT:{this.at})");
-
-        currentSkills.Clear();                                                                              
-
-        if (data.startSkills != null)                                                                         
+        currentSkills.Clear();
+        if (data.startSkills != null)
         {
-            currentSkills.AddRange(data.startSkills);                                               
+            currentSkills.AddRange(data.startSkills);
         }
 
-        UpdateSkillPanel();                                                                         
-        Debug.Log("初期スキル数: " + currentSkills.Count);
+        UpdateSkillPanel();
     }
 
     public void RestoreHpAndMp()
@@ -91,16 +102,11 @@ public class PlayerManager : UnitBase
         mp = maxMp;
     }
 
-    public bool ApplyPoison(
-    StatusEffectData effect
-)
+    public bool ApplyPoison(StatusEffectData effect)
     {
         if (effect == null)
         {
-            Debug.LogWarning(
-                "PoisonのStatusEffectDataがnullです"
-            );
-
+            Debug.LogWarning("PoisonのStatusEffectDataがnullです");
             return false;
         }
 
@@ -110,45 +116,35 @@ public class PlayerManager : UnitBase
         }
 
         if (isPoisoned)
+        {
             return false;
+        }
 
         isPoisoned = true;
         poisonEffect = effect;
         remainingPoisonTurns = Mathf.Max(1, effect.durationTurns);
-
-        Debug.Log(
-            $"プレイヤーが毒状態になった！ " +
-            $"ダメージ率:{effect.tickHpRate * 100f}%"
-        );
-
         return true;
     }
-
 
     public int TickPoisonDamage()
     {
         if (!isPoisoned)
+        {
             return 0;
+        }
 
         if (poisonEffect == null)
+        {
             return 0;
+        }
 
-        int damage =
-            poisonEffect.CalcTickDamage(maxHp);
-
-        hp = Mathf.Clamp(
-            hp - damage,
-            0,
-            maxHp
-        );
-
-        Debug.Log(
-            $"毒ダメージ:{damage} HP:{hp}/{maxHp}"
-        );
-
+        int damage = poisonEffect.CalcTickDamage(maxHp);
+        hp = Mathf.Clamp(hp - damage, 0, maxHp);
         remainingPoisonTurns--;
         if (remainingPoisonTurns <= 0)
+        {
             RemovePoison();
+        }
 
         return damage;
     }
@@ -158,28 +154,29 @@ public class PlayerManager : UnitBase
         isPoisoned = false;
         poisonEffect = null;
         remainingPoisonTurns = 0;
-
-        Debug.Log("毒状態が解除された");
     }
 
     public void SelectSkill(SkillData skill)
     {
-        if (skill == null) return;                                                                                  
+        if (skill == null)
+        {
+            return;
+        }
 
-        currentSkill = skill;                                                                                  
+        currentSkill = skill;
         useSkill = true;
-
-        Debug.Log("スキル「" + skill.skillName + "」を選択しました");
     }
 
     public void AddSkill(SkillData skill)
     {
-        if (skill == null || currentSkills.Count >= 6 || currentSkills.Contains(skill) || !SkillUseRules.IsAllowedForRole(skill, Role)) return;
+        if (skill == null || currentSkills.Count >= MaxSkillCount || currentSkills.Contains(skill) ||
+            !SkillUseRules.IsAllowedForRole(skill, Role))
+        {
+            return;
+        }
 
-        currentSkills.Add(skill);                                                                   
-        UpdateSkillPanel();                                                                                     
-
-        Debug.Log("スキル「" + skill.skillName + "」を習得しました");
+        currentSkills.Add(skill);
+        UpdateSkillPanel();
     }
 
     public void EnhanceMagicAttackRate(float rate)
@@ -222,9 +219,7 @@ public class PlayerManager : UnitBase
     public void EnhanceMaxHpRate(float rate)
     {
         int oldMaxHp = maxHp;
-
         maxHp = Mathf.RoundToInt(maxHp * rate);
-
         int increase = maxHp - oldMaxHp;
         hp += increase;
     }
@@ -246,28 +241,27 @@ public class PlayerManager : UnitBase
 
     public float GetPrecisionShotAccuracyBonus()
     {
-        return HasPrecisionShotReward
-            ? precisionShotAccuracyBonus
-            : 0f;
+        return HasPrecisionShotReward ? precisionShotAccuracyBonus : 0f;
     }
 
     public float GetFocusedAttackPartDamageMultiplier(EnemyManager enemy, BodyPart part)
     {
         if (!HasFocusedAttackReward || enemy == null || part == null || part.IsBroken)
+        {
             return 1f;
+        }
 
         if (focusedAttackEnemy != enemy || focusedAttackPart != part || focusedAttackHitCount <= 0)
+        {
             return 1f;
+        }
 
-        return focusedAttackHitCount == 1
-            ? focusedAttackSecondHitMultiplier
-            : focusedAttackThirdHitMultiplier;
+        return focusedAttackHitCount == 1 ? focusedAttackSecondHitMultiplier : focusedAttackThirdHitMultiplier;
     }
 
     public void RecordFocusedAttackResult(EnemyManager enemy, BodyPart part, int actualPartDamage)
     {
-        if (!HasFocusedAttackReward || enemy == null || part == null ||
-            actualPartDamage <= 0 || part.IsBroken)
+        if (!HasFocusedAttackReward || enemy == null || part == null || actualPartDamage <= 0 || part.IsBroken)
         {
             ResetFocusedAttackChain();
             return;
@@ -294,15 +288,18 @@ public class PlayerManager : UnitBase
     public int TryRecoverHpFromPartBreak(BodyPart part)
     {
         if (!HasLifeDrainReward || part == null || !part.canBreak || !part.IsBroken)
+        {
             return 0;
+        }
 
         if (!lifeDrainTriggeredParts.Add(part))
+        {
             return 0;
+        }
 
         int healAmount = Mathf.Max(1, Mathf.RoundToInt(maxHp * lifeDrainHealRate));
         int hpBefore = hp;
         hp = Mathf.Min(maxHp, hp + healAmount);
-
         return hp - hpBefore;
     }
 
@@ -313,19 +310,24 @@ public class PlayerManager : UnitBase
         ResetFocusedAttackChain();
     }
 
-    private void UpdateSkillPanel()                                                                           
+    private void UpdateSkillPanel()
     {
         if (skillPager != null)
         {
             skillPager.Bind(this);
             return;
         }
-        if (skillSlots == null) return;
+
+        if (skillSlots == null)
+        {
+            return;
+        }
+
         for (int i = 0; i < skillSlots.Length; i++)
         {
             if (i < currentSkills.Count)
             {
-                skillSlots[i].SetSkill(currentSkills[i], this);                                    
+                skillSlots[i].SetSkill(currentSkills[i], this);
             }
             else
             {
@@ -334,30 +336,21 @@ public class PlayerManager : UnitBase
         }
     }
 
-    public override IEnumerator Act()                                                                           
-    {  
-        Debug.Log("プレイヤーの行動（入力待ち）");
-
+    public override IEnumerator Act()
+    {
         acted = false;
-
-        // 現在は1対1戦闘前提のため、シーン内のEnemyManagerを1体取得
-        targetEnemy = UnityEngine.Object.FindAnyObjectByType<EnemyManager>();                                   
-        if (targetEnemy == null)                                                                                                            
+        targetEnemy = UnityEngine.Object.FindAnyObjectByType<EnemyManager>();
+        if (targetEnemy == null)
         {
             acted = true;
             yield break;
         }
 
-        // プレイヤーがスキルや攻撃対象を選択して行動を確定するまで待機
-        while (!acted)                                                                                         
+        while (!acted)
         {
-            yield return null;                                                                               
+            yield return null;
         }
 
         yield break;
-    }
-    void Update()
-    {
-           
     }
 }

@@ -2,283 +2,272 @@ using UnityEngine;
 
 public static class SkillExecutor
 {
+    private const float DefaultCriticalRate = 0.03f;
+    private const float CriticalDamageMultiplier = 1.5f;
+    private const int ManaLevyAmount = 10;
+    private const float GuardReduction = 0.5f;
+    private const float FirstAidHealRate = 0.12f;
+    private const float WarCryHealRate = 0.15f;
+    private const float RenewalHealRate = 0.15f;
+
     public struct Result
     {
-        public bool executed;       
-        public bool hit;            
-        public bool crit;           
-        public int value;   // ダメージ量や回復量などの値
-        public string message;      
+        public bool executed;
+        public bool hit;
+        public bool crit;
+        public int value;
+        public string message;
     }
 
-    public static Result Execute(
-        UnitBase attacker,          　　　　　　　　　　　　                                                                                                
-        UnitBase target,                                                                                                                                   
-        SkillData skill,                                                                                                                                   
-        float targetEvasion = 0f                                                                                                                            
-        )
+    public static Result Execute(UnitBase attacker, UnitBase target, SkillData skill, float targetEvasion = 0f)
     {
-        var r = new Result
-        {                                                                                                                                                   
-            executed = false, 
-            hit = false, 
-            crit = false, 
-            value = 0, 
-            message = "" 
+        var result = new Result
+        {
+            executed = false,
+            hit = false,
+            crit = false,
+            value = 0,
+            message = ""
         };
-
-        if (attacker == null || target == null || skill == null) return r;
+        if (attacker == null || target == null || skill == null)
+        {
+            return result;
+        }
 
         if (skill.skillType == SkillType.Counter &&
-            (target is not EnemyManager counterTarget || counterTarget != attacker ||
-             !counterTarget.CanActivateCounter))
+            (target is not EnemyManager counterTarget || counterTarget != attacker || !counterTarget.CanActivateCounter))
         {
-            r.message = "今はカウンターを使えない！";
-            return r;
+            result.message = "今はカウンターを使えない！";
+            return result;
         }
 
         if (!SkillUseRules.TryPay(attacker, target, skill, out string useError))
         {
-            r.message = useError;
-            return r;
+            result.message = useError;
+            return result;
         }
 
-        var cds = attacker.GetComponent<SkillCooldowns>();
-
-        if (cds != null && !cds.IsReady(skill))                                                                                                             
+        var cooldowns = attacker.GetComponent<SkillCooldowns>();
+        if (cooldowns != null && !cooldowns.IsReady(skill))
         {
-            r.message = $"{skill.skillName} はクールダウン中！";
-            return r;
+            result.message = $"{skill.skillName} はクールダウン中！";
+            return result;
         }
 
-        r.executed = true;                                                                                                                                  
-
-        if (ExecuteNewSelfSkill(attacker, skill, ref r))
+        result.executed = true;
+        if (ExecuteNewSelfSkill(attacker, skill, ref result))
         {
-            cds?.StartCooldown(skill);
-            return r;
+            cooldowns?.StartCooldown(skill);
+            return result;
         }
 
         float attackMultiplier = skill.skillType == SkillType.Physical && attacker is EnemyManager boostedEnemy
-            ? boostedEnemy.BattleEffects.ConsumePhysicalMultiplier() : 1f;
-
-        bool needHitCheck = (skill.skillType == SkillType.Physical || skill.skillType == SkillType.Magic || skill.skillType == SkillType.Debuff);           
-
-        if (!needHitCheck || DamageRule.RollHit(skill.accuracy, targetEvasion))                                                                             
+            ? boostedEnemy.BattleEffects.ConsumePhysicalMultiplier()
+            : 1f;
+        bool needHitCheck = (skill.skillType == SkillType.Physical || skill.skillType == SkillType.Magic ||
+            skill.skillType == SkillType.Debuff);
+        if (!needHitCheck || DamageRule.RollHit(skill.accuracy, targetEvasion))
         {
-            r.hit = true;
+            result.hit = true;
         }
         else
         {
-            r.hit = false;
-            r.message = $"{attacker.name}の{skill.skillName}！\nしかし外れた！";
-            if (cds != null) cds.StartCooldown(skill);                                                                                                                                                                                                       
-            return r;
+            result.hit = false;
+            result.message = $"{attacker.name}の{skill.skillName}！\nしかし外れた！";
+            if (cooldowns != null)
+            {
+                cooldowns.StartCooldown(skill);
+            }
+
+            return result;
         }
 
         switch (skill.skillType)
         {
             case SkillType.Counter:
                 ((EnemyManager)target).ActivateCounter();
-                r.message = $"{attacker.name}はカウンターを構えた！\n次のプレイヤーターン終了までダメージを反射する。";
+                result.message = $"{attacker.name}はカウンターを構えた！\n次のプレイヤーターン終了までダメージを反射する。";
                 break;
             case SkillType.Physical:
+            {
+                int baseDamage = DamageRule.CalcPhysical(attacker.at, target.def, skill.power);
+                if (skill.canCrit)
                 {
-                    int baseDmg =
-                        DamageRule.CalcPhysical(
-                            attacker.at,
-                            target.def,
-                            skill.power
-                        );                                  
-
-                    if (skill.canCrit)
-                    {
-                        float rate = Mathf.Clamp01(0.03f + skill.critBonus);
-                        // クリティカル時は1.5倍
-                        int after = DamageRule.RollCrit(baseDmg, rate, 1.5f, 1);                                                                           
-                        r.crit = after != baseDmg;
-                        baseDmg = after;
-                    }
-
-                    baseDmg = Mathf.Max(1, Mathf.RoundToInt(baseDmg * attackMultiplier));
-                    r.value = target is PlayerManager physicalTarget
-                        ? physicalTarget.TakeDirectDamage(baseDmg)
-                        : target.TakeDamageRaw(baseDmg, false);
-                    r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}ダメージ！";
-                    break;
+                    float rate = Mathf.Clamp01(DefaultCriticalRate + skill.critBonus);
+                    int criticalDamage = DamageRule.RollCrit(baseDamage, rate, CriticalDamageMultiplier, 1);
+                    result.crit = criticalDamage != baseDamage;
+                    baseDamage = criticalDamage;
                 }
+
+                baseDamage = Mathf.Max(1, Mathf.RoundToInt(baseDamage * attackMultiplier));
+                result.value = target is PlayerManager physicalTarget
+                    ? physicalTarget.TakeDirectDamage(baseDamage)
+                    : target.TakeDamageRaw(baseDamage, false);
+                result.message = $"{attacker.name}の{skill.skillName}！\n{result.value}ダメージ！";
+                break;
+            }
+
             case SkillType.Magic:
+            {
+                int baseDamage = DamageRule.CalcMagic(attacker.mag, target.mdef, skill.power);
+                if (skill.canCrit)
                 {
-                    int baseDmg =
-                        DamageRule.CalcMagic(
-                            attacker.mag,
-                            target.mdef,
-                            skill.power
-                        );
-
-                    if (skill.canCrit)
-                    {
-                        float rate = Mathf.Clamp01(0.03f + skill.critBonus);
-                        int after = DamageRule.RollCrit(baseDmg, rate, 1.5f, 1);
-                        r.crit = after != baseDmg;
-                        baseDmg = after;
-                    }
-
-                    r.value = target is PlayerManager magicTarget
-                        ? magicTarget.TakeDirectDamage(baseDmg, true)
-                        : target.TakeDamageRaw(baseDmg, true);
-                    r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}ダメージ！";
-                    if (skill.id == SkillId.Auditor_ManaLevy)
-                    {
-                        int drained = Mathf.Min(10, target.mp);
-                        target.mp -= drained;
-                        r.message += $"\nMPを{drained}失った！";
-                    }
-                    break;
+                    float rate = Mathf.Clamp01(DefaultCriticalRate + skill.critBonus);
+                    int criticalDamage = DamageRule.RollCrit(baseDamage, rate, CriticalDamageMultiplier, 1);
+                    result.crit = criticalDamage != baseDamage;
+                    baseDamage = criticalDamage;
                 }
+
+                result.value = target is PlayerManager magicTarget
+                    ? magicTarget.TakeDirectDamage(baseDamage, true)
+                    : target.TakeDamageRaw(baseDamage, true);
+                result.message = $"{attacker.name}の{skill.skillName}！\n{result.value}ダメージ！";
+                if (skill.id == SkillId.Auditor_ManaLevy)
+                {
+                    int drained = Mathf.Min(ManaLevyAmount, target.mp);
+                    target.mp -= drained;
+                    result.message += $"\nMPを{drained}失った！";
+                }
+
+                break;
+            }
+
             case SkillType.Heal:
-                {
-                    int heal = Mathf.Max(1, skill.power + Mathf.RoundToInt(attacker.mag * skill.multiplier));                                               
-                    r.value = Heal(target, heal);                                                                                                           
-                    r.message = $"{attacker.name}の{skill.skillName}！\n{r.value}回復！";
-                    break;
-                }
+            {
+                int heal = Mathf.Max(1, skill.power + Mathf.RoundToInt(attacker.mag * skill.multiplier));
+                result.value = Heal(target, heal);
+                result.message = $"{attacker.name}の{skill.skillName}！\n{result.value}回復！";
+                break;
+            }
+
             case SkillType.RecoverMp:
-                {
-                    int beforeMp = target.mp;
+            {
+                int beforeMp = target.mp;
+                target.RecoverMp(skill.power);
+                result.value = target.mp - beforeMp;
+                result.message = $"{attacker.name}の{skill.skillName}！\nMPが{result.value}回復！";
+                break;
+            }
 
-                    target.RecoverMp(skill.power);
-
-                    r.value = target.mp - beforeMp;
-
-                    r.message =
-                        $"{attacker.name}の{skill.skillName}！\nMPが{r.value}回復！";
-
-                    break;
-                }
             case SkillType.Buff:
-                r.message = $"{skill.skillName}!";
-                ApplyBuff(target, skill, ref r);
+                result.message = $"{skill.skillName}!";
+                ApplyBuff(target, skill, ref result);
                 break;
             case SkillType.Debuff:
-                {
-                    r.message = $"{attacker.name}の{skill.skillName}！";
-                    ApplyDebuff(target, skill, ref r);
-                    break;
-                }
+            {
+                result.message = $"{attacker.name}の{skill.skillName}！";
+                ApplyDebuff(target, skill, ref result);
+                break;
+            }
         }
 
-        ApplyStatusEffect(attacker, target, skill, ref r);
+        ApplyStatusEffect(attacker, target, skill, ref result);
+        if (cooldowns != null)
+        {
+            cooldowns.StartCooldown(skill);
+        }
 
-        if (cds != null) cds.StartCooldown(skill);
-
-        return r;
+        return result;
     }
-    private static void ApplyBuff(
-    UnitBase target,
-    SkillData skill,
-    ref Result r)
+
+    private static void ApplyBuff(UnitBase target, SkillData skill, ref Result result)
     {
         if (skill.buff == null)
+        {
             return;
+        }
 
         if (target is not EnemyManager enemy)
+        {
             return;
+        }
 
         switch (skill.buff.type)
         {
             case BuffType.DefenseUp:
-                enemy.ApplyDefenseBuff(
-                    skill.buff
-                );
-
-                r.message += "\n防御力が上がった！";
+                enemy.ApplyDefenseBuff(skill.buff);
+                result.message += "\n防御力が上がった！";
                 break;
-
             case BuffType.MagicDefenseUp:
-                enemy.ApplyMagicDefenseBuff(
-                    skill.buff
-                );
-
-                r.message += "\n魔法防御力が上がった！";
+                enemy.ApplyMagicDefenseBuff(skill.buff);
+                result.message += "\n魔法防御力が上がった！";
                 break;
         }
     }
 
-    private static void ApplyDebuff(
-    UnitBase target,
-    SkillData skill,
-    ref Result r)
+    private static void ApplyDebuff(UnitBase target, SkillData skill, ref Result result)
     {
         if (skill.debuff == null)
+        {
             return;
+        }
 
         if (Random.value > skill.applyChance)
         {
-            r.message += "\nデバフは効かなかった！";
+            result.message += "\nデバフは効かなかった！";
             return;
         }
 
         if (target is not EnemyManager enemy)
+        {
             return;
+        }
 
         switch (skill.debuff.type)
         {
             case DebuffType.Deficiency:
-                r.message += "\n欠損させた！";
+                result.message += "\n欠損させた！";
                 break;
         }
     }
 
-    private static void ApplyStatusEffect(UnitBase attacker, UnitBase target, SkillData skill, ref Result r)                                                    
+    private static void ApplyStatusEffect(UnitBase attacker, UnitBase target, SkillData skill, ref Result result)
     {
-        if (skill.statusEffect == null) return;
+        if (skill.statusEffect == null)
+        {
+            return;
+        }
 
-        if (Random.value > skill.applyChance) return;
+        if (Random.value > skill.applyChance)
+        {
+            return;
+        }
 
         if (target is EnemyManager enemy)
         {
             if (skill.statusEffect.type == StatusEffectType.Burn)
             {
-                bool applied = enemy.ApplyBurn(
-                    skill.statusEffect
-                );
-
+                bool applied = enemy.ApplyBurn(skill.statusEffect);
                 if (applied)
                 {
-                    r.message += "\n火傷を与えた！";
+                    result.message += "\n火傷を与えた！";
                 }
                 else
                 {
-                    r.message += "\n別の状態異常が有効なため、火傷は付与されなかった！";
+                    result.message += "\n別の状態異常が有効なため、火傷は付与されなかった！";
                 }
             }
         }
 
         if (target is PlayerManager player)
         {
-            if (
-                skill.statusEffect.type ==
-                StatusEffectType.Poison
-            )
+            if (skill.statusEffect.type == StatusEffectType.Poison)
             {
-                bool applied =
-                    player.ApplyPoison(
-                        skill.statusEffect
-                    );
-
+                bool applied = player.ApplyPoison(skill.statusEffect);
                 if (applied)
                 {
-                    r.message +=
-                        "\n毒状態になった！";
+                    result.message += "\n毒状態になった！";
                 }
             }
         }
     }
+
     public static void PreparePlayerAttack(PlayerManager player, ref AttackContext context)
     {
         float multiplier = player.BattleEffects.ConsumeAttackEffects(
-            context.sourceSkill, out float aimAccuracy, out float aimPartMultiplier);
+            context.sourceSkill,
+            out float aimAccuracy,
+            out float aimPartMultiplier);
         context.baseDamage = Mathf.Max(1, Mathf.RoundToInt(context.baseDamage * multiplier));
         context.accuracyBonus = player.GetPrecisionShotAccuracyBonus() + aimAccuracy;
         context.preparedPartDamageMultiplier = aimPartMultiplier;
@@ -289,7 +278,7 @@ public static class SkillExecutor
         switch (skill.id)
         {
             case SkillId.Common_Guard:
-                ((PlayerManager)user).BattleEffects.GrantGuard(0.5f);
+                ((PlayerManager)user).BattleEffects.GrantGuard(GuardReduction);
                 break;
             case SkillId.Common_Aim:
                 ((PlayerManager)user).BattleEffects.GrantAim();
@@ -298,10 +287,10 @@ public static class SkillExecutor
                 ((PlayerManager)user).RemovePoison();
                 break;
             case SkillId.Common_FirstAid:
-                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * 0.12f)));
+                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * FirstAidHealRate)));
                 break;
             case SkillId.Berserker_WarCry:
-                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * 0.15f)));
+                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * WarCryHealRate)));
                 ((PlayerManager)user).BattleEffects.GrantWarCry();
                 break;
             case SkillId.Raider_BloodFury:
@@ -311,7 +300,7 @@ public static class SkillExecutor
                 ((EnemyManager)user).BattleEffects.GrantWard();
                 break;
             case SkillId.Pilgrim_Renewal:
-                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * 0.15f)));
+                result.value = Heal(user, Mathf.Max(1, Mathf.RoundToInt(user.maxHp * RenewalHealRate)));
                 break;
             default:
                 return false;
@@ -319,15 +308,23 @@ public static class SkillExecutor
 
         result.hit = true;
         result.message = $"{user.name}の{skill.skillName}！";
-        if (result.value > 0) result.message += $"\nHPを{result.value}回復した！";
-        if (user is PlayerManager player) player.ResetFocusedAttackChain();
+        if (result.value > 0)
+        {
+            result.message += $"\nHPを{result.value}回復した！";
+        }
+
+        if (user is PlayerManager player)
+        {
+            player.ResetFocusedAttackChain();
+        }
+
         return true;
     }
 
     private static int Heal(UnitBase target, int amount)
     {
         int before = target.hp;
-        target.hp = Mathf.Min(target.maxHp, target.hp + amount);                                                                                                
-        return target.hp - before;                                                                                                                             
+        target.hp = Mathf.Min(target.maxHp, target.hp + amount);
+        return target.hp - before;
     }
 }
