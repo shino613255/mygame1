@@ -4979,7 +4979,7 @@ RectTransform:
   m_GameObject: {fileID: 1090327803}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1685071482}
@@ -4987,7 +4987,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 15, y: 220}
-  m_SizeDelta: {x: 140, y: 180}
+  m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &1105466555
 GameObject:
@@ -5246,6 +5246,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29983a571e6bb6c4a85d6763ff85e718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battlePauseDuration: 0.5
+  dialogPauseDuration: 0.5
+  screenShakeDuration: 0.3
+  screenShakeStrength: 0.5
+  screenShakeVibrato: 20
   mainCamera: {fileID: 0}
   playerBaseAccuracy: 1
   enemyBaseAccuracy: 1
@@ -9261,7 +9266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2771837336197602281, guid: d1f6f00adf8abcc4f96efefa3786b2ab, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3439524254079096891, guid: d1f6f00adf8abcc4f96efefa3786b2ab, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size

@@ -44,10 +44,6 @@ public class EnemyAI : MonoBehaviour
         }
 
         List<SkillData> pool = new();
-        if (enemy.data.attackSkill != null)
-        {
-            pool.Add(enemy.data.attackSkill);
-        }
 
         if (enemy.data.skillList != null)
         {

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 
 public class PlayerManager : UnitBase
@@ -21,10 +20,6 @@ public class PlayerManager : UnitBase
 
     public bool HasSkill(SkillData skill) => skill != null && currentSkills.Contains(skill);
     private List<SkillData> currentSkills = new List<SkillData>();
-    private SkillData currentSkill;
-    private bool acted;
-    private EnemyManager targetEnemy;
-    public bool useSkill = false;
 
     [Header("Poison")]
     private bool isPoisoned = false;
@@ -58,13 +53,14 @@ public class PlayerManager : UnitBase
     {
         ResetGrowthRewards();
         ResetBattleState();
+
         var cooldowns = GetComponent<SkillCooldowns>();
         if (cooldowns == null)
         {
             cooldowns = gameObject.AddComponent<SkillCooldowns>();
         }
-
         cooldowns.Clear();
+
         if (data == null)
         {
             return;
@@ -156,29 +152,6 @@ public class PlayerManager : UnitBase
         remainingPoisonTurns = 0;
     }
 
-    public void SelectSkill(SkillData skill)
-    {
-        if (skill == null)
-        {
-            return;
-        }
-
-        currentSkill = skill;
-        useSkill = true;
-    }
-
-    public void AddSkill(SkillData skill)
-    {
-        if (skill == null || currentSkills.Count >= MaxSkillCount || currentSkills.Contains(skill) ||
-            !SkillUseRules.IsAllowedForRole(skill, Role))
-        {
-            return;
-        }
-
-        currentSkills.Add(skill);
-        UpdateSkillPanel();
-    }
-
     public void EnhanceMagicAttackRate(float rate)
     {
         mag = Mathf.RoundToInt(mag * rate);
@@ -211,22 +184,12 @@ public class PlayerManager : UnitBase
         return base.TakeDamageRaw(BattleEffects.ReduceDirectDamage(damage), isMagic);
     }
 
-    public override int TakePhysical(int attackerAtk)
-    {
-        return TakeDirectDamage(DamageRule.CalcNormalAttack(attackerAtk, def));
-    }
-
     public void EnhanceMaxHpRate(float rate)
     {
         int oldMaxHp = maxHp;
         maxHp = Mathf.RoundToInt(maxHp * rate);
         int increase = maxHp - oldMaxHp;
         hp += increase;
-    }
-
-    public bool TryAcquireLifeDrainReward()
-    {
-        return TryAcquireGrowthReward(GrowthRewardId.LifeDrain);
     }
 
     public bool HasGrowthReward(GrowthRewardId rewardId)
@@ -334,23 +297,5 @@ public class PlayerManager : UnitBase
                 skillSlots[i].SetSkill(null, this);
             }
         }
-    }
-
-    public override IEnumerator Act()
-    {
-        acted = false;
-        targetEnemy = UnityEngine.Object.FindAnyObjectByType<EnemyManager>();
-        if (targetEnemy == null)
-        {
-            acted = true;
-            yield break;
-        }
-
-        while (!acted)
-        {
-            yield return null;
-        }
-
-        yield break;
     }
 }

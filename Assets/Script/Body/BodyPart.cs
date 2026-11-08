@@ -48,7 +48,6 @@ public class BodyPart : MonoBehaviour
             colliderLine.enabled = false;
     }
 
-    // PolygonCollider2Dの形状をLineRendererで可視化する
     private void CreateColliderLine()
     {
         if (partCollider == null)

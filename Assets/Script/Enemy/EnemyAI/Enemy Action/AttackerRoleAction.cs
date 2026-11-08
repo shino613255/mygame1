@@ -27,19 +27,19 @@ public class AttackerRoleAction : IEnemyRoleAction
             return healSkill;
         }
 
-        List<SkillData> attackSkills =
+        List<SkillData> skillList =
             pool.FindAll(
                 s =>
                     s.skillType == SkillType.Physical ||
                     s.skillType == SkillType.Magic
             );
 
-        if (attackSkills.Count > 0)
+        if (skillList.Count > 0)
         {
-            return attackSkills[
+            return skillList[
                 Random.Range(
                     0,
-                    attackSkills.Count
+                    skillList.Count
                 )
             ];
         }

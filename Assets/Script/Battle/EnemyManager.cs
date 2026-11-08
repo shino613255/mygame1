@@ -1,5 +1,4 @@
 using DG.Tweening;
-using System.Collections;
 using UnityEngine;
 
 public class EnemyManager : UnitBase
@@ -115,8 +114,6 @@ public class EnemyManager : UnitBase
 
     private bool isCounterActive;
 
-    public bool IsCounterActive => isCounterActive;
-
     public bool CanActivateCounter => IsAlive && !isCounterActive && data != null && data.role == EnemyRole.Tank &&
         (data.enemyType == EnemyType.Normal || data.enemyType == EnemyType.Boss);
 
@@ -145,8 +142,6 @@ public class EnemyManager : UnitBase
 
     [Header("状態異常")]
     private StatusEffectType currentStatusEffect = StatusEffectType.None;
-
-    public StatusEffectType CurrentStatusEffect => currentStatusEffect;
 
     public bool IsBurning => currentStatusEffect == StatusEffectType.Burn;
 
@@ -384,7 +379,7 @@ public class EnemyManager : UnitBase
         ClearCounter();
         ResetStagger();
         data = enemyData;
-        InitializeStatsFromData();
+        InitializeFromData();
     }
 
     private void Start()
@@ -395,10 +390,10 @@ public class EnemyManager : UnitBase
             return;
         }
 
-        InitializeStatsFromData();
+        InitializeFromData();
     }
 
-    private void InitializeStatsFromData()
+    private void InitializeFromData()
     {
         name = data.enemyName;
         maxHp = data.maxHp;
@@ -411,11 +406,6 @@ public class EnemyManager : UnitBase
         mdef = data.mdef;
         evasionRate = data.evasionRate;
         damageEffect = data.damageEffect;
-    }
-
-    public int Attack(PlayerManager player)
-    {
-        return player.TakePhysical(at);
     }
 
     public void SetPartViewVisible(bool visible)
@@ -442,11 +432,6 @@ public class EnemyManager : UnitBase
         ClearCounter();
         ResetStagger();
         DOTween.Kill(transform);
-    }
-
-    public override IEnumerator Act()
-    {
-        yield break;
     }
 
     public void TakeDamageRaw(int damage)

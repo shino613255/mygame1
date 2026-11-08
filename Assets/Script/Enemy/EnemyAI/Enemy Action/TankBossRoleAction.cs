@@ -44,9 +44,9 @@ public class TankBossRoleAction : IEnemyRoleAction
             heavyAttackUnlocked = true;
 
         SkillData heavyAttack = pool.Find(skill =>
-            skill == enemy.data.telegraphedSkill &&
+            skill == enemy.data.AnnouncementSkillName &&
             skill.skillType == SkillType.Physical);
-        pool = pool.FindAll(skill => skill != enemy.data.telegraphedSkill);
+        pool = pool.FindAll(skill => skill != enemy.data.AnnouncementSkillName);
 
         if (allowHeavyAttackStance && pendingHeavyAttack != null)
             return null;
@@ -163,8 +163,6 @@ public class TankBossRoleAction : IEnemyRoleAction
         }
 
         var skills = new List<SkillData>();
-        if (enemy.data.attackSkill != null)
-            skills.Add(enemy.data.attackSkill);
         if (enemy.data.skillList != null)
             skills.AddRange(enemy.data.skillList);
 
@@ -178,7 +176,7 @@ public class TankBossRoleAction : IEnemyRoleAction
             bool magicGuardSealed = brokenHands > 0 && skill.skillType == SkillType.Buff &&
                 skill.buff != null && skill.buff.type == BuffType.MagicDefenseUp;
             bool healSealed = headBroken && skill.skillType == SkillType.Heal;
-            bool heavyAttackSealed = brokenHands >= 2 && skill == enemy.data.telegraphedSkill &&
+            bool heavyAttackSealed = brokenHands >= 2 && skill == enemy.data.AnnouncementSkillName &&
                 skill.skillType == SkillType.Physical;
 
             if (poisonSealed || magicGuardSealed || healSealed || heavyAttackSealed)

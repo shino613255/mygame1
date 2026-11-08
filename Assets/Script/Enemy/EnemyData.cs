@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,11 +14,10 @@ public class EnemyData : ScriptableObject
 
     [Header("基本情報")]
     public string enemyName;
-    public Sprite icon;
     public GameObject prefab; 
 
     [Header("基本ステータス")]
-    public int maxHp = 10;
+    public int maxHp = 1;
     public int maxMp = 0;
 
     public int at = 1;
@@ -32,35 +30,29 @@ public class EnemyData : ScriptableObject
     public float evasionRate = 0f;             
 
     [Header("パフォーマンス / 演出")]
-    public GameObject damageEffect;
-    // TODO: 死亡時のエフェクトを設定する
-    public GameObject deathEffect;                  
-    public AudioClip hitSE;
-    public AudioClip deathSE;
+    public GameObject damageEffect;    
 
     [Tooltip("使えるスキル一覧（任意）")]
     
-    public SkillData attackSkill;                  
     public List<SkillData> skillList = new();       
 
-    [Header("Attack Telegraph")]
-    public SkillData telegraphedSkill;
+    [Header("攻撃予告")]
+    public SkillData AnnouncementSkillName;
 
-    [Header("Weak Point Stagger")]
-    public bool enableStagger;
+    [Header("弱点攻撃・体勢崩し")]
+    public bool enableStagger;  
     public PartType staggerWeakPoint = PartType.Face;
     [Min(1)] public int staggerGaugeMax = 100;
     [Min(1)] public int staggerGainPerHit = 35;
     [Min(1)] public int staggerRecoveryTurns = 1;
 
-    [Header("Part Damage Multipliers")]
+    [Header("部位別ダメージ倍率")]
     public List<PartDamageMultiplier> partDamageMultipliers = new();
 
     public float GetPartDamageMultiplier(PartType partType, SkillType attackType)
     {
-        if (partDamageMultipliers == null ||
-            (attackType != SkillType.Physical && attackType != SkillType.Magic))
-            return 1f;
+        if (partDamageMultipliers == null) return 1f;
+            
 
         foreach (PartDamageMultiplier entry in partDamageMultipliers)
         {
@@ -68,15 +60,16 @@ public class EnemyData : ScriptableObject
                 continue;
 
             float multiplier = attackType == SkillType.Magic
-                ? entry.magicMultiplier : entry.physicalMultiplier;
-            return multiplier > 0f && !float.IsInfinity(multiplier) ? multiplier : 1f;
+                ? entry.magicMultiplier 
+                : entry.physicalMultiplier;
+
+            return multiplier > 0f ? multiplier : 1f;
         }
 
         return 1f;
     }
 
     [Header("敵の種類（強さランク）")]
-    // 敵の強さ区分やBoss判定など、種類ごとの処理分岐に使用する
     public EnemyType enemyType = EnemyType.Normal;  
 
     [Header("敵の役割（戦い方のタイプ）")]

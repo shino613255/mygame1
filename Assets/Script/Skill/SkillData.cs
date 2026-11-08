@@ -9,7 +9,6 @@ public class SkillData : ScriptableObject
     public string skillName;
     [TextArea]
     public string description;
-    public Sprite icon;
 
     [Header("コスト（任意）")]
     [Min(0)]
@@ -40,9 +39,6 @@ public class SkillData : ScriptableObject
     [Range(0f, 1f)]
     public float critBonus = 0f;
 
-    [Header("属性")]
-    public ElementType element = ElementType.None;
-
     [Header("対象")]
     public TargetType targetType = TargetType.Single;
 
@@ -59,5 +55,5 @@ public class SkillData : ScriptableObject
     public BuffData buff;
     public DebuffData debuff;
     [Range(0f, 1f)]
-    public float applyChance = 1f;
+    public float applyChance = 0.3f;
 }

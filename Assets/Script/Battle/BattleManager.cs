@@ -732,7 +732,7 @@ public class BattleManager : MonoBehaviour
     private bool UsesEnemyActionPlan(EnemyManager target)
     {
         return target != null && target.data != null && target.data.enemyType == EnemyType.Normal &&
-            target.data.role == EnemyRole.Attacker && target.data.telegraphedSkill != null;
+            target.data.role == EnemyRole.Attacker && target.data.AnnouncementSkillName != null;
     }
 
     private void PrepareEnemyAction()
@@ -771,7 +771,7 @@ public class BattleManager : MonoBehaviour
     private bool HasPlannedTelegraph()
     {
         return enemyActionPlan.isReady && enemyActionPlan.enemy == enemy && enemy != null && enemy.data != null &&
-            enemyActionPlan.skill != null && enemyActionPlan.skill == enemy.data.telegraphedSkill;
+            enemyActionPlan.skill != null && enemyActionPlan.skill == enemy.data.AnnouncementSkillName;
     }
 
     private bool TryInterruptEnemyAction(BodyPart part, bool justBroken)
@@ -811,14 +811,14 @@ public class BattleManager : MonoBehaviour
     private bool UsesBossHeavyAttack(EnemyManager target)
     {
         return target != null && target.data != null && target.data.enemyType == EnemyType.Boss &&
-            target.data.role == EnemyRole.Tank && target.data.telegraphedSkill != null &&
-            target.data.telegraphedSkill.skillType == SkillType.Physical;
+            target.data.role == EnemyRole.Tank && target.data.AnnouncementSkillName != null &&
+            target.data.AnnouncementSkillName.skillType == SkillType.Physical;
     }
 
     private bool UsesEliteCharge(EnemyManager target)
     {
         return target != null && target.data != null && target.data.enemyType == EnemyType.Reinforced &&
-            target.data.role == EnemyRole.Attacker && target.data.telegraphedSkill != null;
+            target.data.role == EnemyRole.Attacker && target.data.AnnouncementSkillName != null;
     }
 
     private bool UsesChargedAttack(EnemyManager target)
@@ -1144,7 +1144,7 @@ public class BattleManager : MonoBehaviour
         }
 
         bool isChargedAction = UsesChargedAttack(enemy) && enemyActionPlan.isReady && enemyActionPlan.enemy == enemy &&
-            enemyActionPlan.remainingChargeTurns > 0 && enemyActionPlan.skill == enemy.data.telegraphedSkill;
+            enemyActionPlan.remainingChargeTurns > 0 && enemyActionPlan.skill == enemy.data.AnnouncementSkillName;
         bool isBossHeavyAction = isChargedAction && UsesBossHeavyAttack(enemy);
         if (isChargedAction && !enemyActionPlan.isTelegraphed)
         {
@@ -1174,7 +1174,7 @@ public class BattleManager : MonoBehaviour
 
             skill = enemyAI.ChooseSkill(enemy, 0, player, UsesBossHeavyAttack(enemy));
             if ((UsesEliteCharge(enemy) || ExpansionEnemyAction.UsesCharge(enemy)) && skill != null &&
-                skill == enemy.data.telegraphedSkill)
+                skill == enemy.data.AnnouncementSkillName)
             {
                 StartEnemyCharge(skill, SingleTurnCharge);
             }

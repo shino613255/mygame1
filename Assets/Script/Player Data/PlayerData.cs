@@ -16,17 +16,13 @@ public class PlayerData : ScriptableObject
     public int startMag;
     public int startDef;
     public int startMdef;
-    [Range(0f, 1f)]
-    public float damageCutRate;
-    [Range(0f, 1f)]
-    public float evasionRate;
 
-    [Header("–ğE—p‚Ì˜g")]
-    public int skillSlotCount = 3;
-    public int bodyEnhanceSlotCount = 2;
+    [Range(0f, 1f)]
+    public float evasionRate; 
 
     [Header("ŒÅ—Lî•ñ")]
     public string uniquePassiveName;
+
     [TextArea]
     public string uniquePassiveDescription;
 
