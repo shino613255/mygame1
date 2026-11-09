@@ -2255,9 +2255,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ad235feb70c007458de1ccf42d64ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  team: 0
-  attackElement: 0
-  resistElement: 0
   maxHp: 100
   hp: 100
   maxMp: 50
@@ -2276,7 +2273,6 @@ MonoBehaviour:
   - {fileID: 739916020}
   portraitView: {fileID: 1090327804}
   skillPager: {fileID: 2059511739}
-  useSkill: 0
   lifeDrainHealRate: 0.05
   focusedAttackSecondHitMultiplier: 1.2
   focusedAttackThirdHitMultiplier: 1.4
@@ -8750,7 +8746,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1968368506
 RectTransform:
   m_ObjectHideFlags: 0
