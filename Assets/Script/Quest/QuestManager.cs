@@ -19,9 +19,9 @@ public class QuestManager : MonoBehaviour
     private int currentFloorIndex = 0;
     private int currentEnemyIndex = 0;
     private bool hasActiveEnemy = false;
-    private bool isQuestCleared = false;
-    private bool isQuestFailed = false;
-    private bool isSearching = false;
+    private bool QuestCleared = false;
+    private bool QuestFailed = false;
+    private bool EnteringStage = false;
     private bool isWaitingGrowthSelection = false;
     [SerializeField] private GrowthSelectionManager growthSelectionManager;
     [SerializeField] private PlayerData defaultMageData;
@@ -29,7 +29,8 @@ public class QuestManager : MonoBehaviour
     private void Start()
     {
         PlayerData data = defaultMageData;
-        if (PlayerSelectionManager.Instance != null && PlayerSelectionManager.Instance.selectedPlayer != null)
+        if (PlayerSelectionManager.Instance != null &&
+            PlayerSelectionManager.Instance.selectedPlayer != null)
         {
             data = PlayerSelectionManager.Instance.selectedPlayer;
         }
@@ -48,47 +49,47 @@ public class QuestManager : MonoBehaviour
         DialogTextManager.instance.SetScenarios(new string[] { "クエストに出発した！", "森の中を進んでいく。", });
     }
 
-    IEnumerator Searching()
+    IEnumerator EnterStage()
     {
-        if (isQuestCleared || isQuestFailed)
+        if (QuestCleared || QuestFailed)
         {
-            isSearching = false;
+            EnteringStage = false;
             yield break;
         }
 
         DialogTextManager.instance.SetScenarios(new string[] { "周囲を探索している...", });
+
         QuestBG.transform
-            .DOScale(new Vector3(SearchZoomScale, SearchZoomScale, SearchZoomScale), SearchAnimationDuration)
-            .OnComplete(() => QuestBG.transform.localScale = new Vector3(SearchRestScale, SearchRestScale, 1));
+            .DOScale(
+                new Vector3(SearchZoomScale, SearchZoomScale, SearchZoomScale), 
+                SearchAnimationDuration)
+            .OnComplete(() => 
+                QuestBG.transform.localScale = new Vector3(SearchRestScale, SearchRestScale, 1));
+
         SpriteRenderer questBGRenderer = QuestBG.GetComponent<SpriteRenderer>();
-        questBGRenderer.DOFade(0, SearchAnimationDuration).OnComplete(() => questBGRenderer.DOFade(1, 0));
+        questBGRenderer
+            .DOFade(0, SearchAnimationDuration)
+            .OnComplete(() => questBGRenderer.DOFade(1, 0));
+
+        // 背景の演出を見せてから、次の敵を出すまでの待機時間を設ける
         yield return new WaitForSeconds(SearchAnimationDuration);
+
         stageUI.UpdateUI(currentFloorIndex);
         EncountEnemy();
-        isSearching = false;
+        EnteringStage = false;
     }
 
     public void OnNextButton()
     {
-        if (isQuestCleared || isQuestFailed)
+        if (QuestCleared || QuestFailed || EnteringStage || hasActiveEnemy)
         {
             return;
         }
 
-        if (isSearching)
-        {
-            return;
-        }
-
-        if (hasActiveEnemy)
-        {
-            return;
-        }
-
-        isSearching = true;
+        EnteringStage = true;
         SoundManager.instance.PlayButtonSE(0);
         stageUI.HideButtons();
-        StartCoroutine(Searching());
+        StartCoroutine(EnterStage());
     }
 
     public void OnToTownButton()
@@ -98,53 +99,19 @@ public class QuestManager : MonoBehaviour
 
     void EncountEnemy()
     {
-        if (isQuestCleared || isQuestFailed)
+        if (QuestCleared || QuestFailed || hasActiveEnemy)
         {
             return;
         }
 
-        if (hasActiveEnemy)
+        if (!TryGetCurrentFloor(out FloorData currentFloor))
         {
-            return;
-        }
-
-        if (floors == null || floors.Count == 0)
-        {
-            Debug.LogWarning("Floorが1つも設定されていません。");
-            QuestClear();
-            return;
-        }
-
-        if (currentFloorIndex < 0 || currentFloorIndex >= floors.Count)
-        {
-            Debug.LogWarning($"FloorIndexが範囲外です。index={currentFloorIndex}");
-            QuestClear();
-            return;
-        }
-
-        FloorData currentFloor = floors[currentFloorIndex];
-        if (currentFloor == null)
-        {
-            Debug.LogWarning($"Floor {currentFloorIndex} がnullです。次のFloorへ進みます。");
-            SkipCurrentFloor();
-            return;
-        }
-
-        if (currentFloor.enemyDatas == null || currentFloor.enemyDatas.Count == 0)
-        {
-            Debug.LogWarning($"Floor {currentFloorIndex} にEnemyDataがありません。次のFloorへ進みます。");
-            SkipCurrentFloor();
-            return;
-        }
-
-        if (currentEnemyIndex < 0 || currentEnemyIndex >= currentFloor.enemyDatas.Count)
-        {
-            Debug.LogWarning($"EnemyIndexが範囲外です。" + $" index={currentEnemyIndex}" + $" count={currentFloor.enemyDatas.Count}");
-            SkipCurrentFloor();
             return;
         }
 
         EnemyData selectedData;
+
+        // ボスフロアの場合は先頭のenemydateをボスとして使う。
         if (currentFloor.isBossFloor)
         {
             selectedData = currentFloor.enemyDatas[0];
@@ -185,7 +152,47 @@ public class QuestManager : MonoBehaviour
         hasActiveEnemy = true;
         battleManager.Setup(enemy);
     }
+    private bool TryGetCurrentFloor(out FloorData currentFloor)
+    {
+        currentFloor = null;
 
+        if (floors == null || floors.Count == 0)
+        {
+            Debug.LogWarning("Floorが1つも設定されていません。");
+            QuestClear();
+            return false;
+        }
+
+        if (currentFloorIndex < 0 || currentFloorIndex >= floors.Count)
+        {
+            Debug.LogWarning($"FloorIndexが範囲外です。index={currentFloorIndex}");
+            QuestClear();
+            return false;
+        }
+
+        currentFloor = floors[currentFloorIndex];
+        if (currentFloor == null)
+        {
+            Debug.LogWarning($"Floor {currentFloorIndex} がnullです。次のFloorへ進みます。");
+            SkipCurrentFloor();
+            return false;
+        }
+
+        if (currentFloor.enemyDatas == null || currentFloor.enemyDatas.Count == 0)
+        {
+            Debug.LogWarning($"Floor {currentFloorIndex} にEnemyDataがありません。次のFloorへ進みます。");
+            SkipCurrentFloor();
+            return false;
+        }
+
+        if (currentEnemyIndex < 0 || currentEnemyIndex >= currentFloor.enemyDatas.Count)
+        {
+            Debug.LogWarning($"EnemyIndexが範囲外です。" + $" index={currentEnemyIndex}" + $" count={currentFloor.enemyDatas.Count}");
+            SkipCurrentFloor();
+            return false;
+        }
+        return true;
+    }
     private void SkipCurrentFloor()
     {
         currentEnemyIndex = 0;
@@ -237,7 +244,7 @@ public class QuestManager : MonoBehaviour
 
     public void EndBattle()
     {
-        if (isQuestCleared)
+        if (QuestCleared)
         {
             return;
         }
@@ -267,18 +274,18 @@ public class QuestManager : MonoBehaviour
             return;
         }
 
-        isSearching = true;
-        StartCoroutine(Searching());
+        EnteringStage = true;
+        StartCoroutine(EnterStage());
     }
 
     void QuestClear()
     {
-        if (isQuestCleared)
+        if (QuestCleared)
         {
             return;
         }
 
-        isQuestCleared = true;
+        QuestCleared = true;
         hasActiveEnemy = false;
         DialogTextManager.instance.SetScenarios(new string[] { "クエストクリア！", "街に戻ろう。" });
         SoundManager.instance.StopBGM();
@@ -286,14 +293,14 @@ public class QuestManager : MonoBehaviour
         stageUI.ShowStageClear();
     }
 
-    public void QuestFailed()
+    public void QuestFail()
     {
-        if (isQuestCleared || isQuestFailed)
+        if (QuestCleared || QuestFailed)
         {
             return;
         }
 
-        isQuestFailed = true;
+        QuestFailed = true;
         hasActiveEnemy = false;
         DialogTextManager.instance.SetScenarios(new string[] { "プレイヤーは倒れた。", "クエスト失敗..." });
         SoundManager.instance.StopBGM();

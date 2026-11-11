@@ -56,61 +56,6 @@ public class EnemyManager : UnitBase
     }
 
     public EnemyData data;
-    private int staggerGauge;
-    private bool isStaggered;
-    private int remainingStaggerRecoveryTurns;
-
-    public bool UsesStagger => data != null && data.enableStagger && data.enemyType == EnemyType.Normal;
-
-    public int StaggerGauge => staggerGauge;
-
-    public int StaggerGaugeMax => data != null ? Mathf.Max(1, data.staggerGaugeMax) : 0;
-
-    public bool IsStaggered => isStaggered;
-
-    public bool TryAddStagger(BodyPart part, int actualHpDamage, int actualPartDamage)
-    {
-        if (!UsesStagger || !IsAlive || part == null || part.GetComponentInParent<EnemyManager>() != this ||
-            part.partType != data.staggerWeakPoint || (actualHpDamage <= 0 && actualPartDamage <= 0) ||
-            isStaggered || remainingStaggerRecoveryTurns > 0)
-        {
-            return false;
-        }
-
-        staggerGauge += Mathf.Min(Mathf.Max(1, data.staggerGainPerHit), StaggerGaugeMax - staggerGauge);
-        isStaggered = staggerGauge >= StaggerGaugeMax;
-        return true;
-    }
-
-    public bool ConsumeStaggerAtEnemyTurn()
-    {
-        if (!UsesStagger || !IsAlive)
-        {
-            return false;
-        }
-
-        if (!isStaggered)
-        {
-            if (remainingStaggerRecoveryTurns > 0)
-            {
-                remainingStaggerRecoveryTurns--;
-            }
-
-            return false;
-        }
-
-        isStaggered = false;
-        staggerGauge = 0;
-        remainingStaggerRecoveryTurns = Mathf.Max(1, data.staggerRecoveryTurns);
-        return true;
-    }
-
-    public void ResetStagger()
-    {
-        staggerGauge = 0;
-        isStaggered = false;
-        remainingStaggerRecoveryTurns = 0;
-    }
 
     private bool isCounterActive;
 
@@ -377,7 +322,6 @@ public class EnemyManager : UnitBase
     {
         BattleEffects.Reset();
         ClearCounter();
-        ResetStagger();
         data = enemyData;
         InitializeFromData();
     }
@@ -430,7 +374,6 @@ public class EnemyManager : UnitBase
     protected override void OnDied()
     {
         ClearCounter();
-        ResetStagger();
         DOTween.Kill(transform);
     }
 

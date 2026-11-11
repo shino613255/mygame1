@@ -39,13 +39,6 @@ public class EnemyData : ScriptableObject
     [Header("攻撃予告")]
     public SkillData AnnouncementSkillName;
 
-    [Header("弱点攻撃・体勢崩し")]
-    public bool enableStagger;  
-    public PartType staggerWeakPoint = PartType.Face;
-    [Min(1)] public int staggerGaugeMax = 100;
-    [Min(1)] public int staggerGainPerHit = 35;
-    [Min(1)] public int staggerRecoveryTurns = 1;
-
     [Header("部位別ダメージ倍率")]
     public List<PartDamageMultiplier> partDamageMultipliers = new();
 

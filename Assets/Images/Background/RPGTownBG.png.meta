@@ -169,7 +169,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      RPGTownBG_0: -7943338720470263743
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
